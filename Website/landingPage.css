@@ -9,7 +9,7 @@ nav{
     height: 20%;
     width: 100%;
     justify-content: flex-end;
-    background-color: brown;
+    background-color: white;
 }
 
 nav ul{
@@ -20,17 +20,17 @@ nav ul{
 nav ul li {
     list-style: none;
     padding-bottom: 2px;
+    text-decoration: none;
 }
 
-nav ul li button{
-    background-color: chocolate;
-    border-color: none;
+nav ul li a{
+    color: rgb(102, 102, 103);
     text-align: center;
     text-justify: center;
-    color: white;
     padding-right: 10px;
+    text-decoration: none;
 }
 
-nav ul li button:hover{
-    color:blue
+nav ul li a:hover{
+    color:rgb(102,136,204);
 }
