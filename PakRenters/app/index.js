@@ -1,90 +1,58 @@
 import {useState} from 'react';
-import { View,Text, ScrollView, SafeAreaView, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
-import {Stack, useRouter} from 'expo-router';
+import { View,Text} from "react-native";
 
 const mainBlue = "#182978";
 const midBlue = "#6688CC";
 const baseBlue = "#ACBFE6";
-
-// const App = () => {
-//  const handlePress = () => {
-//     console.log('Pressed');
-//  };
-
-//  return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <TouchableHighlight onPress={handlePress} underlayColor="gray">
-//         <Text style={{ fontSize: 24 }}>TouchableHighlight</Text>
-//       </TouchableHighlight>
-
-//       <TouchableOpacity onPress={handlePress} style={{ marginTop: 20 }}>
-//         <Text style={{ fontSize: 24 }}>TouchableOpacity</Text>
-//       </TouchableOpacity>
-
-//       <TouchableWithoutFeedback onPress={handlePress} style={{ marginTop: 20 }}>
-//         <Text style={{ fontSize: 24 }}>TouchableWithoutFeedback</Text>
-//       </TouchableWithoutFeedback>
-//     </View>
-//  );
-// };
-
-// export default App;
-
+const font = "Montserrat";
+const fontSize = 18;
 export default function Page() {
-  return <View style={styles.container}>
-      <View style={styles.outerOverlay}>
-        <View style = {styles.midOverlay}>
-          <View style = {styles.centerContainer}>
-            <View style={styles.fieldContainer}>
-              <Text style={styles.labelText}>Username / Phone number:</Text>
-            </View>
-            <View style={styles.buttonsContainer}>
-              <TouchableOpacity>
-                <View style={styles.cancelButton}>
-                  <Text>Cancel</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.loginButton}>
-                  <Text>Login</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
+  return (
+  <View style={styles.container}>
+    <View style={styles.outerOverlay}>
+      <View style={styles.midOverlay}>
+        <View style={styles.centerContainer}>
+          <Text>
+            Hello World
+          </Text>
         </View>
       </View>
-    </View>;
+    </View>
+  </View>
+    );
 }
 
 const styles = {
   container: {
-    flex: 1,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    backgroundColor: mainBlue,
+    width: "100%",
+    height: "100%"
   },
   centerContainer: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: mainBlue,
-    borderRadius: "14px",
-    width: "60vw",
-    height: "75vh"
+    backgroundColor: "white",
+    radius: "14px",
+    width: "95%",
+    height: "95%"
   },
   midOverlay: {
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: midBlue,
-    borderRadius: "13px",
-    width: "62vw",
-    height: "77vh"
+    // borderRadius: "13px",
+    width: "95%",
+    height: "95%"
   },
   outerOverlay: {
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: baseBlue,
-    borderRadius: "12px",
-    width: "64vw",
-    height: "79vh"
+    // borderRadius: "12px",
+    width: "95%",
+    height: "95%"
   },
   buttonsContainer: {
     flexDirection: 'row',
@@ -95,7 +63,7 @@ const styles = {
     justifyContent: "center",
     width: "100px",
     height: "30px",
-    borderRadius: "50px",
+    // borderRadius: "50px",
     backgroundColor: "white"
   },
   loginButton: {
@@ -104,7 +72,7 @@ const styles = {
     justifyContent: "center",
     width: "100px",
     height: "30px",
-    borderRadius: "50px",
+    // borderRadius: "50px",
     backgroundColor: "white"
   },
   fieldContainer: {
@@ -121,5 +89,3 @@ const styles = {
     color: 'white',
   }
 };
-
-// How to use touchable in React Native?
