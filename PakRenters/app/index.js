@@ -1,91 +1,75 @@
-import {useState} from 'react';
-import { View,Text} from "react-native";
+import {View, Text, Image, TouchableOpacity, Animated} from 'react-native'
+import React from "react";
+import {FontFamily,Color} from "../constants/GlobalStyles";
+import { BounceIn, FadeIn, FadeInDown, FadeInLeft, FadeOut } from "react-native-reanimated";
+import messages from "../constants/splashMessages";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp
+} from "react-native-responsive-screen";
+import { router } from 'expo-router';
+import { useFonts } from 'expo-font';
+const Splash = () => {
+  const [fontsLoaded, error] = useFonts({
+    "BreeSerif-Regular": require("../assets/fonts/BreeSerif-Regular.ttf"),
+    "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
+  });
 
-const mainBlue = "#182978";
-const midBlue = "#6688CC";
-const baseBlue = "#ACBFE6";
-const font = "Montserrat";
-const fontSize = 18;
-export default function Page() {
-  return (
-  <View style={styles.container}>
-    <View style={styles.outerOverlay}>
-      <View style={styles.midOverlay}>
-        <View style={styles.centerContainer}>
-          <Text>
-            Hello World
-          </Text>
-        </View>
-      </View>
-    </View>
-  </View>
-    );
-}
+  if (!fontsLoaded && !error) {
+    return null;
+  }
+  return <View style={styles.mainContainer}>
+      <Animated.Image entering={FadeInDown.delay(500)} style={styles.logoContainer} source={require("../assets/images/PakRenters-Logo.jpg")} />
 
+      <Animated.Text entering={FadeInLeft.delay(5000)} style={styles.tagLine}>
+        {messages.tagLine}
+      </Animated.Text>
+      <TouchableOpacity style={styles.letsGoBtn} onPress={()=>{router.push("./screens/login")}} >
+        <Text style={styles.letsGoText}>
+          {messages.letsGo}
+        </Text>
+      </TouchableOpacity>
+      <View style={styles.androidSmall1Child} />
+    </View>;
+};
 const styles = {
-  container: {
+  mainContainer: {
+    width: wp(100),
+    height: hp(100),
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: mainBlue,
-    width: "100%",
-    height: "100%"
+    backgroundColor: Color.white
   },
-  centerContainer: {
+  logoContainer: {
+    flex: 3,
+    position: "relative",
+    width: wp(80),
+    height: hp(80),
+    resizeMode: "contain"
+  },
+  tagLine: {
+    flex: 2,
+    position: "relative",
+    top: hp(-4),
+    fontFamily: FontFamily.breeSerifRegular,
+    color: Color.dark,
+    fontSize: hp(10),
+    lineHeight: hp(10)
+  },
+  letsGoBtn: {
+    flex: 0.4,
+    position: "relative",
+    top: hp(-5),
+    width: wp(70),
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "white",
-    radius: "14px",
-    width: "95%",
-    height: "95%"
+    borderRadius: wp(8),
+    backgroundColor: Color.dark,
+    justifyContent: "center"
   },
-  midOverlay: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: midBlue,
-    // borderRadius: "13px",
-    width: "95%",
-    height: "95%"
-  },
-  outerOverlay: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: baseBlue,
-    // borderRadius: "12px",
-    width: "95%",
-    height: "95%"
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-  },
-  cancelButton: {
-    margin: '5px',
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100px",
-    height: "30px",
-    // borderRadius: "50px",
-    backgroundColor: "white"
-  },
-  loginButton: {
-    margin: '5px',
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100px",
-    height: "30px",
-    // borderRadius: "50px",
-    backgroundColor: "white"
-  },
-  fieldContainer: {
-    width: '80%',
-    height: '50%',
-  },
-  blackOverlay:{
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'black',
-    opacity: '25%',
-  },
-  labelText:{
-    color: 'white',
+  letsGoText: {
+    position: "relative",
+    color: Color.white,
+    fontFamily: FontFamily.interBold
   }
 };
+
+export default Splash;
