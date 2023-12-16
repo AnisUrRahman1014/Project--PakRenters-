@@ -21,7 +21,7 @@ const Layout = ()=> {
             headerTitle: "",
             headerBackVisible: true,
             headerTransparent: true,
-            headerTintColor: Color.colorWhite,
+            headerTintColor: Color.white,
             headerTitleAlign: "center",
         }}/>
     </Stack>

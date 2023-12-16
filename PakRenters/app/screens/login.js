@@ -38,7 +38,7 @@ const Login = () => {
             <Icon name="user" size={30} color={Color.white} />
           </View>
           <View style={styles.fieldContainer}>
-            <TextInput style={styles.inputField} placeholderTextColor={Color.grey} placeholder="Username" value={username} />
+            <TextInput style={styles.inputField} placeholderTextColor={Color.grey} placeholder="Username" value={username} onChangeText={text => username=text} />
           </View>
         </View>
         {/* PASSWORD */}
@@ -47,7 +47,7 @@ const Login = () => {
             <Icon name="lock" size={30} color={Color.white} />
           </View>
           <View style={styles.fieldContainer}>
-            <TextInput style={styles.inputField} placeholderTextColor={Color.grey} placeholder="Password" value={password} secureTextEntry={true} />
+            <TextInput style={styles.inputField} placeholderTextColor={Color.grey} placeholder="Password" value={password} secureTextEntry={true} onChangeText={text => password=text}/>
           </View>
         </View>
         {/* FORGET PASSWORD */}
@@ -65,6 +65,7 @@ const Login = () => {
           {/* LOGIN */}
           <TouchableOpacity style={[styles.button, { backgroundColor: Color.focus }]} onPress={() => {
               console.log(username);
+              console.log(password);
             }}>
             <Text style={styles.btnText}>
               {loginMessages.submitButtonLabel}
