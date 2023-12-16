@@ -38,7 +38,7 @@ const Login = () => {
             <Icon name="user" size={30} color={Color.white} />
           </View>
           <View style={styles.fieldContainer}>
-            <TextInput style={styles.inputField} placeholderTextColor={Color.grey} placeholder="Username" value={username} onChangeText={text => username=text} />
+            <TextInput style={styles.inputField} placeholderTextColor={Color.grey} placeholder="Username" value={username} onChangeText={text => username=text}/>
           </View>
         </View>
         {/* PASSWORD */}

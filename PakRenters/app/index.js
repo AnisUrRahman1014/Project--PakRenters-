@@ -19,7 +19,7 @@ const Splash = () => {
     return null;
   }
   return <View style={styles.mainContainer}>
-      <Animated.Image entering={FadeInDown.delay(500)} style={styles.logoContainer} source={require("../assets/images/PakRenters-Logo.jpg")} />
+      <Animated.Image entering={FadeInDown.delay(500)} style={styles.logoContainer} source={require("../assets/images/PakRentersLogo.png")} />
 
       <Animated.Text entering={FadeInLeft.delay(5000)} style={styles.tagLine}>
         {messages.tagLine}
