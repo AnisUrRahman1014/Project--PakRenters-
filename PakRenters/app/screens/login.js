@@ -18,16 +18,39 @@ const Login = () => {
     if (!fontsLoaded && !error) {
       return null;
     }
-    let username;
-    let password;
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    const usernameFieldHandler = inputText => {
+      // Update the state for the username
+      setUsername(inputText);
+    };
+
+    const passwordFieldHandler = inputText => {
+      // Update the state for the password
+      setPassword(inputText);
+    };
     return <View style={styles.mainContainer}>
         {/* SHAPE */}
         <View style={styles.curve2}>
           <View style={styles.curve1}>
             <View style={styles.ovalShape}>
-              <Text style={[styles.title, {fontSize: 20}]}>Welcome to</Text>
-              <Text style={[styles.title,{fontFamily:FontFamily.ubuntuBold}]}>PakRenters</Text>
-              <Text style={[styles.title,{fontSize:18, marginTop: hp(2)}]}>Please sign in to continue</Text>
+              <Text style={[styles.title, { fontSize: 20 }]}>
+                Welcome to
+              </Text>
+              <Text
+                style={[
+                  styles.title,
+                  { fontFamily: FontFamily.ubuntuBold }
+                ]}
+              >
+                PakRenters
+              </Text>
+              <Text
+                style={[styles.title, { fontSize: 18, marginTop: hp(2) }]}
+              >
+                Please sign in to continue
+              </Text>
             </View>
           </View>
         </View>
@@ -38,7 +61,7 @@ const Login = () => {
             <Icon name="user" size={30} color={Color.white} />
           </View>
           <View style={styles.fieldContainer}>
-            <TextInput style={styles.inputField} placeholderTextColor={Color.grey} placeholder="Username" value={username} onChangeText={text => username=text}/>
+            <TextInput style={styles.inputField} placeholderTextColor={Color.grey} placeholder="Username" value={username} onChangeText={usernameFieldHandler} />
           </View>
         </View>
         {/* PASSWORD */}
@@ -47,7 +70,14 @@ const Login = () => {
             <Icon name="lock" size={30} color={Color.white} />
           </View>
           <View style={styles.fieldContainer}>
-            <TextInput style={styles.inputField} placeholderTextColor={Color.grey} placeholder="Password" value={password} secureTextEntry={true} onChangeText={text => password=text}/>
+            <TextInput
+            style={styles.inputField}
+            placeholderTextColor={Color.grey}
+            placeholder="Password"
+            value={password}
+            secureTextEntry={true}
+            onChangeText={passwordFieldHandler}
+          />
           </View>
         </View>
         {/* FORGET PASSWORD */}
@@ -85,7 +115,7 @@ const styles = {
   ovalShape: {
     position: "relative",
     top: hp(-2),
-    borderRadius: wp(70),
+    borderRadius: wp(100),
     backgroundColor: Color.dark,
     width: wp(110),
     height: hp(55),
@@ -94,7 +124,7 @@ const styles = {
   curve1: {
     position: "relative",
     top: hp(-2),
-    borderRadius: wp(70),
+    borderRadius: wp(100),
     backgroundColor: Color.medium,
     width: wp(110),
     height: hp(55),
@@ -104,7 +134,7 @@ const styles = {
   curve2: {
     position: "relative",
     top: hp(-15),
-    borderRadius: wp(70),
+    borderRadius: wp(100),
     backgroundColor: Color.focus,
     width: wp(110),
     height: hp(55),

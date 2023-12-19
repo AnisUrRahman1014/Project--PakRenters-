@@ -1,5 +1,5 @@
 import {View, Text, Image, TouchableOpacity, Animated} from 'react-native'
-import React from "react";
+import React, {useState} from "react";
 import {FontFamily,Color} from "../constants/GlobalStyles";
 import { BounceIn, FadeIn, FadeInDown, FadeInLeft, FadeOut } from "react-native-reanimated";
 import messages from "../constants/splashMessages";
@@ -15,11 +15,14 @@ const Splash = () => {
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
   });
 
+
+
   if (!fontsLoaded && !error) {
     return null;
   }
+
   return <View style={styles.mainContainer}>
-      <Animated.Image entering={FadeInDown.delay(500)} style={styles.logoContainer} source={require("../assets/images/PakRentersLogo.png")} />
+      <Animated.Image entering={FadeInDown.delay(500)} style={styles.logoContainer} source={require("../assets/images/PakRenters-v3.0.jpg")} />
 
       <Animated.Text entering={FadeInLeft.delay(5000)} style={styles.tagLine}>
         {messages.tagLine}
