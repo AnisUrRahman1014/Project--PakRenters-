@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import loginMessages from '../../constants/loginMessages';
 import {useFonts} from 'expo-font';
 import Icon from "react-native-vector-icons/FontAwesome";
+import { router } from 'expo-router';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -33,6 +34,7 @@ const Login = () => {
       // Update the state for the password
       setPassword(inputText);
     };
+
     return <View style={styles.mainContainer}>
         {/* SHAPE */}
         <View style={styles.curve2}>
@@ -90,12 +92,12 @@ const Login = () => {
         {/* LOGIN | REGISTER BUTTONS */}
         <View style={styles.btnContainer}>
           {/* REGISTER */}
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={()=>{router.push("./signUp")}}>
             <Text style={styles.btnText}>
               {loginMessages.registerButtonLabel}
             </Text>
           </TouchableOpacity>
-          {/* LOGIN */}
+          {/* LOGIN BUTTON*/}
           <TouchableOpacity style={[styles.button, { backgroundColor: Color.focus }]} onPress={() => {
               console.log(username);
               console.log(password);

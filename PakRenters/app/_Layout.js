@@ -22,7 +22,12 @@ const Layout = ()=> {
             headerBackVisible: true,
             headerTransparent: true,
             headerTintColor: Color.white,
-            headerTitleAlign: "center",
+        }}/>
+        <Stack.Screen name="screens/signUp" options={{
+            headerTitle: "",
+            headerBackVisible : true,
+            headerTransparent: true,
+            headerTintColor: Color.white
         }}/>
     </Stack>
     )
