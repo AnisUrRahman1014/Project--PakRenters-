@@ -10,6 +10,8 @@ import {
 import { Color, FontFamily } from '../../constants/GlobalStyles';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 const Login = () => {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     const [fontsLoaded, error] = useFonts({
       "Ubuntu-Bold": require("../../assets/fonts/Ubuntu-Bold.ttf"),
       "Ubuntu-Regular": require("../../assets/fonts/Ubuntu-Regular.ttf")
@@ -18,12 +20,13 @@ const Login = () => {
     if (!fontsLoaded && !error) {
       return null;
     }
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+
+
 
     const usernameFieldHandler = inputText => {
       // Update the state for the username
-      setUsername(inputText);
+      const removedSpaces = inputText.replace(/\s/g,"");
+      setUsername(removedSpaces);
     };
 
     const passwordFieldHandler = inputText => {
