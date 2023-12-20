@@ -9,14 +9,12 @@ import {
 } from "react-native-responsive-screen";
 import { router } from 'expo-router';
 import { useFonts } from 'expo-font';
+
 const Splash = () => {
   const [fontsLoaded, error] = useFonts({
     "BreeSerif-Regular": require("../assets/fonts/BreeSerif-Regular.ttf"),
     "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
   });
-
-
-
   if (!fontsLoaded && !error) {
     return null;
   }
