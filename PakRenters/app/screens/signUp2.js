@@ -7,7 +7,6 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { Color, FontFamily } from "../../constants/GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
