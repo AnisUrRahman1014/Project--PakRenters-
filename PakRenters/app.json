@@ -10,9 +10,10 @@
     "name": "PakRenters",
     "slug": "PakRenters",
     "splash": {
-      "image": "assets/images/PakRenters-v3.0.png",
+      "image": "assets/images/SplashScreen.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
-    }
+    },
+    "icon": "assets/images/PakRenters-v3.0.png"
   }
 }
