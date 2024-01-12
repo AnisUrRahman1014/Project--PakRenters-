@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useFonts} from 'expo-font';
-import {Text, View} from 'react-native';
+import {Text, View, Image} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -8,6 +8,7 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Color, FontFamily } from "../../constants/GlobalStyles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { router } from "expo-router";
 
 const SignUp =()=>{
     const [firstName, setFirstName] = useState("");
@@ -32,6 +33,7 @@ const SignUp =()=>{
           <View style={styles.curve2}>
             <View style={styles.curve1}>
               <View style={styles.ovalShape}>
+                <Image source={require("../../assets/images/PakRenters-v3.0.jpg")} style={{ width: wp(30), height: hp(15), borderRadius: wp(200), resizeMode: "contain", position: "relative", top: 190 }} />
                 <Text style={styles.title}>
                   Please provide the following information
                 </Text>
@@ -85,7 +87,9 @@ const SignUp =()=>{
             <TextInput style={styles.fieldStyles} placeholder="Confirm Password" value={confirmPassword} onChange={text => setConfirmPassword(text)} placeholderTextColor={Color.grey} />
           </View>
           <View style={styles.btnContainer}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => {
+                router.push("./signUp2");
+              }}>
               <Text style={styles.btnText}>Proceed</Text>
             </TouchableOpacity>
           </View>
@@ -138,7 +142,7 @@ const styles = {
   title: {
     position: "relative",
     textAlign: "center",
-    top: hp(38),
+    top: hp(27),
     color: Color.white,
     fontFamily: FontFamily.ubuntuRegular,
     fontSize: 24,

@@ -3,25 +3,11 @@ import { Color, FontFamily } from '../constants/GlobalStyles';
 import { useFonts } from 'expo-font';
 
 const Layout = ()=> {
-    return (
-    <Stack>
-        <Stack.Screen name="index"  options={{
-            headerTitle: "Splash Screen",
-            headerShown: false,
-        }}/>
-        <Stack.Screen name="screens/login" options={{
-            headerTitle: "",
-            headerBackVisible: true,
-            headerTransparent: true,
-            headerTintColor: Color.white,
-        }}/>
-        <Stack.Screen name="screens/signUp" options={{
-            headerTitle: "",
-            headerBackVisible : true,
-            headerTransparent: true,
-            headerTintColor: Color.white
-        }}/>
-    </Stack>
-    )
+    return <Stack>
+        <Stack.Screen name="index" options={{ headerTitle: "Splash Screen", headerShown: false }} />
+        <Stack.Screen name="screens/login" options={{ headerTitle: "", headerBackVisible: true, headerTransparent: true, headerTintColor: Color.white }} />
+        <Stack.Screen name="screens/signUp" options={{ headerTitle: "", headerBackVisible: true, headerTransparent: true, headerTintColor: Color.white }} />
+        <Stack.Screen name="screens/signUp2" options={{ headerTitle: "", headerBackVisible: true, headerTransparent: true, headerTintColor: Color.white }} />
+      </Stack>;
 }
 export default Layout;

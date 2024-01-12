@@ -8,6 +8,11 @@
       "expo-router"
     ],
     "name": "PakRenters",
-    "slug": "PakRenters"
+    "slug": "PakRenters",
+    "splash": {
+      "image": "assets/images/PakRenters-v3.0.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    }
   }
 }

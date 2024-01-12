@@ -1,5 +1,5 @@
 import {React,useState} from 'react'
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import loginMessages from '../../constants/loginMessages';
 import {useFonts} from 'expo-font';
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -40,6 +40,7 @@ const Login = () => {
         <View style={styles.curve2}>
           <View style={styles.curve1}>
             <View style={styles.ovalShape}>
+              <Image source={require("../../assets/images/PakRenters-v3.0.jpg")} style={{ width: wp(30), height: hp(15), borderRadius: wp(200), resizeMode: "contain", position: "relative", top: 190 }} />
               <Text style={[styles.title, { fontSize: 20 }]}>
                 Welcome to
               </Text>
@@ -52,7 +53,7 @@ const Login = () => {
                 PakRenters
               </Text>
               <Text
-                style={[styles.title, { fontSize: 18, marginTop: hp(2) }]}
+                style={[styles.title, { fontSize: 18,  }]}
               >
                 Please sign in to continue
               </Text>
@@ -75,14 +76,7 @@ const Login = () => {
             <Icon name="lock" size={30} color={Color.white} />
           </View>
           <View style={styles.fieldContainer}>
-            <TextInput
-            style={styles.inputField}
-            placeholderTextColor={Color.grey}
-            placeholder="Password"
-            value={password}
-            secureTextEntry={true}
-            onChangeText={passwordFieldHandler}
-          />
+            <TextInput style={styles.inputField} placeholderTextColor={Color.grey} placeholder="Password" value={password} secureTextEntry={true} onChangeText={passwordFieldHandler} />
           </View>
         </View>
         {/* FORGET PASSWORD */}
@@ -92,7 +86,9 @@ const Login = () => {
         {/* LOGIN | REGISTER BUTTONS */}
         <View style={styles.btnContainer}>
           {/* REGISTER */}
-          <TouchableOpacity style={styles.button} onPress={()=>{router.push("./signUp")}}>
+          <TouchableOpacity style={styles.button} onPress={() => {
+              router.push("./signUp");
+            }}>
             <Text style={styles.btnText}>
               {loginMessages.registerButtonLabel}
             </Text>
@@ -149,7 +145,7 @@ const styles = {
   title: {
     position: "relative",
     textAlign: 'center',
-    top: hp(35),
+    top: hp(25),
     color: Color.white,
     fontFamily: FontFamily.ubuntuRegular,
     fontSize: 34,
