@@ -88,7 +88,7 @@ const SignUp =()=>{
           </View>
           <View style={styles.btnContainer}>
             <TouchableOpacity style={styles.button} onPress={() => {
-                router.push("./signUp2");
+                router.push("./signUpProfilePic.js");
               }}>
               <Text style={styles.btnText}>Proceed</Text>
             </TouchableOpacity>

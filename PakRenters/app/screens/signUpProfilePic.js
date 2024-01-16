@@ -10,7 +10,7 @@ import {
 import { Color, FontFamily } from "../../constants/GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-export default function SignUp2(){
+export default function SignUpProfilePic(){
     const [selectedImage, setSelectedImage] = useState(null);
     let PlaceholderImage = require("../../assets/images/userDemoPic.png")
     const [fontsLoaded, error] = useFonts({
