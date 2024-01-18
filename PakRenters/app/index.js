@@ -1,7 +1,14 @@
 import { Stack, useRouter } from "expo-router";
 import { React, useState } from "react";
-import { View, Text, ScrollView, SafeAreaView } from "react-native";
-import { Color } from "../constants/GlobalStyles";
+import {
+  View,
+  Text,
+  ScrollView,
+  SafeAreaView,
+  Image,
+  TouchableOpacity
+} from "react-native";
+import { Color, FontFamily } from "../constants/GlobalStyles";
 import HeaderBtn from "../components/headerBtn";
 import icons from "../constants/icons";
 import VehicleCard from "../components/vehicleCard";
@@ -9,10 +16,27 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
+import { useFonts } from "expo-font";
+import SearchBar from "../components/searchBar";
 
 const Home = () => {
   const router = useRouter();
+  const [fontsLoaded, error] = useFonts({
+    "Ubuntu-Bold": require("../assets/fonts/Ubuntu-Bold.ttf"),
+    "Ubuntu-Regular": require("../assets/fonts/Ubuntu-Regular.ttf"),
+    "Ubuntu-Light": require("../assets/fonts/Ubuntu-Light.ttf"),
+    "BreeSerif-Regular": require("../assets/fonts/BreeSerif-Regular.ttf")
+  });
 
+  if (!fontsLoaded && !error) {
+    return null;
+  }
+
+  const openMenu = () => {};
+
+  const openLoginPage = () => {
+    router.push("./screens/login");
+  };
   return (
     <SafeAreaView>
       <Stack.Screen
@@ -25,14 +49,29 @@ const Home = () => {
             headerTintColor: Color.white
           },
           headerLeft: () =>
-            <HeaderBtn iconURL={icons.menu} dimension={"60%"} />,
-          headerRight: () => <HeaderBtn />
+            <HeaderBtn iconName={"bars"} onPress={openMenu()} />,
+          headerRight: () =>
+            <HeaderBtn iconName={"user"} onPress={openLoginPage} />
         }}
       />
-      <View>
-        <Text>Welcome to PakRenters</Text>
+      {/* HEADER PORTION */}
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>Explore, Get & Drive</Text>
+        <Image
+          source={require("../assets/images/PakRenters-v3.0.png")}
+          style={styles.logoContainer}
+        />
       </View>
 
+      {/* SEARCH BAR */}
+      <SearchBar />
+      {/* FILTER BUTTON */}
+      <View style={styles.filterBtnContainer}>
+        <TouchableOpacity style={styles.filterBtn}>
+          <Text style={styles.filter}>Filters</Text>
+        </TouchableOpacity>
+      </View>
+      {/* VEHICLE CARD CONTAINER */}
       <ScrollView style={styles.vehicleCardsContainer}>
         <VehicleCard
           cardLabel="Toyota Prado"
@@ -40,25 +79,72 @@ const Home = () => {
           rating="1.0"
           location="Gujrat, Punjab"
           rent="5000"
-          image="../assets/images/PakRenters-v3.0.jpg"
+          image={require("../assets/images/toyota-prado-1.jpg")}
         />
-        <VehicleCard text="Hello World 2" />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
+        <VehicleCard
+          cardLabel="Honda Civic EK"
+          comments="168"
+          rating="10.0"
+          location="Islamabad, Punjab"
+          rent="3500"
+          image={require("../assets/images/civic003.jpg")}
+        />
+        <VehicleCard
+          cardLabel="Honda Civic EK"
+          comments="168"
+          rating="10.0"
+          location="Islamabad, Punjab"
+          rent="3500"
+          image={require("../assets/images/civic003.jpg")}
+        />
+        <VehicleCard
+          cardLabel="Honda Civic EK"
+          comments="168"
+          rating="10.0"
+          location="Islamabad, Punjab"
+          rent="3500"
+          image={require("../assets/images/civic003.jpg")}
+        />
+        <VehicleCard
+          cardLabel="Honda Civic EK"
+          comments="168"
+          rating="10.0"
+          location="Islamabad, Punjab"
+          rent="3500"
+          image={require("../assets/images/civic003.jpg")}
+        />
+        <VehicleCard
+          cardLabel="Honda Civic EK"
+          comments="168"
+          rating="10.0"
+          location="Islamabad, Punjab"
+          rent="3500"
+          image={require("../assets/images/civic003.jpg")}
+        />
+        <VehicleCard
+          cardLabel="Honda Civic EK"
+          comments="168"
+          rating="10.0"
+          location="Islamabad, Punjab"
+          rent="3500"
+          image={require("../assets/images/civic003.jpg")}
+        />
+        <VehicleCard
+          cardLabel="Honda Civic EK"
+          comments="168"
+          rating="10.0"
+          location="Islamabad, Punjab"
+          rent="3500"
+          image={require("../assets/images/civic003.jpg")}
+        />
+        <VehicleCard
+          cardLabel="Honda Civic EK"
+          comments="168"
+          rating="10.0"
+          location="Islamabad, Punjab"
+          rent="3500"
+          image={require("../assets/images/civic003.jpg")}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -67,7 +153,39 @@ const Home = () => {
 const styles = {
   vehicleCardsContainer: {
     width: wp(99),
-    height: hp(60)
+    height: hp(70),
+    marginTop: hp(1)
+  },
+  headerContainer: {
+    flexDirection: "row",
+    position: "relative",
+    width: wp(100),
+    height: hp(10),
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: wp(2.5)
+  },
+  header: {
+    fontFamily: FontFamily.breeSerifRegular,
+    fontSize: 30,
+    flexWrap: "wrap",
+    width: wp(45)
+  },
+  logoContainer: {
+    width: wp(25),
+    height: hp(25),
+    borderRadius: wp(50),
+    resizeMode: "contain"
+  },
+  filterBtnContainer: {
+    paddingHorizontal: wp(6),
+    flexDirection: "row",
+    justifyContent: "flex-end"
+  },
+  filter: {
+    fontFamily: FontFamily.ubuntuLight,
+    fontSize: 14,
+    color: Color.grey
   }
 };
 

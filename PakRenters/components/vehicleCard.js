@@ -54,7 +54,7 @@ const VehicleCard = props => {
       </View>
       <View>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: props.image }} />
+          <Image source={props.image} style={styles.imageContainer} />
         </View>
       </View>
     </TouchableOpacity>
@@ -98,12 +98,11 @@ const styles = {
     position: "relative",
     justifyContent: "center",
     alignItems: "center",
-    resizeMode: "contain",
+    resizeMode: "cover",
     width: wp(33),
     height: hp(15.5),
     backgroundColor: Color.focus,
-    borderRadius: wp(5),
-    offSet: -5
+    borderRadius: wp(5)
   },
   rentLabelContainer: {
     backgroundColor: Color.focus,

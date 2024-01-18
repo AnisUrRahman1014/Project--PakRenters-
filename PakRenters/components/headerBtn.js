@@ -1,18 +1,15 @@
-import {React} from 'react'
-import {TouchableOpacity ,Image} from 'react-native'
-import { Color } from '../constants/GlobalStyles';
+import { React } from "react";
+import { TouchableOpacity, Image } from "react-native";
+import { Color } from "../constants/GlobalStyles";
+import Icon from "react-native-vector-icons/FontAwesome";
 
-const HeaderBtn = ({ iconURL, dimension, handlePress })=>{
-    return(
-        <TouchableOpacity>
-            <Image
-                source={iconURL}
-                resizeMode="cover"
-                style={styles.btnImage(dimension)}
-            />
-        </TouchableOpacity>
-    );
-}
+const HeaderBtn = ({ iconName, onPress }) => {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <Icon name={iconName} size={20} color={Color.white} />
+    </TouchableOpacity>
+  );
+};
 
 const styles = {
   btnContainer: {

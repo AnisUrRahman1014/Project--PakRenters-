@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {useFonts} from 'expo-font';
-import {Text, View, Image} from 'react-native';
+import React, { useState } from "react";
+import { useFonts } from "expo-font";
+import { Text, View, Image } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -10,92 +10,149 @@ import { Color, FontFamily } from "../../constants/GlobalStyles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { router } from "expo-router";
 
-const SignUp =()=>{
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [contactNumber, setContactNumber] = useState("");
+const SignUp = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
 
-    const [fontsLoaded, error] = useFonts({
-      "Ubuntu-Bold": require("../../assets/fonts/Ubuntu-Bold.ttf"),
-      "Ubuntu-Regular": require("../../assets/fonts/Ubuntu-Regular.ttf")
-    });
+  const [fontsLoaded, error] = useFonts({
+    "Ubuntu-Bold": require("../../assets/fonts/Ubuntu-Bold.ttf"),
+    "Ubuntu-Regular": require("../../assets/fonts/Ubuntu-Regular.ttf")
+  });
 
-    if (!fontsLoaded && !error) {
-      return null;
-    }
+  if (!fontsLoaded && !error) {
+    return null;
+  }
 
-    return <View style={styles.mainContainer}>
-        <View style={styles.shapeContainer}>
-          <View style={styles.curve2}>
-            <View style={styles.curve1}>
-              <View style={styles.ovalShape}>
-                <Image source={require("../../assets/images/PakRenters-v3.0.jpg")} style={{ width: wp(30), height: hp(15), borderRadius: wp(200), resizeMode: "contain", position: "relative", top: 190 }} />
-                <Text style={styles.title}>
-                  Please provide the following information
-                </Text>
-              </View>
+  return (
+    <View style={styles.mainContainer}>
+      <View style={styles.shapeContainer}>
+        <View style={styles.curve2}>
+          <View style={styles.curve1}>
+            <View style={styles.ovalShape}>
+              <Image
+                source={require("../../assets/images/PakRenters-v3.0.jpg")}
+                style={{
+                  width: wp(30),
+                  height: hp(15),
+                  borderRadius: wp(200),
+                  resizeMode: "contain",
+                  position: "relative",
+                  top: 190
+                }}
+              />
+              <Text style={styles.title}>
+                Please provide the following information
+              </Text>
             </View>
           </View>
         </View>
+      </View>
 
-        <View style={styles.infoContainer}>
-          <View style={styles.nameFieldsContainer}>
-            <View style={styles.fieldContainerSmall}>
-              <TextInput style={styles.nameFieldStyles} placeholder="First Name" value={firstName} placeholderTextColor={Color.grey} onChange={text => setFirstName(text)} />
-            </View>
-            <View style={styles.fieldContainerSmall}>
-              <TextInput style={styles.nameFieldStyles} placeholder="Last Name" value={lastName} placeholderTextColor={Color.grey} onChange={text => setLastName(text)} />
-            </View>
+      <View style={styles.infoContainer}>
+        <View style={styles.nameFieldsContainer}>
+          <View style={styles.fieldContainerSmall}>
+            <TextInput
+              style={styles.nameFieldStyles}
+              placeholder="First Name"
+              value={firstName}
+              placeholderTextColor={Color.grey}
+              onChange={text => setFirstName(text)}
+            />
           </View>
-
-          <View style={styles.fieldContainerLarge}>
-            <View style={styles.iconContainer}>
-              <Icon name="user" size={20} color={Color.white} />
-            </View>
-            <TextInput style={styles.fieldStyles} placeholder="Enter a username" value={username} onChange={text => setUsername(text)} placeholderTextColor={Color.grey} />
-          </View>
-
-          <View style={styles.fieldContainerLarge}>
-            <View style={styles.iconContainer}>
-              <Icon name="envelope" size={17} color={Color.white} />
-            </View>
-            <TextInput style={styles.fieldStyles} placeholder="Enter your email address" value={email} onChange={text => setEmail(text)} placeholderTextColor={Color.grey} />
-          </View>
-
-          <View style={styles.fieldContainerLarge}>
-            <View style={styles.iconContainer}>
-              <Icon name="phone" size={17} color={Color.white} />
-            </View>
-            <TextInput style={styles.fieldStyles} placeholder="Enter your mobile number" value={contactNumber} onChange={text => setContactNumber(text)} placeholderTextColor={Color.grey} />
-          </View>
-
-          <View style={styles.fieldContainerLarge}>
-            <View style={styles.iconContainer}>
-              <Icon name="lock" size={17} color={Color.white} />
-            </View>
-            <TextInput style={styles.fieldStyles} placeholder="Enter a Password" value={password} onChange={text => setPassword(text)} placeholderTextColor={Color.grey} />
-          </View>
-
-          <View style={styles.fieldContainerLarge}>
-            <View style={styles.iconContainer}>
-              <Icon name="lock" size={17} color={Color.white} />
-            </View>
-            <TextInput style={styles.fieldStyles} placeholder="Confirm Password" value={confirmPassword} onChange={text => setConfirmPassword(text)} placeholderTextColor={Color.grey} />
-          </View>
-          <View style={styles.btnContainer}>
-            <TouchableOpacity style={styles.button} onPress={() => {
-                router.push("./signUpProfilePic.js");
-              }}>
-              <Text style={styles.btnText}>Proceed</Text>
-            </TouchableOpacity>
+          <View style={styles.fieldContainerSmall}>
+            <TextInput
+              style={styles.nameFieldStyles}
+              placeholder="Last Name"
+              value={lastName}
+              placeholderTextColor={Color.grey}
+              onChange={text => setLastName(text)}
+            />
           </View>
         </View>
-      </View>;
-}
+
+        <View style={styles.fieldContainerLarge}>
+          <View style={styles.iconContainer}>
+            <Icon name="user" size={20} color={Color.white} />
+          </View>
+          <TextInput
+            style={styles.fieldStyles}
+            placeholder="Enter a username"
+            value={username}
+            onChange={text => setUsername(text)}
+            placeholderTextColor={Color.grey}
+          />
+        </View>
+
+        <View style={styles.fieldContainerLarge}>
+          <View style={styles.iconContainer}>
+            <Icon name="envelope" size={17} color={Color.white} />
+          </View>
+          <TextInput
+            style={styles.fieldStyles}
+            placeholder="Enter your email address"
+            value={email}
+            onChange={text => setEmail(text)}
+            placeholderTextColor={Color.grey}
+          />
+        </View>
+
+        <View style={styles.fieldContainerLarge}>
+          <View style={styles.iconContainer}>
+            <Icon name="phone" size={17} color={Color.white} />
+          </View>
+          <TextInput
+            style={styles.fieldStyles}
+            placeholder="Enter your mobile number"
+            value={contactNumber}
+            onChange={text => setContactNumber(text)}
+            placeholderTextColor={Color.grey}
+          />
+        </View>
+
+        <View style={styles.fieldContainerLarge}>
+          <View style={styles.iconContainer}>
+            <Icon name="lock" size={17} color={Color.white} />
+          </View>
+          <TextInput
+            style={styles.fieldStyles}
+            placeholder="Enter a Password"
+            value={password}
+            onChange={text => setPassword(text)}
+            placeholderTextColor={Color.grey}
+          />
+        </View>
+
+        <View style={styles.fieldContainerLarge}>
+          <View style={styles.iconContainer}>
+            <Icon name="lock" size={17} color={Color.white} />
+          </View>
+          <TextInput
+            style={styles.fieldStyles}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={text => setConfirmPassword(text)}
+            placeholderTextColor={Color.grey}
+          />
+        </View>
+        <View style={styles.btnContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              router.push("./signUpProfilePic");
+            }}
+          >
+            <Text style={styles.btnText}>Proceed</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+};
 
 const styles = {
   mainContainer: {
