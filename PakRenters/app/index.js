@@ -71,6 +71,18 @@ const Home = () => {
           <Text style={styles.filter}>Filters</Text>
         </TouchableOpacity>
       </View>
+      {/* Category Container */}
+      <View style={styles.categoryContainer}>
+        <TouchableOpacity>
+          <Text style={styles.category}>All</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={styles.category}>Available</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={styles.category}>Favorite</Text>
+        </TouchableOpacity>
+      </View>
       {/* VEHICLE CARD CONTAINER */}
       <ScrollView style={styles.vehicleCardsContainer}>
         <VehicleCard
@@ -186,6 +198,17 @@ const styles = {
     fontFamily: FontFamily.ubuntuLight,
     fontSize: 14,
     color: Color.grey
+  },
+  categoryContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: wp(6),
+    paddingVertical: hp(1)
+  },
+  category: {
+    fontFamily: FontFamily.ubuntuBold,
+    fontSize: 16,
+    color: Color.dark
   }
 };
 

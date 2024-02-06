@@ -9,16 +9,6 @@ import { useFonts } from "expo-font";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const VehicleCard = props => {
-  const [fontsLoaded, error] = useFonts({
-    "Ubuntu-Bold": require("../assets/fonts/Ubuntu-Bold.ttf"),
-    "Ubuntu-Regular": require("../assets/fonts/Ubuntu-Regular.ttf"),
-    "Ubuntu-Light": require("../assets/fonts/Ubuntu-Light.ttf")
-  });
-
-  if (!fontsLoaded && !error) {
-    return null;
-  }
-
   return (
     <TouchableOpacity style={styles.card}>
       <View style={{ padding: wp(3) }}>
