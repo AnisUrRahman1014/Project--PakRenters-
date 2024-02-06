@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { Color, FontFamily } from "../constants/GlobalStyles";
+import { Color } from "../constants/GlobalStyles";
 import { useFonts } from "expo-font";
 import { useCallback } from "react";
 import * as SplashScreen from "expo-splash-screen";
