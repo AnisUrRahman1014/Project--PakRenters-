@@ -23,7 +23,6 @@ const Layout = () => {
 
   return (
     <Stack onLayout={onLayoutRootView}>
-      {/* <Stack.Screen name="index" options={{ headerTitle: "Splash Screen", headerShown: true }} /> */}
       <Stack.Screen
         name="screens/login"
         options={{

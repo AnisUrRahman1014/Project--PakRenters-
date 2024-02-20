@@ -35,22 +35,20 @@ const Home = () => {
   const openMenu = () => {};
 
   const openLoginPage = () => {
-    router.push("./screens/login");
+    router.push("./screens/loginV2");
   };
   return (
     <SafeAreaView>
       <Stack.Screen
         options={{
-          headerShown: true,
-          headerTitle: "HELLO",
+          headerTitle: "",
           headerLeftStyle: { color: Color.white },
           headerTitleStyle: { color: Color.white },
           headerStyle: {
             backgroundColor: Color.dark,
             headerTintColor: Color.white
           },
-          headerLeft: () =>
-            <HeaderBtn iconName={"bars"} onPress={openMenu()} />,
+          headerLeft: () => <HeaderBtn iconName={"bars"} onPress={openMenu} />,
           headerRight: () =>
             <HeaderBtn iconName={"user"} onPress={openLoginPage} />
         }}
