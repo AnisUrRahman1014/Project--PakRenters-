@@ -41,7 +41,8 @@ const Home = () => {
     <SafeAreaView>
       <Stack.Screen
         options={{
-          headerTitle: "",
+          headerShown: true,
+          headerTitle: "HELLO",
           headerLeftStyle: { color: Color.white },
           headerTitleStyle: { color: Color.white },
           headerStyle: {
