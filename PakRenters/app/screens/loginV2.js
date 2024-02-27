@@ -1,7 +1,6 @@
 import { useState, React } from "react";
 import { Stack, router } from "expo-router";
 import { View, Text, Image, SafeAreaView } from "react-native";
-import loginMessages from "../../constants/loginMessages";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {
   widthPercentageToDP as wp,
@@ -9,6 +8,7 @@ import {
 } from "react-native-responsive-screen";
 import { Color, FontFamily } from "../../constants/GlobalStyles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import Separator from "../../components/separator";
 
 const LoginV2 = () => {
   const [username, setUsername] = useState("");
@@ -40,9 +40,9 @@ const LoginV2 = () => {
           style={{
             width: wp(50),
             height: hp(25),
-            resizeMode: "contain",
+            resizeMode: "cover",
             position: "relative",
-            flex: 1
+            flex: 2
           }}
         />
         <Text style={styles.tagLineLabel}>Please sign in to continue</Text>
@@ -66,13 +66,7 @@ const LoginV2 = () => {
               />
             </View>
             {/* Separator Bar */}
-            <View
-              style={{
-                width: "98%",
-                height: "2%",
-                backgroundColor: Color.dark
-              }}
-            />
+            <Separator width={80} height={0.2} />
           </View>
 
           {/* PASSWORD INPUT FIELD */}
@@ -95,13 +89,7 @@ const LoginV2 = () => {
               />
             </View>
             {/* Separator Bar */}
-            <View
-              style={{
-                width: "98%",
-                height: "2%",
-                backgroundColor: Color.dark
-              }}
-            />
+            <Separator width={80} height={0.2} />
           </View>
 
           {/* FORGET PASSWORD BUTTON */}
@@ -121,7 +109,11 @@ const LoginV2 = () => {
 
         {/* SIGN UP LABEL */}
         <View style={styles.signUpContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              router.push("../screens/signupV2");
+            }}
+          >
             <Text style={styles.signUpLabel}>
               Don't have an account? Sign up
             </Text>
@@ -135,33 +127,33 @@ const LoginV2 = () => {
 const styles = {
   mainContainer: {
     position: "relative",
-    width: "100%",
-    height: "100%",
+    width: wp(100),
+    height: hp(103),
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "2%",
+    padding: wp(2),
     backgroundColor: Color.white
   },
   componentsContainer: {
     position: "relative",
-    width: "90%",
-    height: "70%",
+    width: wp(90),
+    height: hp(70),
     borderRadius: wp(3),
     alignItems: "start",
-    paddingVertical: "8%",
-    paddingHorizontal: "4%",
+    paddingVertical: hp(8),
+    paddingHorizontal: wp(4),
     flex: 3
   },
   tagLineLabel: {
     fontFamily: FontFamily.ubuntuRegular,
-    fontSize: 24,
+    fontSize: hp(3.5),
     flex: 0.3
   },
   inputFieldStyle: {
     position: "relative",
     fontFamily: FontFamily.ubuntuRegular,
-    fontSize: 18,
-    width: "90%",
+    fontSize: hp(2.5),
+    width: hp(90),
     height: hp(5)
   },
   inputField: {
@@ -169,11 +161,11 @@ const styles = {
     alignItems: "center"
   },
   inputFieldContainer: {
-    paddingVertical: 8
+    paddingVertical: hp(1)
   },
   forgetPassContainer: {
     position: "relative",
-    width: "98%",
+    width: wp(80),
     justifyContent: "center",
     alignItems: "space-between"
   },
@@ -183,32 +175,32 @@ const styles = {
   },
   loginBtnContainer: {
     position: "relative",
-    width: "98%",
+    width: wp(80),
     height: hp(25),
     justifyContent: "top",
     alignItems: "center",
-    paddingVertical: 16
+    paddingVertical: hp(2)
   },
   loginBtn: {
     position: "relative",
     backgroundColor: Color.dark,
     width: wp(50),
-    height: "50%",
-    borderRadius: 50,
+    height: hp(5),
+    borderRadius: hp(25),
     justifyContent: "center",
     alignItems: "center"
   },
   loginLabel: {
     fontFamily: FontFamily.ubuntuRegular,
-    fontSize: 16,
+    fontSize: hp(2),
     color: Color.white
   },
   signUpContainer: {
-    paddingVertical: 8
+    paddingVertical: hp(1)
   },
   signUpLabel: {
     fontFamily: FontFamily.ubuntuRegular,
-    fontSize: 16,
+    fontSize: hp(2.5),
     color: Color.dark
   }
 };

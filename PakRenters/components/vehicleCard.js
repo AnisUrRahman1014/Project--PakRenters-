@@ -11,7 +11,9 @@ import Icon from "react-native-vector-icons/FontAwesome";
 const VehicleCard = props => {
   return (
     <TouchableOpacity style={styles.card}>
-      <View style={{ padding: wp(3) }}>
+      <View
+        style={{ padding: wp(3), height: "100%", justifyContent: "center" }}
+      >
         <Text style={styles.cardLabel}>
           {props.cardLabel}
         </Text>
@@ -56,27 +58,28 @@ const styles = {
     position: "relative",
     backgroundColor: Color.dark,
     width: wp(95),
-    height: hp(15.5),
+    height: hp(20),
     marginHorizontal: wp(1.5),
     marginVertical: hp(1.5),
     borderRadius: wp(5),
     justifyContent: "space-between",
+    alignItems: "center",
     flexDirection: "row",
     elevation: 9
   },
   cardLabel: {
     fontFamily: FontFamily.ubuntuBold,
-    fontSize: 18,
+    fontSize: hp(3),
     color: Color.white
   },
   locationLabel: {
     fontFamily: FontFamily.ubuntuLight,
-    fontSize: 14,
+    fontSize: hp(2),
     color: Color.white
   },
   rating: {
     fontFamily: FontFamily.ubuntuLight,
-    fontSize: 12,
+    fontSize: hp(1.8),
     color: Color.white
   },
   rateCommentContainer: {
@@ -89,8 +92,8 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     resizeMode: "cover",
-    width: wp(33),
-    height: hp(15.5),
+    width: wp(40),
+    height: hp(20),
     backgroundColor: Color.focus,
     borderRadius: wp(5)
   },
@@ -106,7 +109,7 @@ const styles = {
   },
   rentLabel: {
     fontFamily: FontFamily.ubuntuRegular,
-    fontSize: 16,
+    fontSize: hp(2.5),
     color: Color.white
   }
 };

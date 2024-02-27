@@ -6,39 +6,33 @@ import {
   ScrollView,
   SafeAreaView,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  FlatList
 } from "react-native";
 import { Color, FontFamily } from "../constants/GlobalStyles";
 import HeaderBtn from "../components/headerBtn";
-import icons from "../constants/icons";
 import VehicleCard from "../components/vehicleCard";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import { useFonts } from "expo-font";
 import SearchBar from "../components/searchBar";
+
+const Categories = ["All", "Available", "Unavailable", "Trending"];
 
 const Home = () => {
   const router = useRouter();
-  const [fontsLoaded, error] = useFonts({
-    "Ubuntu-Bold": require("../assets/fonts/Ubuntu-Bold.ttf"),
-    "Ubuntu-Regular": require("../assets/fonts/Ubuntu-Regular.ttf"),
-    "Ubuntu-Light": require("../assets/fonts/Ubuntu-Light.ttf"),
-    "BreeSerif-Regular": require("../assets/fonts/BreeSerif-Regular.ttf")
-  });
 
-  if (!fontsLoaded && !error) {
-    return null;
-  }
+  const [activeCategory, setActiveCategory] = useState("All");
 
   const openMenu = () => {};
 
   const openLoginPage = () => {
     router.push("./screens/loginV2");
   };
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
           headerTitle: "",
@@ -62,26 +56,44 @@ const Home = () => {
         />
       </View>
 
-      {/* SEARCH BAR */}
-      <SearchBar />
-      {/* FILTER BUTTON */}
-      <View style={styles.filterBtnContainer}>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Text style={styles.filter}>Filters</Text>
-        </TouchableOpacity>
+      <View style={styles.searchAndFilterContainer}>
+        {/* SEARCH BAR */}
+        <SearchBar />
+        {/* FILTER BUTTON */}
+        <View style={styles.filterBtnContainer}>
+          <TouchableOpacity style={styles.filterBtn}>
+            <Text style={styles.filter}>Filters</Text>
+          </TouchableOpacity>
+        </View>
       </View>
+
       {/* Category Container */}
       <View style={styles.categoryContainer}>
-        <TouchableOpacity>
-          <Text style={styles.category}>All</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.category}>Available</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.category}>Favorite</Text>
-        </TouchableOpacity>
+        <FlatList
+          data={Categories}
+          renderItem={({ item }) =>
+            <TouchableOpacity
+              style={{
+                borderColor: Color.dark,
+                borderWidth: hp(0.2),
+                paddingVertical: hp(0.7),
+                paddingHorizontal: wp(3),
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: wp(20)
+              }}
+            >
+              <Text style={styles.category}>
+                {item}
+              </Text>
+            </TouchableOpacity>}
+          keyExtractor={item => item}
+          horizontal
+          contentContainerStyle={{ columnGap: wp(2) }}
+          showsHorizontalScrollIndicator={false}
+        />
       </View>
+
       {/* VEHICLE CARD CONTAINER */}
       <ScrollView style={styles.vehicleCardsContainer}>
         <VehicleCard
@@ -162,23 +174,25 @@ const Home = () => {
 };
 
 const styles = {
+  searchAndFilterContainer: {
+    flex: 0.2,
+    justifyContent: "center"
+  },
   vehicleCardsContainer: {
-    width: wp(99),
-    height: hp(70),
-    marginTop: hp(1)
+    flex: 1
   },
   headerContainer: {
+    flex: 0.3,
     flexDirection: "row",
     position: "relative",
-    width: wp(100),
-    height: hp(10),
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: wp(2.5)
+    paddingHorizontal: wp(2.5),
+    marginVertical: hp(2)
   },
   header: {
     fontFamily: FontFamily.breeSerifRegular,
-    fontSize: 30,
+    fontSize: hp(4),
     flexWrap: "wrap",
     width: wp(45)
   },
@@ -195,18 +209,20 @@ const styles = {
   },
   filter: {
     fontFamily: FontFamily.ubuntuLight,
-    fontSize: 14,
+    fontSize: hp(2.5),
     color: Color.grey
   },
   categoryContainer: {
+    flex: 0.08,
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: wp(6),
+    alignItems: "center",
+    paddingHorizontal: wp(1.8),
     paddingVertical: hp(1)
   },
   category: {
-    fontFamily: FontFamily.ubuntuBold,
-    fontSize: 16,
+    fontFamily: FontFamily.ubuntuRegular,
+    fontSize: hp(2),
     color: Color.dark
   }
 };

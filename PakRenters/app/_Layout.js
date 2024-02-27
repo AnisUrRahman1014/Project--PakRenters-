@@ -8,7 +8,8 @@ const Layout = () => {
   const [fontsLoaded] = useFonts({
     "Ubuntu-Bold": require("../assets/fonts/Ubuntu-Bold.ttf"),
     "Ubuntu-Regular": require("../assets/fonts/Ubuntu-Regular.ttf"),
-    "Ubuntu-Light": require("../assets/fonts/Ubuntu-Light.ttf")
+    "Ubuntu-Light": require("../assets/fonts/Ubuntu-Light.ttf"),
+    "BreeSerif-Regular": require("../assets/fonts/BreeSerif-Regular.ttf")
   });
 
   const onLayoutRootView = useCallback(
