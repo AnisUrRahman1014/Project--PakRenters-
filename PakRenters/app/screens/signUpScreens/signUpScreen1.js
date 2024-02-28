@@ -1,18 +1,15 @@
 import { React, useState } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, Image } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-
-import { Color, FontFamily } from "../../constants/GlobalStyles";
+import { Color, FontFamily } from "../../../constants/GlobalStyles";
 import { Stack, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LargeBtn, SignUpTextInputField } from "../../components/misc";
+import { LargeBtn, SignUpTextInputField } from "../../../components/misc";
 
 const SignUpV2 = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,11 +28,11 @@ const SignUpV2 = () => {
 
       <View style={styles.mainContainer}>
         <Image
-          source={require("../../assets/images/PakRenters-v3.0.jpg")}
+          source={require("../../../assets/images/PakRenters-v4.png")}
           style={{
             width: wp(50),
             height: hp(25),
-            resizeMode: "cover",
+            resizeMode: "contain",
             position: "relative",
             flex: 2
           }}
@@ -45,21 +42,13 @@ const SignUpV2 = () => {
         </View>
 
         <View style={styles.componentContainer}>
-          {/* Enter first name */}
+          {/* Enter username */}
           <SignUpTextInputField
             iconName={"user"}
-            placeHolder={"First Name"}
-            value={firstName}
-            onChange={setFirstName}
+            placeHolder={"Username"}
+            value={username}
+            onChange={setUsername}
           />
-          {/* Enter last name */}
-          <SignUpTextInputField
-            iconName={"user"}
-            placeHolder={"Last Name"}
-            value={lastName}
-            onChange={setLastName}
-          />
-
           {/* Enter Email */}
           <SignUpTextInputField
             iconName={"envelope"}
@@ -68,17 +57,9 @@ const SignUpV2 = () => {
             onChange={setEmail}
           />
 
-          {/* Enter username */}
-          <SignUpTextInputField
-            iconName={"lock"}
-            placeHolder={"Username"}
-            value={username}
-            onChange={setUsername}
-          />
-
           {/* Enter password */}
           <SignUpTextInputField
-            iconName={"key"}
+            iconName={"lock"}
             placeHolder={"Password"}
             value={password}
             onChange={setPassword}
@@ -86,7 +67,7 @@ const SignUpV2 = () => {
           />
           {/* Confirm Password */}
           <SignUpTextInputField
-            iconName={"key"}
+            iconName={"lock"}
             placeHolder={"Re-type Password"}
             value={confirmPassword}
             onChange={setConfirmPassword}
@@ -102,7 +83,12 @@ const SignUpV2 = () => {
           />
         </View>
         <View style={styles.signUpBtnContainer}>
-          <LargeBtn btnLabel={"Continue"} />
+          <LargeBtn
+            btnLabel={"Continue"}
+            onPress={() => {
+              router.push("../../screens/signUpScreens/signUpScreen2");
+            }}
+          />
         </View>
       </View>
     </SafeAreaView>
@@ -120,7 +106,7 @@ const styles = {
     maxWidth: "100%"
   },
   tagLineContainer: {
-    flex: 1,
+    flex: 2,
     justifyContent: "center",
     alignItems: "center"
   },
@@ -130,10 +116,11 @@ const styles = {
     color: Color.dark
   },
   componentContainer: {
-    flex: 7,
+    flex: 5,
     paddingHorizontal: wp(2),
     paddingVertical: hp(3),
-    gap: hp(3)
+    gap: hp(3),
+    alignItems: "center"
   },
   signUpBtnContainer: {
     flex: 1.5
