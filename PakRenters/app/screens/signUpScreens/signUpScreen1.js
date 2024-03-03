@@ -7,6 +7,7 @@ import {
 import { Color, FontFamily } from "../../../constants/GlobalStyles";
 import { Stack, router } from "expo-router";
 import { LargeBtn, CustomFormInputField } from "../../../components/misc";
+import { ScrollView } from "react-native-gesture-handler";
 
 const SignUpV2 = () => {
   const [username, setUsername] = useState("");
@@ -27,17 +28,18 @@ const SignUpV2 = () => {
         }}
       />
 
-      <View style={styles.mainContainer}>
-        <Image
-          source={require("../../../assets/images/PakRenters-v4.png")}
-          style={{
-            width: wp(50),
-            height: hp(25),
-            resizeMode: "contain",
-            position: "relative",
-            flex: 2
-          }}
-        />
+      <ScrollView style={styles.mainContainer}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("../../../assets/images/PakRenters-v4.png")}
+            style={{
+              width: wp(50),
+              height: hp(25),
+              resizeMode: "contain",
+              position: "relative"
+            }}
+          />
+        </View>
         <View style={styles.tagLineContainer}>
           <Text style={styles.tagLine}>Sign up to continue</Text>
         </View>
@@ -91,7 +93,7 @@ const SignUpV2 = () => {
             }}
           />
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -100,10 +102,13 @@ const styles = {
   mainContainer: {
     display: "flex",
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     padding: wp(2),
     backgroundColor: Color.white
+  },
+  logoContainer: {
+    flex: 2,
+    justifyContent: "center",
+    alignItems: "center"
   },
   tagLineContainer: {
     flex: 2,
@@ -120,10 +125,13 @@ const styles = {
     paddingHorizontal: wp(2),
     paddingVertical: hp(3),
     gap: hp(3),
-    alignItems: "center"
+    alignItems: "center",
+    marginVertical: wp(2)
   },
   signUpBtnContainer: {
-    flex: 1.5
+    flex: 1.5,
+    justifyContent: "flex-end",
+    alignItems: "center"
   }
 };
 

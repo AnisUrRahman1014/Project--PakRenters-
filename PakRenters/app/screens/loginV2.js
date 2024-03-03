@@ -1,6 +1,6 @@
 import { useState, React } from "react";
 import { Stack, router } from "expo-router";
-import { View, Text, Image, SafeAreaView } from "react-native";
+import { View, Text, Image, SafeAreaView, ScrollView } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {
   widthPercentageToDP as wp,
@@ -27,7 +27,7 @@ const LoginV2 = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
           headerTitle: "",
@@ -36,18 +36,19 @@ const LoginV2 = () => {
           headerTintColor: Color.dark
         }}
       />
-      <View style={styles.mainContainer}>
-        <Image
-          source={require("../../assets/images/PakRenters-v4.png")}
-          style={{
-            width: wp(50),
-            height: hp(25),
-            resizeMode: "contain",
-            position: "relative",
-            flex: 2,
-            marginVertical: wp(5)
-          }}
-        />
+      <ScrollView style={styles.mainContainer}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("../../assets/images/PakRenters-v4.png")}
+            style={{
+              width: wp(50),
+              height: hp(25),
+              resizeMode: "contain",
+              position: "relative"
+            }}
+          />
+        </View>
+
         <Text style={styles.tagLineLabel}>Please sign in to continue</Text>
         <View style={styles.componentsContainer}>
           {/*  Username Input Field */}
@@ -91,7 +92,7 @@ const LoginV2 = () => {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -99,52 +100,58 @@ const LoginV2 = () => {
 const styles = {
   mainContainer: {
     position: "relative",
-    width: wp(100),
-    height: hp(103),
-    justifyContent: "space-between",
-    alignItems: "center",
+    flex: 1,
     padding: wp(2),
     backgroundColor: Color.white
   },
+  logoContainer: {
+    flex: 2,
+    marginVertical: wp(5),
+    justifyContent: "center",
+    alignItems: "center"
+  },
   componentsContainer: {
     position: "relative",
-    width: wp(90),
-    height: hp(70),
     borderRadius: wp(3),
-    alignItems: "start",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: hp(8),
     paddingHorizontal: wp(4),
-    flex: 3,
+    flex: 5,
     gap: wp(4)
   },
   tagLineLabel: {
     fontFamily: FontFamily.ubuntuRegular,
     fontSize: hp(3.5),
-    flex: 0.3
+    flex: 0.5,
+    textAlign: "center"
   },
   inputFieldContainer: {
     paddingVertical: hp(1)
   },
   forgetPassContainer: {
+    flex: 0.5,
     position: "relative",
     width: wp(80),
     justifyContent: "center",
-    alignItems: "space-between"
+    alignItems: "flex-end",
+    marginVertical: wp(2)
   },
   forgetPassLabel: {
     fontFamily: FontFamily.ubuntuLight,
     color: Color.dark
   },
   loginBtnContainer: {
-    position: "relative",
-    width: wp(80),
-    height: hp(25),
-    justifyContent: "top",
-    alignItems: "center",
-    paddingVertical: hp(2)
+    flex: 0.5,
+    justifyContent: "center",
+    alignItems: "center"
   },
   signUpContainer: {
-    paddingVertical: hp(1)
+    flex: 0.5,
+    marginVertical: wp(2),
+    paddingVertical: hp(1),
+    justifyContent: "center",
+    alignItems: "center"
   },
   signUpLabel: {
     fontFamily: FontFamily.ubuntuRegular,

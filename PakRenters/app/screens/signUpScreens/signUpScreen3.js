@@ -96,8 +96,8 @@ const styles = {
   infoStatement: {
     position: "relative",
     fontFamily: FontFamily.ubuntuRegular,
-    fontSize: hp(2),
-    width: wp(75),
+    fontSize: wp(4.2),
+    width: wp(73.5),
     alignItems: "center"
   },
   btnContainer: {

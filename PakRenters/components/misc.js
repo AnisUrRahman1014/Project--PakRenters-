@@ -28,7 +28,6 @@ export const CustomFormInputField = ({
           />
         </View>
         <TextInput
-          style={styles.field}
           placeholder={placeHolder}
           value={value}
           onChangeText={onChange}
