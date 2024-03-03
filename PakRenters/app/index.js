@@ -22,13 +22,19 @@ const Home = () => {
           headerTitle: "",
           headerShadowVisible: false,
           headerLeft: () =>
-            <HeaderBtn iconName={"bars"} onPress={openMenu} iconSize={30} />,
+            <HeaderBtn
+              iconName={"bars"}
+              onPress={openMenu}
+              iconSize={30}
+              iconColor={Color.dark}
+            />,
           headerRight: () =>
             //   WILL REPLACE THIS WITH LOGO LATER
             <HeaderBtn
               iconName={"user"}
               onPress={manageAccount}
               iconSize={30}
+              iconColor={Color.dark}
             />
         }}
       />

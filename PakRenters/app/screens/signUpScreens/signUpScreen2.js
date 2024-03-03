@@ -31,9 +31,11 @@ const SignUpScreen2 = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          headerTitle: "",
+          headerTitle: "Step 2 / 3",
           headerShadowVisible: false,
-          headerTintColor: Color.dark
+          headerTintColor: Color.dark,
+          headerTransparent: false,
+          headerTitleAlign: "center"
         }}
       />
       <View style={styles.mainContainer}>

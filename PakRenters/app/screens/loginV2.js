@@ -32,7 +32,8 @@ const LoginV2 = () => {
         options={{
           headerTitle: "",
           headerShadowVisible: false,
-          headerTransparent: true
+          headerTransparent: true,
+          headerTintColor: Color.dark
         }}
       />
       <View style={styles.mainContainer}>
@@ -43,7 +44,8 @@ const LoginV2 = () => {
             height: hp(25),
             resizeMode: "contain",
             position: "relative",
-            flex: 2
+            flex: 2,
+            marginVertical: wp(5)
           }}
         />
         <Text style={styles.tagLineLabel}>Please sign in to continue</Text>

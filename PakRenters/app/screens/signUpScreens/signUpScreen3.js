@@ -16,9 +16,11 @@ const SingUpScreen3 = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          headerTitle: "",
+          headerTitle: "Step 3 / 3",
           headerShadowVisible: false,
-          headerShown: true
+          headerTransparent: false,
+          headerTitleAlign: "center",
+          headerTintColor: Color.dark
         }}
       />
       <View style={styles.mainContainer}>

@@ -1,12 +1,11 @@
 import { React, useState } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, SafeAreaView } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import { Color, FontFamily } from "../../../constants/GlobalStyles";
 import { Stack, router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { LargeBtn, CustomFormInputField } from "../../../components/misc";
 
 const SignUpV2 = () => {
@@ -20,9 +19,11 @@ const SignUpV2 = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          headerTitle: "",
+          headerTitle: "Step 1 / 3",
           headerShadowVisible: false,
-          headerTransparent: true
+          headerTransparent: false,
+          headerTitleAlign: "center",
+          headerTintColor: Color.dark
         }}
       />
 
@@ -102,8 +103,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     padding: wp(2),
-    backgroundColor: Color.white,
-    maxWidth: "100%"
+    backgroundColor: Color.white
   },
   tagLineContainer: {
     flex: 2,
