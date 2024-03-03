@@ -1,229 +1,139 @@
-import { Stack, useRouter } from "expo-router";
+import { Stack, router } from "expo-router";
 import { React, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-  FlatList
-} from "react-native";
-import { Color, FontFamily } from "../constants/GlobalStyles";
-import HeaderBtn from "../components/headerBtn";
-import VehicleCard from "../components/vehicleCard";
+import { SafeAreaView, ScrollView, Text, View } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
+import { Color, FontFamily } from "../constants/GlobalStyles";
+import HeaderBtn from "../components/headerBtn";
 import SearchBar from "../components/searchBar";
-
-const Categories = ["All", "Available", "Unavailable", "Trending"];
-
+import CategoryBtn from "../components/categoryBtn";
+import VehicleCard from "../components/vehicleCard0";
 const Home = () => {
-  const router = useRouter();
-
-  const [activeCategory, setActiveCategory] = useState("All");
-
   const openMenu = () => {};
-
-  const openLoginPage = () => {
+  const manageAccount = () => {
     router.push("./screens/loginV2");
   };
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
           headerTitle: "",
-          headerLeftStyle: { color: Color.white },
-          headerTitleStyle: { color: Color.white },
-          headerStyle: {
-            backgroundColor: Color.dark,
-            headerTintColor: Color.white
-          },
-          headerLeft: () => <HeaderBtn iconName={"bars"} onPress={openMenu} />,
+          headerShadowVisible: false,
+          headerLeft: () =>
+            <HeaderBtn iconName={"bars"} onPress={openMenu} iconSize={30} />,
           headerRight: () =>
-            <HeaderBtn iconName={"user"} onPress={openLoginPage} />
+            //   WILL REPLACE THIS WITH LOGO LATER
+            <HeaderBtn
+              iconName={"user"}
+              onPress={manageAccount}
+              iconSize={30}
+            />
         }}
       />
-      {/* HEADER PORTION */}
-      <View style={styles.headerContainer}>
-        <Text style={styles.header}>Explore, Get & Drive</Text>
-        <Image
-          source={require("../assets/images/PakRenters-v3.0.png")}
-          style={styles.logoContainer}
-        />
-      </View>
-
-      <View style={styles.searchAndFilterContainer}>
-        {/* SEARCH BAR */}
-        <SearchBar />
-        {/* FILTER BUTTON */}
-        <View style={styles.filterBtnContainer}>
-          <TouchableOpacity style={styles.filterBtn}>
-            <Text style={styles.filter}>Filters</Text>
-          </TouchableOpacity>
+      <ScrollView style={styles.mainContainer}>
+        <View style={styles.tagLineContainer}>
+          <Text style={styles.heading1}>Welcome to PakRenters</Text>
+          <Text style={styles.heading2}>Your ultimate renting companion</Text>
         </View>
-      </View>
 
-      {/* Category Container */}
-      <View style={styles.categoryContainer}>
-        <FlatList
-          data={Categories}
-          renderItem={({ item }) =>
-            <TouchableOpacity
-              style={{
-                borderColor: Color.dark,
-                borderWidth: hp(0.2),
-                paddingVertical: hp(0.7),
-                paddingHorizontal: wp(3),
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: wp(20)
-              }}
-            >
-              <Text style={styles.category}>
-                {item}
-              </Text>
-            </TouchableOpacity>}
-          keyExtractor={item => item}
-          horizontal
-          contentContainerStyle={{ columnGap: wp(2) }}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-
-      {/* VEHICLE CARD CONTAINER */}
-      <ScrollView style={styles.vehicleCardsContainer}>
-        <VehicleCard
-          cardLabel="Toyota Prado"
-          comments="43"
-          rating="1.0"
-          location="Gujrat, Punjab"
-          rent="5000"
-          image={require("../assets/images/toyota-prado-1.jpg")}
-        />
-        <VehicleCard
-          cardLabel="Honda Civic EK"
-          comments="168"
-          rating="10.0"
-          location="Islamabad, Punjab"
-          rent="3500"
-          image={require("../assets/images/civic003.jpg")}
-        />
-        <VehicleCard
-          cardLabel="Honda Civic EK"
-          comments="168"
-          rating="10.0"
-          location="Islamabad, Punjab"
-          rent="3500"
-          image={require("../assets/images/civic003.jpg")}
-        />
-        <VehicleCard
-          cardLabel="Honda Civic EK"
-          comments="168"
-          rating="10.0"
-          location="Islamabad, Punjab"
-          rent="3500"
-          image={require("../assets/images/civic003.jpg")}
-        />
-        <VehicleCard
-          cardLabel="Honda Civic EK"
-          comments="168"
-          rating="10.0"
-          location="Islamabad, Punjab"
-          rent="3500"
-          image={require("../assets/images/civic003.jpg")}
-        />
-        <VehicleCard
-          cardLabel="Honda Civic EK"
-          comments="168"
-          rating="10.0"
-          location="Islamabad, Punjab"
-          rent="3500"
-          image={require("../assets/images/civic003.jpg")}
-        />
-        <VehicleCard
-          cardLabel="Honda Civic EK"
-          comments="168"
-          rating="10.0"
-          location="Islamabad, Punjab"
-          rent="3500"
-          image={require("../assets/images/civic003.jpg")}
-        />
-        <VehicleCard
-          cardLabel="Honda Civic EK"
-          comments="168"
-          rating="10.0"
-          location="Islamabad, Punjab"
-          rent="3500"
-          image={require("../assets/images/civic003.jpg")}
-        />
-        <VehicleCard
-          cardLabel="Honda Civic EK"
-          comments="168"
-          rating="10.0"
-          location="Islamabad, Punjab"
-          rent="3500"
-          image={require("../assets/images/civic003.jpg")}
-        />
+        <View style={styles.searchBarContainer}>
+          <SearchBar />
+        </View>
+        {/* CATEGORY LABEL */}
+        <View style={styles.sectionLabelContainer}>
+          <Text style={styles.sectionLabel}>Categories</Text>
+        </View>
+        {/* CATEGORY CONTAINER */}
+        <View style={styles.section}>
+          <CategoryBtn iconName={"car"} />
+          <CategoryBtn iconName={"motorbike"} />
+          <CategoryBtn iconName={"bus"} />
+          <CategoryBtn iconName={"truck-flatbed"} />
+          <CategoryBtn iconName={"truck"} />
+          <CategoryBtn iconName={"excavator"} />
+        </View>
+        {/* FEATURED LABEL */}
+        <View style={styles.sectionLabelContainer}>
+          <Text style={styles.sectionLabel}>Featured</Text>
+        </View>
+        {/* FEATURED CONTAINER */}
+        <View style={[styles.section, { justifyContent: "center" }]}>
+          <VehicleCard
+            cardLabel="Honda Civic EK"
+            comments="168"
+            rating="10.0"
+            location="Islamabad, Punjab"
+            rent="3500"
+            image={require("../assets/images/civic003.jpg")}
+          />
+          <VehicleCard
+            cardLabel="Toyota Prado"
+            comments="43"
+            rating="1.0"
+            location="Gujrat, Punjab"
+            rent="5000"
+            image={require("../assets/images/toyota-prado-1.jpg")}
+          />
+          <VehicleCard
+            cardLabel="Toyota Prado"
+            comments="43"
+            rating="1.0"
+            location="Gujrat, Punjab"
+            rent="5000"
+            image={require("../assets/images/toyota-prado-1.jpg")}
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = {
-  searchAndFilterContainer: {
-    flex: 0.2,
+  mainContainer: {
+    flex: 1,
+    backgroundColor: Color.white,
+    padding: wp(3)
+  },
+  tagLineContainer: {
+    flex: 0.1,
+    alignItems: "center",
     justifyContent: "center"
   },
-  vehicleCardsContainer: {
-    flex: 1
+  heading1: {
+    fontFamily: FontFamily.ubuntuBold,
+    fontSize: hp(3),
+    color: Color.dark
   },
-  headerContainer: {
-    flex: 0.3,
-    flexDirection: "row",
-    position: "relative",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: wp(2.5),
-    marginVertical: hp(2)
-  },
-  header: {
-    fontFamily: FontFamily.breeSerifRegular,
-    fontSize: hp(4),
-    flexWrap: "wrap",
-    width: wp(45)
-  },
-  logoContainer: {
-    width: wp(25),
-    height: hp(25),
-    borderRadius: wp(50),
-    resizeMode: "contain"
-  },
-  filterBtnContainer: {
-    paddingHorizontal: wp(6),
-    flexDirection: "row",
-    justifyContent: "flex-end"
-  },
-  filter: {
-    fontFamily: FontFamily.ubuntuLight,
-    fontSize: hp(2.5),
-    color: Color.grey
-  },
-  categoryContainer: {
-    flex: 0.08,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: wp(1.8),
-    paddingVertical: hp(1)
-  },
-  category: {
+  heading2: {
     fontFamily: FontFamily.ubuntuRegular,
     fontSize: hp(2),
+    color: Color.focus
+  },
+  searchBarContainer: {
+    flex: 0.1,
+    marginVertical: hp(2),
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  sectionLabelContainer: {
+    flex: 0.05,
+    width: "100%",
+    marginVertical: wp(1)
+  },
+  sectionLabel: {
+    fontFamily: FontFamily.ubuntuBold,
+    fontSize: hp(2.5),
     color: Color.dark
+  },
+  section: {
+    flex: 0.3,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    margin: wp(2),
+    alignItems: "top"
   }
 };
 

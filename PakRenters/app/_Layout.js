@@ -1,7 +1,5 @@
 import { Stack } from "expo-router";
-import { Color } from "../constants/GlobalStyles";
 import { useFonts } from "expo-font";
-import { useCallback } from "react";
 import * as SplashScreen from "expo-splash-screen";
 SplashScreen.preventAutoHideAsync();
 const Layout = () => {
@@ -12,46 +10,8 @@ const Layout = () => {
     "BreeSerif-Regular": require("../assets/fonts/BreeSerif-Regular.ttf")
   });
 
-  const onLayoutRootView = useCallback(
-    async () => {
-      if (fontsLoaded) {
-        await SplashScreen.hideAsync();
-      }
-    },
-    [fontsLoaded]
-  );
   if (!fontsLoaded) return null;
 
-  return (
-    <Stack onLayout={onLayoutRootView}>
-      <Stack.Screen
-        name="screens/login"
-        options={{
-          headerTitle: "",
-          headerBackVisible: true,
-          headerTransparent: true,
-          headerTintColor: Color.white
-        }}
-      />
-      <Stack.Screen
-        name="screens/signUp"
-        options={{
-          headerTitle: "",
-          headerBackVisible: true,
-          headerTransparent: true,
-          headerTintColor: Color.white
-        }}
-      />
-      <Stack.Screen
-        name="screens/signUpProfilePic"
-        options={{
-          headerTitle: "",
-          headerBackVisible: true,
-          headerTransparent: true,
-          headerTintColor: Color.white
-        }}
-      />
-    </Stack>
-  );
+  return <Stack />;
 };
 export default Layout;

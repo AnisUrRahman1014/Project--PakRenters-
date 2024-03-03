@@ -7,7 +7,7 @@ import {
 import { Color, FontFamily } from "../../../constants/GlobalStyles";
 import { Stack, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LargeBtn, SignUpTextInputField } from "../../../components/misc";
+import { LargeBtn, CustomFormInputField } from "../../../components/misc";
 
 const SignUpV2 = () => {
   const [username, setUsername] = useState("");
@@ -43,14 +43,14 @@ const SignUpV2 = () => {
 
         <View style={styles.componentContainer}>
           {/* Enter username */}
-          <SignUpTextInputField
+          <CustomFormInputField
             iconName={"user"}
             placeHolder={"Username"}
             value={username}
             onChange={setUsername}
           />
           {/* Enter Email */}
-          <SignUpTextInputField
+          <CustomFormInputField
             iconName={"envelope"}
             placeHolder={"Email address"}
             value={email}
@@ -58,7 +58,7 @@ const SignUpV2 = () => {
           />
 
           {/* Enter password */}
-          <SignUpTextInputField
+          <CustomFormInputField
             iconName={"lock"}
             placeHolder={"Password"}
             value={password}
@@ -66,7 +66,7 @@ const SignUpV2 = () => {
             secureEntry={true}
           />
           {/* Confirm Password */}
-          <SignUpTextInputField
+          <CustomFormInputField
             iconName={"lock"}
             placeHolder={"Re-type Password"}
             value={confirmPassword}
@@ -75,7 +75,7 @@ const SignUpV2 = () => {
           />
 
           {/* Enter Contact Number */}
-          <SignUpTextInputField
+          <CustomFormInputField
             iconName={"phone"}
             placeHolder={"Phone Number"}
             value={contactNumber}

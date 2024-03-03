@@ -6,7 +6,7 @@ import {
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import { Color, FontFamily } from "../../../constants/GlobalStyles";
-import { SignUpTextInputField, Smallbtn } from "../../../components/misc";
+import { CustomFormInputField, Smallbtn } from "../../../components/misc";
 
 const SingUpScreen3 = () => {
   const [cnic, setCnic] = useState("");
@@ -26,21 +26,21 @@ const SingUpScreen3 = () => {
           <Text style={styles.tagLine}>Just one last step...</Text>
         </View>
         <View style={styles.componentContainer}>
-          <SignUpTextInputField
+          <CustomFormInputField
             iconName={"id-card"}
             placeHolder={"CNIC"}
             value={cnic}
             onChange={setCnic}
           />
 
-          <SignUpTextInputField
+          <CustomFormInputField
             iconName={"map"}
             placeHolder={"Province"}
             value={province}
             onChange={setProvince}
           />
 
-          <SignUpTextInputField
+          <CustomFormInputField
             iconName={"map-marker"}
             placeHolder={"City"}
             value={city}

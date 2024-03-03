@@ -9,7 +9,7 @@ import {
 import { Color, FontFamily } from "../../constants/GlobalStyles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import Separator from "../../components/separator";
-import { LargeBtn, SignUpTextInputField } from "../../components/misc";
+import { LargeBtn, CustomFormInputField } from "../../components/misc";
 
 const LoginV2 = () => {
   const [username, setUsername] = useState("");
@@ -49,14 +49,14 @@ const LoginV2 = () => {
         <Text style={styles.tagLineLabel}>Please sign in to continue</Text>
         <View style={styles.componentsContainer}>
           {/*  Username Input Field */}
-          <SignUpTextInputField
+          <CustomFormInputField
             iconName={"user"}
             placeHolder={"Username or Email address"}
             onChange={usernameFieldHandler}
             value={username}
           />
           {/* Password field */}
-          <SignUpTextInputField
+          <CustomFormInputField
             iconName={"lock"}
             placeHolder={"Enter password"}
             value={password}

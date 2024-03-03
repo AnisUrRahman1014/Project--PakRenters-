@@ -7,7 +7,7 @@ import {
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import Separator from "../components/separator";
-export const SignUpTextInputField = ({
+export const CustomFormInputField = ({
   iconName,
   placeHolder,
   onChange,
