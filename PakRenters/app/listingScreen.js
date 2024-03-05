@@ -1,4 +1,4 @@
-import { Stack, useRouter } from "expo-router";
+import { Stack, useRouter, useRoute } from "expo-router";
 import { React, useState } from "react";
 import {
   View,
@@ -18,12 +18,11 @@ import {
 } from "react-native-responsive-screen";
 import SearchBar from "../components/searchBar";
 
-const Categories = ["All", "Available", "Unavailable", "Trending"];
+const Filters = ["All", "Available", "Unavailable", "Trending"];
 
 const ListingScreen = () => {
   const router = useRouter();
-
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeFilter, setActiveFilter] = useState("All");
 
   const openMenu = () => {};
 
@@ -70,7 +69,7 @@ const ListingScreen = () => {
       {/* Category Container */}
       <View style={styles.categoryContainer}>
         <FlatList
-          data={Categories}
+          data={Filters}
           renderItem={({ item }) =>
             <TouchableOpacity
               style={{

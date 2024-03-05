@@ -1,6 +1,13 @@
 import { Stack, router } from "expo-router";
 import { React, useState } from "react";
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View
+} from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -10,11 +17,55 @@ import HeaderBtn from "../components/headerBtn";
 import SearchBar from "../components/searchBar";
 import CategoryBtn from "../components/categoryBtn";
 import VehicleCard from "../components/vehicleCard0";
+import Vehicle from "./classes/Vehicle";
+
+const categories = [
+  "car",
+  "motorbike",
+  "bus",
+  "truck-flatbed",
+  "truck",
+  "excavator"
+];
+
+const vehicles = [
+  new Vehicle(
+    1,
+    "Honda Civic EK",
+    "Islamabad,Punjab",
+    3500,
+    250,
+    4.9,
+    require("../assets/images/civic003.jpg")
+  ),
+  new Vehicle(
+    2, // Assuming '1' as an ID for this example
+    "Toyota Prado", // vehicleName
+    "Gujrat, Punjab", // location
+    "5000", // rent
+    "43", // comments
+    "1.0", // rating
+    require("../assets/images/toyota-prado-1.jpg") // image
+  ),
+  new Vehicle(
+    1,
+    "Honda Civic EK",
+    "Islamabad,Punjab",
+    3500,
+    250,
+    4.9,
+    require("../assets/images/civic003.jpg")
+  )
+];
+
 const Home = () => {
   const openMenu = () => {};
   const manageAccount = () => {
     router.push("./screens/loginV2");
   };
+  // Dummy Data
+  const isLoading = false;
+  const error = false;
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
@@ -53,12 +104,16 @@ const Home = () => {
         </View>
         {/* CATEGORY CONTAINER */}
         <View style={styles.section}>
-          <CategoryBtn iconName={"car"} />
-          <CategoryBtn iconName={"motorbike"} />
-          <CategoryBtn iconName={"bus"} />
-          <CategoryBtn iconName={"truck-flatbed"} />
-          <CategoryBtn iconName={"truck"} />
-          <CategoryBtn iconName={"excavator"} />
+          <FlatList
+            data={categories}
+            renderItem={({ item }) => <CategoryBtn iconName={item} />}
+            keyExtractor={item => item}
+            numColumns={3}
+            contentContainerStyle={{
+              alignContent: "center",
+              justifyContent: "center"
+            }}
+          />
         </View>
         {/* FEATURED LABEL */}
         <View style={styles.sectionLabelContainer}>
@@ -66,30 +121,27 @@ const Home = () => {
         </View>
         {/* FEATURED CONTAINER */}
         <View style={[styles.section, { justifyContent: "center" }]}>
-          <VehicleCard
-            cardLabel="Honda Civic EK"
-            comments="168"
-            rating="10.0"
-            location="Islamabad, Punjab"
-            rent="3500"
-            image={require("../assets/images/civic003.jpg")}
-          />
-          <VehicleCard
-            cardLabel="Toyota Prado"
-            comments="43"
-            rating="1.0"
-            location="Gujrat, Punjab"
-            rent="5000"
-            image={require("../assets/images/toyota-prado-1.jpg")}
-          />
-          <VehicleCard
-            cardLabel="Toyota Prado"
-            comments="43"
-            rating="1.0"
-            location="Gujrat, Punjab"
-            rent="5000"
-            image={require("../assets/images/toyota-prado-1.jpg")}
-          />
+          {isLoading
+            ? <ActivityIndicator size={"large"} color={Color.dark} />
+            : error
+              ? <Text>Something went wrong</Text>
+              : <FlatList
+                  data={vehicles}
+                  renderItem={({ item }) =>
+                    <VehicleCard
+                      cardLabel={item.vehicleName}
+                      comments={item.comments}
+                      rating={item.rating}
+                      location={item.location}
+                      rent={item.rent}
+                      image={item.image}
+                    />}
+                  numColumns={2}
+                  keyExtractor={item => item.id}
+                  contentContainerStyle={{
+                    alignItems: "center"
+                  }}
+                />}
         </View>
       </ScrollView>
     </SafeAreaView>

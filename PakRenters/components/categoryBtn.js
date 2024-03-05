@@ -1,15 +1,24 @@
 import { React, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import { Color } from "../constants/GlobalStyles";
+import { router } from "expo-router";
 
 const CategoryBtn = ({ iconName }) => {
+  const openCategory = () => {
+    return router.push("./listingScreen");
+  };
   return (
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => {
+        return openCategory;
+      }}
+    >
       <MaterialCommunityIcons name={iconName} size={60} color={Color.dark} />
     </TouchableOpacity>
   );
