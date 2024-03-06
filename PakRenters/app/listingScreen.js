@@ -1,4 +1,4 @@
-import { Stack, useRouter, useRoute } from "expo-router";
+import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import { React, useState } from "react";
 import {
   View,
@@ -20,7 +20,10 @@ import SearchBar from "../components/searchBar";
 
 const Filters = ["All", "Available", "Unavailable", "Trending"];
 
-const ListingScreen = () => {
+const ListingScreen = ({ route }) => {
+  const { categoryName } = useLocalSearchParams();
+  console.log(categoryName);
+
   const router = useRouter();
   const [activeFilter, setActiveFilter] = useState("All");
 

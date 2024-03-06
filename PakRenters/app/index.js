@@ -89,6 +89,7 @@ const Home = () => {
             />
         }}
       />
+
       <ScrollView style={styles.mainContainer}>
         <View style={styles.tagLineContainer}>
           <Text style={styles.heading1}>Welcome to PakRenters</Text>
@@ -107,7 +108,6 @@ const Home = () => {
           <FlatList
             data={categories}
             renderItem={({ item }) => <CategoryBtn iconName={item} />}
-            keyExtractor={item => item}
             numColumns={3}
             contentContainerStyle={{
               alignContent: "center",

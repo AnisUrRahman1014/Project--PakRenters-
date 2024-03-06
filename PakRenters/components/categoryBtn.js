@@ -10,13 +10,14 @@ import { router } from "expo-router";
 
 const CategoryBtn = ({ iconName }) => {
   const openCategory = () => {
-    return router.push("./listingScreen");
+    router.push("./listingScreen");
+    router.setParams({ categoryName: iconName });
   };
   return (
     <TouchableOpacity
       style={styles.button}
       onPress={() => {
-        return openCategory;
+        openCategory();
       }}
     >
       <MaterialCommunityIcons name={iconName} size={60} color={Color.dark} />
