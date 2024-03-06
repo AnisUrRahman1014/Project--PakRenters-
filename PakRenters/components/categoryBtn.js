@@ -10,7 +10,7 @@ import { router } from "expo-router";
 
 const CategoryBtn = ({ iconName }) => {
   const openCategory = () => {
-    router.push("./listingScreen");
+    router.push("./screens/listingScreen");
     router.setParams({ categoryName: iconName });
   };
   return (

@@ -1,6 +1,6 @@
 class Vehicle {
   constructor(id, vehicleName, location, rent, comments, rating, image) {
-    this.id = id;
+    this.postId = id;
     this.vehicleName = vehicleName;
     this.location = location;
     this.rent = rent;

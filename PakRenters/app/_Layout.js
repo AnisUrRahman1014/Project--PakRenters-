@@ -7,11 +7,16 @@ const Layout = () => {
     "Ubuntu-Bold": require("../assets/fonts/Ubuntu-Bold.ttf"),
     "Ubuntu-Regular": require("../assets/fonts/Ubuntu-Regular.ttf"),
     "Ubuntu-Light": require("../assets/fonts/Ubuntu-Light.ttf"),
+    "Ubuntu-Medium": require("../assets/fonts/Ubuntu-Medium.ttf"),
     "BreeSerif-Regular": require("../assets/fonts/BreeSerif-Regular.ttf")
   });
 
   if (!fontsLoaded) return null;
 
-  return <Stack />;
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
+  );
 };
 export default Layout;

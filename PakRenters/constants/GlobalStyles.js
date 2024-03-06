@@ -4,7 +4,8 @@ export const FontFamily = {
   breeSerifRegular: "BreeSerif-Regular",
   ubuntuRegular: "Ubuntu-Regular",
   ubuntuBold: "Ubuntu-Bold",
-  ubuntuLight: "Ubuntu-Light"
+  ubuntuLight: "Ubuntu-Light",
+  ubuntuMedium: "Ubuntu-Medium"
 };
 /* Colors */
 export const Color = {
@@ -14,4 +15,9 @@ export const Color = {
   focus: "#ff9f1c",
   grey: "#878787",
   lightGrey: "#d3d3d3"
+};
+
+export const StatusColors = {
+  available: "#00c04b",
+  unavailable: "#ff4122"
 };

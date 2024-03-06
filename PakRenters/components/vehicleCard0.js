@@ -6,20 +6,25 @@ import {
 } from "react-native-responsive-screen";
 import { Color, FontFamily } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
-const VehicleCard = props => {
+import { router } from "expo-router";
+const VehicleCard = ({ vehicle }) => {
+  const openVehicleDetailCard = () => {
+    router.push("../screens/postCard");
+    router.setParams({ currentVehicle: vehicle });
+  };
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={openVehicleDetailCard}>
       <View style={{ flex: 1 }}>
         <View style={styles.imageContainer}>
-          <Image source={props.image} style={styles.image} />
+          <Image source={vehicle.image} style={styles.image} />
         </View>
       </View>
       <View style={styles.descContainer}>
         <Text style={styles.cardLabel}>
-          {props.cardLabel}
+          {vehicle.vehicleName}
         </Text>
         <Text style={styles.locationLabel}>
-          {props.location}
+          {vehicle.location}
         </Text>
         <View style={styles.rateCommentContainer}>
           <Icon
@@ -29,19 +34,19 @@ const VehicleCard = props => {
             style={{ marginRight: wp(2) }}
           >
             <Text style={styles.rating}>
-              {props.rating}
+              {vehicle.rating}
             </Text>
           </Icon>
           <Icon name="comment" size={wp(3)} color={Color.dark}>
             <Text style={styles.rating}>
-              {props.comments}
+              {vehicle.comments}
             </Text>
           </Icon>
         </View>
 
         <View style={styles.rentLabelContainer}>
           <Text style={styles.rentLabel}>
-            {props.rent}/- Rs.
+            {vehicle.rent}/- Rs.
           </Text>
         </View>
       </View>

@@ -6,7 +6,7 @@ import {
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import { Color, FontFamily } from "../../../constants/GlobalStyles";
-import ImageViewer from "../ImageViewerCustom";
+import ImageViewer from "../../../components/ImageViewerCustom";
 import * as ImagePicker from "expo-image-picker";
 import { LargeBtn } from "../../../components/misc";
 

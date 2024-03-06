@@ -12,12 +12,13 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import { Color, FontFamily } from "../constants/GlobalStyles";
-import HeaderBtn from "../components/headerBtn";
-import SearchBar from "../components/searchBar";
-import CategoryBtn from "../components/categoryBtn";
-import VehicleCard from "../components/vehicleCard0";
-import Vehicle from "./classes/Vehicle";
+import { Color, FontFamily } from "../../constants/GlobalStyles";
+import HeaderBtn from "../../components/headerBtn";
+import SearchBar from "../../components/searchBar";
+import CategoryBtn from "../../components/categoryBtn";
+import VehicleCard from "../../components/vehicleCard0";
+import Vehicle from "../classes/Vehicle";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const categories = [
   "car",
@@ -36,7 +37,7 @@ const vehicles = [
     3500,
     250,
     4.9,
-    require("../assets/images/civic003.jpg")
+    require("../../assets/images/civic003.jpg")
   ),
   new Vehicle(
     2, // Assuming '1' as an ID for this example
@@ -45,16 +46,16 @@ const vehicles = [
     "5000", // rent
     "43", // comments
     "1.0", // rating
-    require("../assets/images/toyota-prado-1.jpg") // image
+    require("../../assets/images/toyota-prado-1.jpg") // image
   ),
   new Vehicle(
-    1,
+    3,
     "Honda Civic EK",
     "Islamabad,Punjab",
     3500,
     250,
     4.9,
-    require("../assets/images/civic003.jpg")
+    require("../../assets/images/civic003.jpg")
   )
 ];
 
@@ -70,23 +71,23 @@ const Home = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          headerTitle: "",
-          headerShadowVisible: false,
-          headerLeft: () =>
-            <HeaderBtn
-              iconName={"bars"}
-              onPress={openMenu}
-              iconSize={30}
-              iconColor={Color.dark}
-            />,
-          headerRight: () =>
-            //   WILL REPLACE THIS WITH LOGO LATER
-            <HeaderBtn
-              iconName={"user"}
-              onPress={manageAccount}
-              iconSize={30}
-              iconColor={Color.dark}
-            />
+          headerShown: false
+          // headerShadowVisible: false,
+          // headerLeft: () =>
+          //   <HeaderBtn
+          //     iconName={"bars"}
+          //     onPress={openMenu}
+          //     iconSize={30}
+          //     iconColor={Color.dark}
+          //   />,
+          // headerRight: () =>
+          //   //   WILL REPLACE THIS WITH LOGO LATER
+          //   <HeaderBtn
+          //     iconName={"user"}
+          //     onPress={manageAccount}
+          //     iconSize={30}
+          //     iconColor={Color.dark}
+          //   />
         }}
       />
 
@@ -101,7 +102,7 @@ const Home = () => {
         </View>
         {/* CATEGORY LABEL */}
         <View style={styles.sectionLabelContainer}>
-          <Text style={styles.sectionLabel}>Categories</Text>
+          <Text style={styles.sectionLabelPrimary}>Categories</Text>
         </View>
         {/* CATEGORY CONTAINER */}
         <View style={styles.section}>
@@ -117,7 +118,10 @@ const Home = () => {
         </View>
         {/* FEATURED LABEL */}
         <View style={styles.sectionLabelContainer}>
-          <Text style={styles.sectionLabel}>Featured</Text>
+          <Text style={styles.sectionLabelPrimary}>Featured</Text>
+          <TouchableOpacity>
+            <Text style={styles.sectionLabelSecondary}>View all</Text>
+          </TouchableOpacity>
         </View>
         {/* FEATURED CONTAINER */}
         <View style={[styles.section, { justifyContent: "center" }]}>
@@ -127,19 +131,13 @@ const Home = () => {
               ? <Text>Something went wrong</Text>
               : <FlatList
                   data={vehicles}
-                  renderItem={({ item }) =>
-                    <VehicleCard
-                      cardLabel={item.vehicleName}
-                      comments={item.comments}
-                      rating={item.rating}
-                      location={item.location}
-                      rent={item.rent}
-                      image={item.image}
-                    />}
-                  numColumns={2}
+                  renderItem={({ item }) => <VehicleCard vehicle={item} />}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
                   keyExtractor={item => item.id}
                   contentContainerStyle={{
-                    alignItems: "center"
+                    alignItems: "center",
+                    paddingVertical: wp(3)
                   }}
                 />}
         </View>
@@ -157,7 +155,8 @@ const styles = {
   tagLineContainer: {
     flex: 0.1,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    marginTop: wp(10)
   },
   heading1: {
     fontFamily: FontFamily.ubuntuBold,
@@ -177,13 +176,21 @@ const styles = {
   },
   sectionLabelContainer: {
     flex: 0.05,
+    flexDirection: "row",
     width: "100%",
-    marginVertical: wp(1)
+    marginVertical: wp(1),
+    justifyContent: "space-between",
+    alignItems: "center"
   },
-  sectionLabel: {
+  sectionLabelPrimary: {
     fontFamily: FontFamily.ubuntuBold,
     fontSize: hp(2.5),
     color: Color.dark
+  },
+  sectionLabelSecondary: {
+    fontFamily: FontFamily.ubuntuRegular,
+    fontSize: hp(1.8),
+    color: Color.grey
   },
   section: {
     flex: 0.3,

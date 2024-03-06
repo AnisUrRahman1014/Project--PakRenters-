@@ -1,6 +1,7 @@
 import { React } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Color, FontFamily } from "../constants/GlobalStyles";
 import {
   widthPercentageToDP as wp,
@@ -65,6 +66,19 @@ export const Smallbtn = ({ onPress, btnLabel, btnColor }) => {
   );
 };
 
+export const SpecsDisplay = ({ specLabel, iconName }) => {
+  return (
+    <View style={styles.specsDisplayContainer}>
+      <View style={styles.specsIconContainer}>
+        <MaterialCommunityIcon name={iconName} size={30} color={Color.dark} />
+      </View>
+      <Text style={styles.specLabel}>
+        {specLabel}
+      </Text>
+    </View>
+  );
+};
+
 const styles = {
   innerContainer: {
     display: "flex",
@@ -103,5 +117,25 @@ const styles = {
     borderRadius: hp(25),
     justifyContent: "center",
     alignItems: "center"
+  },
+  specsDisplayContainer: {
+    flexDirection: "row",
+    width: wp(30),
+    height: hp(5),
+    alignItems: "center",
+    marginHorizontal: wp(6.2),
+    marginVertical: wp(2)
+  },
+  specsIconContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: wp(8),
+    height: wp(7)
+  },
+  specLabel: {
+    fontFamily: FontFamily.ubuntuRegular,
+    fontSize: wp(5),
+    color: Color.dark,
+    paddingHorizontal: wp(2)
   }
 };
