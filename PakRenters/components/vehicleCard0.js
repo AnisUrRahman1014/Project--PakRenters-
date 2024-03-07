@@ -9,7 +9,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
 const VehicleCard = ({ vehicle }) => {
   const openVehicleDetailCard = () => {
-    router.push("../screens/postCard");
+    router.push("/screens/postCard");
     router.setParams({ currentVehicle: vehicle });
   };
   return (
@@ -21,7 +21,7 @@ const VehicleCard = ({ vehicle }) => {
       </View>
       <View style={styles.descContainer}>
         <Text style={styles.cardLabel}>
-          {vehicle.vehicleName}
+          {vehicle.toString()}
         </Text>
         <Text style={styles.locationLabel}>
           {vehicle.location}

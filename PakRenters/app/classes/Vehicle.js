@@ -1,12 +1,38 @@
 class Vehicle {
-  constructor(id, vehicleName, location, rent, comments, rating, image) {
+  constructor(
+    id,
+    make,
+    model,
+    engine,
+    seats,
+    transmission,
+    traction,
+    absBrakes,
+    cruise,
+    location,
+    rent,
+    comments,
+    rating,
+    image
+  ) {
     this.postId = id;
-    this.vehicleName = vehicleName;
+    this.make = make;
+    this.model = model;
     this.location = location;
     this.rent = rent;
     this.comments = comments;
     this.rating = rating;
     this.image = image;
+    this.engine = engine;
+    this.cruise = cruise;
+    this.seats = seats;
+    this.transmission = transmission;
+    this.traction = traction;
+    this.absBrakes = absBrakes;
+  }
+
+  toString() {
+    return `${this.make}`.concat(" " + `${this.model}`);
   }
 }
 

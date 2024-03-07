@@ -32,7 +32,14 @@ const categories = [
 const vehicles = [
   new Vehicle(
     1,
-    "Honda Civic EK",
+    "Honda",
+    "Civic EK",
+    "1.6 cc",
+    5,
+    "Manual",
+    "No",
+    "Yes",
+    "No",
     "Islamabad,Punjab",
     3500,
     250,
@@ -41,7 +48,14 @@ const vehicles = [
   ),
   new Vehicle(
     2, // Assuming '1' as an ID for this example
-    "Toyota Prado", // vehicleName
+    "Toyota",
+    "Prado", // vehicleName
+    "2.0 cc",
+    7,
+    "Auto",
+    "Yes",
+    "Yes",
+    "Yes",
     "Gujrat, Punjab", // location
     "5000", // rent
     "43", // comments
@@ -50,7 +64,14 @@ const vehicles = [
   ),
   new Vehicle(
     3,
-    "Honda Civic EK",
+    "Honda",
+    " Civic EK",
+    "1.6 cc",
+    5,
+    "Manual",
+    "No",
+    "Yes",
+    "No",
     "Islamabad,Punjab",
     3500,
     250,
@@ -60,37 +81,11 @@ const vehicles = [
 ];
 
 const Home = () => {
-  const openMenu = () => {};
-  const manageAccount = () => {
-    router.push("./screens/loginV2");
-  };
   // Dummy Data
   const isLoading = false;
   const error = false;
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Stack.Screen
-        options={{
-          headerShown: false
-          // headerShadowVisible: false,
-          // headerLeft: () =>
-          //   <HeaderBtn
-          //     iconName={"bars"}
-          //     onPress={openMenu}
-          //     iconSize={30}
-          //     iconColor={Color.dark}
-          //   />,
-          // headerRight: () =>
-          //   //   WILL REPLACE THIS WITH LOGO LATER
-          //   <HeaderBtn
-          //     iconName={"user"}
-          //     onPress={manageAccount}
-          //     iconSize={30}
-          //     iconColor={Color.dark}
-          //   />
-        }}
-      />
-
       <ScrollView style={styles.mainContainer}>
         <View style={styles.tagLineContainer}>
           <Text style={styles.heading1}>Welcome to PakRenters</Text>
@@ -104,6 +99,7 @@ const Home = () => {
         <View style={styles.sectionLabelContainer}>
           <Text style={styles.sectionLabelPrimary}>Categories</Text>
         </View>
+
         {/* CATEGORY CONTAINER */}
         <View style={styles.section}>
           <FlatList
@@ -114,6 +110,7 @@ const Home = () => {
               alignContent: "center",
               justifyContent: "center"
             }}
+            keyExtractor={item => item}
           />
         </View>
         {/* FEATURED LABEL */}
@@ -134,7 +131,7 @@ const Home = () => {
                   renderItem={({ item }) => <VehicleCard vehicle={item} />}
                   horizontal
                   showsHorizontalScrollIndicator={false}
-                  keyExtractor={item => item.id}
+                  keyExtractor={item => item.postId}
                   contentContainerStyle={{
                     alignItems: "center",
                     paddingVertical: wp(3)

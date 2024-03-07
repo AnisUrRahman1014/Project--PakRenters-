@@ -48,7 +48,7 @@ const ListingScreen = ({ route }) => {
       require("../../assets/images/toyota-prado-1.jpg") // image
     ),
     new Vehicle(
-      1,
+      3,
       "Honda Civic EK",
       "Islamabad,Punjab",
       3500,

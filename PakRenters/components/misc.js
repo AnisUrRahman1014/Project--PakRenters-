@@ -134,8 +134,8 @@ const styles = {
   },
   specLabel: {
     fontFamily: FontFamily.ubuntuRegular,
-    fontSize: wp(5),
-    color: Color.dark,
+    fontSize: wp(4.5),
+    color: Color.grey,
     paddingHorizontal: wp(2)
   }
 };

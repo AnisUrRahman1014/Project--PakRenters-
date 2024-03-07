@@ -10,17 +10,19 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          headerShown: false,
           title: "Home",
-          tabBarIcon: () =>
-            <FontAwesome name={"home"} color={Color.dark} size={30} />
+          tabBarIcon: ({ color }) =>
+            <FontAwesome name={"home"} color={color} size={30} />
         }}
       />
       <Tabs.Screen
         name="loginV2"
         options={{
+          headerShown: false,
           title: "Profile",
-          tabBarIcon: () =>
-            <FontAwesome name={"user"} color={Color.dark} size={30} />
+          tabBarIcon: ({ color }) =>
+            <FontAwesome name={"user"} color={color} size={30} />
         }}
       />
     </Tabs>

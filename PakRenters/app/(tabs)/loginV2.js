@@ -28,14 +28,6 @@ const LoginV2 = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Stack.Screen
-        options={{
-          headerTitle: "",
-          headerShadowVisible: false,
-          headerTransparent: true,
-          headerTintColor: Color.dark
-        }}
-      />
       <ScrollView style={styles.mainContainer}>
         <View style={styles.logoContainer}>
           <Image

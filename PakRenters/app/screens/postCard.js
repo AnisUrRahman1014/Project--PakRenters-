@@ -8,26 +8,35 @@ import {
   Image
 } from "react-native";
 import React from "react";
-import { Stack, useLocalSearchParams } from "expo-router";
+import {
+  Stack,
+  useGlobalSearchParams,
+  useLocalSearchParams
+} from "expo-router";
 import { Color, FontFamily, StatusColors } from "../../constants/GlobalStyles";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import { Circle } from "react-native-svg";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { SpecsDisplay } from "../../components/misc";
+import RenterSummaryCard from "../../components/renterSummaryCard";
 
 const PostCard = () => {
   const { currentVehicle } = useLocalSearchParams();
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Stack.Screen options={{ headerTitle: "", headerShadowVisible: false }} />
+      <Stack.Screen
+        options={{
+          headerTitle: "",
+          headerShadowVisible: false,
+          headerTintColor: Color.dark
+        }}
+      />
       <ScrollView style={styles.mainContainer}>
         <View style={styles.postHeader}>
           <View style={styles.headerSection}>
             <Text style={styles.title}>
-              {currentVehicle.vehicleName}
+              {currentVehicle.toString()}
             </Text>
             <Text style={styles.subTitle}>
               {currentVehicle.location}
@@ -68,10 +77,13 @@ const PostCard = () => {
 
           {/* VEHICLE MAKE MODEL CONTAINER */}
           <View style={styles.detailsSubContainer}>
-            <SpecsDisplay iconName={"car-info"} specLabel={"Honda"} />
+            <SpecsDisplay
+              iconName={"car-info"}
+              specLabel={currentVehicle.make}
+            />
             <SpecsDisplay
               iconName={"palette-swatch-variant"}
-              specLabel={"Civic EK"}
+              specLabel={currentVehicle.model}
             />
           </View>
 
@@ -82,12 +94,39 @@ const PostCard = () => {
 
           {/* VEHICLE SPECS CONTAINER */}
           <View style={styles.detailsSubContainer}>
-            <SpecsDisplay iconName={"engine"} specLabel={"1.6 cc"} />
-            <SpecsDisplay iconName={"car-shift-pattern"} specLabel={"Manual"} />
-            <SpecsDisplay iconName={"car-brake-abs"} specLabel={"Yes"} />
-            <SpecsDisplay iconName={"car-seat"} specLabel={"5"} />
-            <SpecsDisplay iconName={"car-cruise-control"} specLabel={"No"} />
-            <SpecsDisplay iconName={"car-traction-control"} specLabel={"No"} />
+            <SpecsDisplay
+              iconName={"engine"}
+              specLabel={currentVehicle.engine}
+            />
+            <SpecsDisplay
+              iconName={"car-shift-pattern"}
+              specLabel={currentVehicle.transmission}
+            />
+            <SpecsDisplay
+              iconName={"car-brake-abs"}
+              specLabel={currentVehicle.absBrakes}
+            />
+            <SpecsDisplay
+              iconName={"car-seat"}
+              specLabel={currentVehicle.seats}
+            />
+            <SpecsDisplay
+              iconName={"car-cruise-control"}
+              specLabel={currentVehicle.cruise}
+            />
+            <SpecsDisplay
+              iconName={"car-traction-control"}
+              specLabel={currentVehicle.traction}
+            />
+          </View>
+
+          {/* RENTER DETAILS LABEL */}
+          <View style={styles.label}>
+            <Text style={styles.label}>Renter Details</Text>
+          </View>
+          {/* RENTER DETAILS CONTAINER */}
+          <View style={styles.detailsSubContainer}>
+            <RenterSummaryCard />
           </View>
         </View>
       </ScrollView>
