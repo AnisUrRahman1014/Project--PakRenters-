@@ -5,14 +5,11 @@ import {
   ScrollView,
   FlatList,
   SafeAreaView,
-  Image
+  Image,
+  TouchableOpacity
 } from "react-native";
 import React from "react";
-import {
-  Stack,
-  useGlobalSearchParams,
-  useLocalSearchParams
-} from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Color, FontFamily, StatusColors } from "../../constants/GlobalStyles";
 import {
   widthPercentageToDP as wp,
@@ -20,6 +17,7 @@ import {
 } from "react-native-responsive-screen";
 import { SpecsDisplay } from "../../components/misc";
 import RenterSummaryCard from "../../components/renterSummaryCard";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const PostCard = () => {
   const { currentVehicle } = useLocalSearchParams();
@@ -130,6 +128,23 @@ const PostCard = () => {
           </View>
         </View>
       </ScrollView>
+      {/* Bottom Buttons Container*/}
+      <View style={styles.endButtonContainer}>
+        <TouchableOpacity style={styles.endButton}>
+          <Icon name="wechat" size={20} color={Color.white} />
+          <Text style={styles.buttonLabels}>Message</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.endButton}>
+          <Icon name="phone" size={20} color={Color.white} />
+          <Text style={styles.buttonLabels}>Call</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.endButton}>
+          <Icon name="calendar-check-o" size={20} color={Color.white} />
+          <Text style={styles.buttonLabels}>Book</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -225,6 +240,26 @@ const styles = StyleSheet.create({
   detailsSubContainer: {
     flexDirection: "row",
     flexWrap: "wrap"
+  },
+  endButtonContainer: {
+    flexDirection: "row",
+    width: wp(100),
+    paddingHorizontal: wp(2)
+  },
+  endButton: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Color.dark,
+    height: wp(15),
+    borderColor: Color.white,
+    borderLeftWidth: wp(0.2),
+    borderRightWidth: wp(0.2)
+  },
+  buttonLabels: {
+    fontFamily: FontFamily.ubuntuLight,
+    color: Color.white,
+    paddingVertical: wp(1)
   }
 });
 

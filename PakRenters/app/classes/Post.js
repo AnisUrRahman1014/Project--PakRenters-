@@ -18,4 +18,12 @@ class Post {
     this.rating = rating;
     this.status = status;
   }
+
+  isFeatured() {
+    return this.featured;
+  }
+
+  setFeatured(featured) {
+    this.featured = featured;
+  }
 }

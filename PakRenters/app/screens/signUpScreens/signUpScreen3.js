@@ -1,17 +1,81 @@
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { React, useState } from "react";
-import { Text, View, SafeAreaView, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  Alert
+} from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import { Color, FontFamily } from "../../../constants/GlobalStyles";
-import { CustomFormInputField, Smallbtn } from "../../../components/misc";
+import {
+  CustomFormInputField,
+  Smallbtn,
+  TextOnlyBtn
+} from "../../../components/misc";
+import axios from "axios";
 
 const SingUpScreen3 = () => {
+  const { newUser } = useLocalSearchParams();
   const [cnic, setCnic] = useState("");
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
+
+  const validateFields = () => {
+    if (cnic !== "" && cnic.length != 13) {
+      Alert.alert(
+        "Invalid CNIC",
+        'Please make sure you entered the correct CNIC. Do not include "-"'
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const handleSignUp = () => {
+    if (!validateFields()) {
+      return null;
+    }
+
+    newUser.setCNIC(cnic);
+    newUser.setProvince(province);
+    newUser.setCity(city);
+
+    console.log(newUser);
+
+    const userData = {
+      username: newUser.getUsername(),
+      email: newUser.getEmail(),
+      password: newUser.getPassword(),
+      phoneNumber: newUser.getPhoneNo(),
+      cnic: newUser.getCNIC(),
+      province: newUser.getProvince(),
+      city: newUser.getCity(),
+      profilePic: newUser.getProfilePic()
+    };
+
+    axios
+      .post("http://192.168.1.18:8000/register", userData)
+      .then(res => {
+        Alert.alert(
+          "Registration Successful",
+          "You have been registered successfully"
+        );
+        console.log(res.data);
+      })
+      .catch(error => {
+        Alert.alert(
+          "Registration failed",
+          "An error occured during registration"
+        );
+        console.log("Registration failed", error);
+      });
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
@@ -30,21 +94,21 @@ const SingUpScreen3 = () => {
         <View style={styles.componentContainer}>
           <CustomFormInputField
             iconName={"id-card"}
-            placeHolder={"CNIC"}
+            placeHolder={"CNIC (Optional)"}
             value={cnic}
             onChange={setCnic}
           />
 
           <CustomFormInputField
             iconName={"map"}
-            placeHolder={"Province"}
+            placeHolder={"Province (Optional)"}
             value={province}
             onChange={setProvince}
           />
 
           <CustomFormInputField
             iconName={"map-marker"}
-            placeHolder={"City"}
+            placeHolder={"City (Optional)"}
             value={city}
             onChange={setCity}
           />
@@ -54,10 +118,12 @@ const SingUpScreen3 = () => {
             have.
           </Text>
           <View style={styles.btnContainer}>
-            <TouchableOpacity>
-              <Text>Skip</Text>
-            </TouchableOpacity>
-            <Smallbtn btnLabel={"Sign Up"} />
+            <Smallbtn
+              btnLabel={"Sign Up"}
+              onPress={() => {
+                handleSignUp();
+              }}
+            />
           </View>
         </View>
       </View>
@@ -103,7 +169,7 @@ const styles = {
   btnContainer: {
     flex: 0.2,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
     width: wp(70)
   }

@@ -1,5 +1,5 @@
 import React from "react";
-import {Image} from 'react-native';
+import { Image } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -12,11 +12,11 @@ export default function ImageViewer({ placeholderImageSource, selectedImage }) {
   return <Image source={imageSource} style={styles.image} />;
 }
 
-const styles={
-    image:{
-        width: "100%",
-        height: "100%",
-        borderRadius:wp(100),
-        resizeMode:'contain',
-    }
-}
+const styles = {
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: wp(100),
+    resizeMode: "cover"
+  }
+};

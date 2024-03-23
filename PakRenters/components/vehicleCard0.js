@@ -1,4 +1,5 @@
-import { React, StyleSheet, useState, Platform } from "react-native";
+import { StyleSheet, Platform } from "react-native";
+import { React, useState } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -7,18 +8,28 @@ import {
 import { Color, FontFamily } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { router } from "expo-router";
+
 const VehicleCard = ({ vehicle }) => {
+  const [isFeatured, setIsfeatured] = useState(true);
   const openVehicleDetailCard = () => {
     router.push("/screens/postCard");
     router.setParams({ currentVehicle: vehicle });
   };
   return (
     <TouchableOpacity style={styles.card} onPress={openVehicleDetailCard}>
+      {/* Image Container */}
       <View style={{ flex: 1 }}>
         <View style={styles.imageContainer}>
           <Image source={vehicle.image} style={styles.image} />
         </View>
       </View>
+      {
+        isFeatured &&
+        <View style={styles.featuredLabelContainer}>
+          <Text style={styles.featuredLabel}>Featured</Text>
+        </View>
+        }
+      {/* Description Container */}
       <View style={styles.descContainer}>
         <Text style={styles.cardLabel}>
           {vehicle.toString()}
@@ -161,6 +172,22 @@ const styles = StyleSheet.create({
     padding: wp(2),
     justifyContent: "top",
     flex: 1
+  },
+  featuredLabelContainer: {
+    position: "absolute",
+    backgroundColor: Color.focus,
+    width: "55%",
+    height: "8%",
+    top: "0%",
+    left: "0%",
+    paddingHorizontal: "5%",
+    alignItems: "center",
+    justifyContent: "center",
+    borderTopLeftRadius: 50,
+    borderBottomRightRadius: 50
+  },
+  featuredLabel: {
+    fontFamily: FontFamily.ubuntuRegular
   }
 });
 

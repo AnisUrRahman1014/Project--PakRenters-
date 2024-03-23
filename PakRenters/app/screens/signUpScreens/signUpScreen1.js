@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import { View, Text, Image, SafeAreaView } from "react-native";
+import { View, Text, Image, SafeAreaView, Alert } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -8,6 +8,7 @@ import { Color, FontFamily } from "../../../constants/GlobalStyles";
 import { Stack, router } from "expo-router";
 import { LargeBtn, CustomFormInputField } from "../../../components/misc";
 import { ScrollView } from "react-native-gesture-handler";
+import User from "../../classes/User";
 
 const SignUpV2 = () => {
   const [username, setUsername] = useState("");
@@ -15,7 +16,45 @@ const SignUpV2 = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [contactNumber, setContactNumber] = useState("");
+  let user;
 
+  const handleUsername = text => {
+    const textWithoutSpaces = text.replace(/\s/g, "");
+    setUsername(textWithoutSpaces);
+  };
+  const validateFields = () => {
+    if (
+      (username || email || password || confirmPassword || contactNumber) === ""
+    ) {
+      Alert.alert("Cannot proceed", "Please fill all fields");
+      return false;
+    } else if (password !== confirmPassword) {
+      Alert.alert(
+        "Passwords do not match",
+        "Please make sure you entered the same password"
+      );
+      return false;
+    } else if (email.includes("@") == false) {
+      Alert.alert("Invalid Email", "Please enter a valid email address");
+      return false;
+    } else if (contactNumber.length != 11) {
+      Alert.alert(
+        "Invalid Phone Number",
+        "Please make sure the phone number is correct"
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const handleContinue = () => {
+    if (!validateFields()) {
+      return null;
+    }
+    user = new User(username, email, password, contactNumber);
+    router.push("../../screens/signUpScreens/signUpScreen2");
+    router.setParams({ newUser: user });
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
@@ -31,7 +70,7 @@ const SignUpV2 = () => {
       <ScrollView style={styles.mainContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("../../../assets/images/PakRenters-v4.png")}
+            source={require("../../../assets/images/PakRenters-v3.0.jpg")}
             style={{
               width: wp(50),
               height: hp(25),
@@ -50,7 +89,8 @@ const SignUpV2 = () => {
             iconName={"user"}
             placeHolder={"Username"}
             value={username}
-            onChange={setUsername}
+            onChange={handleUsername}
+            textType={"username"}
           />
           {/* Enter Email */}
           <CustomFormInputField
@@ -58,6 +98,7 @@ const SignUpV2 = () => {
             placeHolder={"Email address"}
             value={email}
             onChange={setEmail}
+            textType={"emailAddress"}
           />
 
           {/* Enter password */}
@@ -67,6 +108,7 @@ const SignUpV2 = () => {
             value={password}
             onChange={setPassword}
             secureEntry={true}
+            textType={"password"}
           />
           {/* Confirm Password */}
           <CustomFormInputField
@@ -75,6 +117,7 @@ const SignUpV2 = () => {
             value={confirmPassword}
             onChange={setConfirmPassword}
             secureEntry={true}
+            textType={"password"}
           />
 
           {/* Enter Contact Number */}
@@ -83,14 +126,17 @@ const SignUpV2 = () => {
             placeHolder={"Phone Number"}
             value={contactNumber}
             onChange={setContactNumber}
+            textType={"telephoneNumber"}
+            keyboardType="phone-pad"
           />
         </View>
         <View style={styles.signUpBtnContainer}>
           <LargeBtn
             btnLabel={"Continue"}
             onPress={() => {
-              router.push("../../screens/signUpScreens/signUpScreen2");
+              handleContinue();
             }}
+            btnColor={Color.focus}
           />
         </View>
       </ScrollView>

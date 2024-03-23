@@ -1,4 +1,4 @@
-import { Stack, router } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import { React, useState } from "react";
 import { SafeAreaView, Text, View, TouchableOpacity } from "react-native";
 import {
@@ -8,9 +8,10 @@ import {
 import { Color, FontFamily } from "../../../constants/GlobalStyles";
 import ImageViewer from "../../../components/ImageViewerCustom";
 import * as ImagePicker from "expo-image-picker";
-import { LargeBtn } from "../../../components/misc";
+import { LargeBtn, TextOnlyBtn } from "../../../components/misc";
 
 const SignUpScreen2 = () => {
+  const { newUser } = useLocalSearchParams();
   const [selectedImage, setSelectedImage] = useState(null);
   let PlaceholderImage = require("../../../assets/images/userDemoPic.png");
 
@@ -25,6 +26,10 @@ const SignUpScreen2 = () => {
     } else {
       alert("You did not select any image.");
     }
+  };
+
+  const handleContinue = () => {
+    newUser.setProfilePic(selectedImage);
   };
 
   return (
@@ -55,11 +60,14 @@ const SignUpScreen2 = () => {
           </TouchableOpacity>
           <View style={styles.btnContainer}>
             <LargeBtn
-              btnLabel={"Save & Continue"}
+              btnLabel={"Proceed"}
               onPress={() => {
+                handleContinue();
                 router.push("../../screens/signUpScreens/signUpScreen3");
+                router.setParams({ newUser });
               }}
             />
+            <Text>You can also proceed without an image</Text>
           </View>
         </View>
       </View>
@@ -109,7 +117,7 @@ const styles = {
     height: hp(10),
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "row"
+    gap: 5
   }
 };
 

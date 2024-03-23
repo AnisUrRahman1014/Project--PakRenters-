@@ -31,7 +31,7 @@ const LoginV2 = () => {
       <ScrollView style={styles.mainContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("../../assets/images/PakRenters-v4.png")}
+            source={require("../../assets/images/PakRenters-v3.0.jpg")}
             style={{
               width: wp(50),
               height: hp(25),

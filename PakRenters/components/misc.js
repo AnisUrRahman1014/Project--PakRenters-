@@ -8,12 +8,15 @@ import {
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import Separator from "../components/separator";
+
 export const CustomFormInputField = ({
   iconName,
   placeHolder,
   onChange,
   value,
-  secureEntry = false
+  secureEntry = false,
+  textType,
+  keyboardType = "default"
 }) => {
   return (
     <View style={styles.mainContainer}>
@@ -34,11 +37,13 @@ export const CustomFormInputField = ({
           onChangeText={onChange}
           placeholderTextColor={Color.grey}
           fontFamily={FontFamily.ubuntuRegular}
-          fontSize={hp(2.2)}
+          fontSize={16}
           paddingHorizontal={wp(2)}
           width={wp(67)}
           secureTextEntry={secureEntry}
-          color={Color.dark}
+          textContentType={textType}
+          keyboardType={keyboardType}
+          autoCapitalize="none"
         />
       </View>
       {/* <Separator width={70} height={0.2} /> */}
@@ -60,6 +65,16 @@ export const Smallbtn = ({ onPress, btnLabel, btnColor }) => {
   return (
     <TouchableOpacity style={styles.smallBtn} onPress={onPress}>
       <Text style={[styles.largeLabel, { backgroundColor: { btnColor } }]}>
+        {btnLabel}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
+export const TextOnlyBtn = ({ onPress, btnLabel }) => {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <Text>
         {btnLabel}
       </Text>
     </TouchableOpacity>
