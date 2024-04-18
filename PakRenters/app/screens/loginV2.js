@@ -1,5 +1,5 @@
 import { useState, React } from "react";
-import { Stack, router } from "expo-router";
+import { router } from "expo-router";
 import {
   View,
   Text,
@@ -8,14 +8,12 @@ import {
   ScrollView,
   Alert
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import { Color, FontFamily } from "../../constants/GlobalStyles";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import Separator from "../../components/separator";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { LargeBtn, CustomFormInputField } from "../../components/misc";
 import axios from "axios";
 

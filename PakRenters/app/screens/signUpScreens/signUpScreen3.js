@@ -1,22 +1,12 @@
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { React, useState } from "react";
-import {
-  Text,
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-  Alert
-} from "react-native";
+import { Text, View, SafeAreaView, Alert } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import { Color, FontFamily } from "../../../constants/GlobalStyles";
-import {
-  CustomFormInputField,
-  Smallbtn,
-  TextOnlyBtn
-} from "../../../components/misc";
+import { CustomFormInputField, Smallbtn } from "../../../components/misc";
 import axios from "axios";
 
 const SingUpScreen3 = () => {

@@ -3,14 +3,11 @@ import { React, useState } from "react";
 import {
   View,
   Text,
-  ScrollView,
   SafeAreaView,
-  Image,
   TouchableOpacity,
   FlatList
 } from "react-native";
 import { Color, FontFamily } from "../../constants/GlobalStyles";
-import HeaderBtn from "../../components/headerBtn";
 import VehicleCard from "../../components/vehicleCard0";
 import {
   widthPercentageToDP as wp,
