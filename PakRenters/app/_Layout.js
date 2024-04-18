@@ -17,6 +17,15 @@ const Layout = () => {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="screens/loginV2"
+        options={{
+          headerShown: true,
+          title: "",
+          headerShadowVisible: false,
+          headerTintColor: Color.dark
+        }}
+      />
     </Stack>
   );
 };

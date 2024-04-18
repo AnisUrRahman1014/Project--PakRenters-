@@ -44,11 +44,14 @@ app.post("/register", async (req, res) => {
     return res.send({ data: "User already exists" });
   }
 
+  // Hash password before saving it to the database
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
   try {
     await user.create({
       username: username,
       email: email,
-      password: password,
+      password: hashedPassword,
       phoneNumber: phoneNumber,
       profilePic: profilePic,
       province: province,
@@ -58,6 +61,39 @@ app.post("/register", async (req, res) => {
     res.send({ status: "OK", data: "User Registered" });
   } catch (error) {
     res.send({ status: "error", data: error });
+  }
+});
+
+const bcrypt = require("bcryptjs");
+
+// Assuming user model is already defined and imported as 'user'
+// Also assuming the passwords stored in the database are hashed
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Finding the user by username or email
+    const existingUser = await user.findOne({
+      $or: [{ username: username }, { email: username }]
+    });
+
+    if (!existingUser) {
+      return res.status(404).send({ status: "error", data: "User not found" });
+    }
+
+    // Compare provided password with hashed password in database
+    const isMatch = await bcrypt.compare(password, existingUser.password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .send({ status: "error", data: "Invalid credentials" });
+    }
+
+    // Here you might want to generate a token or perform other login success actions
+    res.send({ status: "OK", data: "User successfully logged in" });
+  } catch (error) {
+    res.status(500).send({ status: "error", data: error });
   }
 });
 

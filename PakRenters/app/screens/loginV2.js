@@ -1,6 +1,13 @@
 import { useState, React } from "react";
 import { Stack, router } from "expo-router";
-import { View, Text, Image, SafeAreaView, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  Alert
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {
   widthPercentageToDP as wp,
@@ -10,6 +17,7 @@ import { Color, FontFamily } from "../../constants/GlobalStyles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import Separator from "../../components/separator";
 import { LargeBtn, CustomFormInputField } from "../../components/misc";
+import axios from "axios";
 
 const LoginV2 = () => {
   const [username, setUsername] = useState("");
@@ -24,6 +32,25 @@ const LoginV2 = () => {
   const passwordFieldHandler = inputText => {
     // Update the state for the password
     setPassword(inputText);
+  };
+
+  const handleLogin = () => {
+    const userData = {
+      username: username,
+      password: password
+    };
+    axios
+      .post("http://192.168.1.21:8000/login", userData)
+      .then(res => {
+        Alert.alert("Login Successful", "You have been logged in successfully");
+        console.log(res.data);
+      })
+      .catch(error => {
+        Alert.alert("Login failed", "An error occured during login");
+        console.log("Login failed", error);
+      });
+
+    router.push("../(tabs)/(profile)/profileDashboard");
   };
 
   return (
@@ -55,7 +82,7 @@ const LoginV2 = () => {
             iconName={"lock"}
             placeHolder={"Enter password"}
             value={password}
-            onChange={setPassword}
+            onChange={passwordFieldHandler}
             secureEntry={true}
           />
 
@@ -68,7 +95,7 @@ const LoginV2 = () => {
 
           {/* Login Button */}
           <View style={styles.loginBtnContainer}>
-            <LargeBtn btnLabel={"Login"} />
+            <LargeBtn btnLabel={"Login"} onPress={handleLogin} />
           </View>
         </View>
 

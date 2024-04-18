@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import { React, useState } from "react";
 import {
   Text,
@@ -59,7 +59,7 @@ const SingUpScreen3 = () => {
     };
 
     axios
-      .post("http://192.168.1.18:8000/register", userData)
+      .post("http://192.168.1.21:8000/register", userData)
       .then(res => {
         Alert.alert(
           "Registration Successful",
@@ -74,6 +74,8 @@ const SingUpScreen3 = () => {
         );
         console.log("Registration failed", error);
       });
+
+    router.push("../../(tabs)/(profile)/profileDashboard");
   };
 
   return (

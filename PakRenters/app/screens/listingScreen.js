@@ -21,42 +21,62 @@ import Vehicle from "../classes/Vehicle";
 
 const Filters = ["All", "Available", "Unavailable", "Trending"];
 
+const vehicles = [
+  new Vehicle(
+    1,
+    "Honda",
+    "Civic EK",
+    "1.6 cc",
+    5,
+    "Manual",
+    "No",
+    "Yes",
+    "No",
+    "Islamabad,Punjab",
+    3500,
+    250,
+    4.9,
+    require("../../assets/images/civic003.jpg")
+  ),
+  new Vehicle(
+    2, // Assuming '1' as an ID for this example
+    "Toyota",
+    "Prado", // vehicleName
+    "2.0 cc",
+    7,
+    "Auto",
+    "Yes",
+    "Yes",
+    "Yes",
+    "Gujrat, Punjab", // location
+    "5000", // rent
+    "43", // comments
+    "1.0", // rating
+    require("../../assets/images/toyota-prado-1.jpg") // image
+  ),
+  new Vehicle(
+    3,
+    "Honda",
+    " Civic EK",
+    "1.6 cc",
+    5,
+    "Manual",
+    "No",
+    "Yes",
+    "No",
+    "Islamabad,Punjab",
+    3500,
+    250,
+    4.9,
+    require("../../assets/images/civic003.jpg")
+  )
+];
 const ListingScreen = ({ route }) => {
   const { categoryName } = useLocalSearchParams();
   console.log(categoryName);
 
   const router = useRouter();
   const [activeFilter, setActiveFilter] = useState("All");
-
-  const vehicles = [
-    new Vehicle(
-      1,
-      "Honda Civic EK",
-      "Islamabad,Punjab",
-      3500,
-      250,
-      4.9,
-      require("../../assets/images/civic003.jpg")
-    ),
-    new Vehicle(
-      2, // Assuming '1' as an ID for this example
-      "Toyota Prado", // vehicleName
-      "Gujrat, Punjab", // location
-      "5000", // rent
-      "43", // comments
-      "1.0", // rating
-      require("../../assets/images/toyota-prado-1.jpg") // image
-    ),
-    new Vehicle(
-      3,
-      "Honda Civic EK",
-      "Islamabad,Punjab",
-      3500,
-      250,
-      4.9,
-      require("../../assets/images/civic003.jpg")
-    )
-  ];
 
   const generateScreenTitle = () => {
     let headerTitle = categoryName;
@@ -217,7 +237,9 @@ const styles = {
     justifyContent: "center"
   },
   vehicleCardsContainer: {
-    flex: 1
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
   },
   headerContainer: {
     flex: 0.3,

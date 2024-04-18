@@ -21,6 +21,7 @@
     "@unimodules/react-native-adapter": "^6.3.9",
     "axios": "^1.6.8",
     "axois": "^0.0.1-security",
+    "bcryptjs": "^2.4.3",
     "deprecated-react-native-prop-types": "^5.0.0",
     "expo": "^49.0.0",
     "expo-constants": "~14.4.2",
