@@ -18,10 +18,10 @@ const Layout = () => {
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
-        name="screens/loginV2"
+        name="screens/(postAdScreens)"
         options={{
           headerShown: true,
-          title: "",
+          title: "Create a post",
           headerShadowVisible: false,
           headerTintColor: Color.dark
         }}

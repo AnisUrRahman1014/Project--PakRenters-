@@ -6,20 +6,20 @@ import {
   SafeAreaView,
   ScrollView,
   Text,
-  View
+  View,
+  TouchableOpacity,
+  StyleSheet
 } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import { Color, FontFamily } from "../../constants/GlobalStyles";
-import HeaderBtn from "../../components/headerBtn";
 import SearchBar from "../../components/searchBar";
 import CategoryBtn from "../../components/categoryBtn";
 import VehicleCard from "../../components/vehicleCard0";
 import Vehicle from "../classes/Vehicle";
-import { TouchableOpacity } from "react-native-gesture-handler";
-
+import Icon from "react-native-vector-icons/AntDesign";
 const categories = [
   "car",
   "motorbike",
@@ -139,11 +139,22 @@ const Home = () => {
                 />}
         </View>
       </ScrollView>
+      {/* Post Ad Icon */}
+      <View style={styles.postAdBtnContainer}>
+        <TouchableOpacity
+          style={styles.postAdBtn}
+          onPress={() => {
+            router.push("../screens/(postAdScreens)/postAdScreen1");
+          }}
+        >
+          <Icon name="plus" color={Color.white} size={25} />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: Color.white,
@@ -196,7 +207,26 @@ const styles = {
     justifyContent: "center",
     margin: wp(2),
     alignItems: "top"
+  },
+  postAdBtnContainer: {
+    position: "absolute",
+    bottom: 30,
+    right: 10,
+    width: wp("90%"),
+    height: hp(6),
+    justifyContent: "center",
+    alignItems: "flex-end"
+  },
+  postAdBtn: {
+    backgroundColor: Color.dark,
+    borderRadius: wp(100),
+    aspectRatio: 1 / 1,
+    width: wp(15),
+    height: wp(15),
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5
   }
-};
+});
 
 export default Home;

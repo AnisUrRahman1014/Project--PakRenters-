@@ -2,7 +2,7 @@ import { React } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Color, FontFamily } from "../constants/GlobalStyles";
+import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -44,6 +44,36 @@ export const CustomFormInputField = ({
           textContentType={textType}
           keyboardType={keyboardType}
           autoCapitalize="none"
+        />
+      </View>
+      {/* <Separator width={70} height={0.2} /> */}
+    </View>
+  );
+};
+
+export const CustomAdInputField = ({
+  placeHolder,
+  onChange,
+  value,
+  textType,
+  keyboardType = "default",
+  multiline = false
+}) => {
+  return (
+    <View style={styles.mainContainer}>
+      <View style={styles.innerContainer}>
+        <TextInput
+          placeholder={placeHolder}
+          value={value}
+          onChangeText={onChange}
+          placeholderTextColor={Color.grey}
+          fontFamily={FontFamily.ubuntuRegular}
+          fontSize={16}
+          paddingHorizontal={wp(2)}
+          width={sizeManager(46)}
+          textContentType={textType}
+          keyboardType={keyboardType}
+          multiline={multiline}
         />
       </View>
       {/* <Separator width={70} height={0.2} /> */}

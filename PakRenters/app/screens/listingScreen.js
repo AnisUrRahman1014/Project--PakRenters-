@@ -7,7 +7,12 @@ import {
   TouchableOpacity,
   FlatList
 } from "react-native";
-import { Color, FontFamily } from "../../constants/GlobalStyles";
+import {
+  Color,
+  FontFamily,
+  globalStyles,
+  horizontal_flatlist_Buttons
+} from "../../constants/GlobalStyles";
 import VehicleCard from "../../components/vehicleCard0";
 import {
   widthPercentageToDP as wp,
@@ -112,18 +117,8 @@ const ListingScreen = ({ route }) => {
           <FlatList
             data={Filters}
             renderItem={({ item }) =>
-              <TouchableOpacity
-                style={{
-                  borderColor: Color.dark,
-                  borderWidth: hp(0.2),
-                  paddingVertical: hp(0.7),
-                  paddingHorizontal: wp(3),
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: wp(20)
-                }}
-              >
-                <Text style={styles.category}>
+              <TouchableOpacity style={globalStyles.horizontalFlatListBtn}>
+                <Text style={globalStyles.flatListButtonLabelStyle}>
                   {item}
                 </Text>
               </TouchableOpacity>}

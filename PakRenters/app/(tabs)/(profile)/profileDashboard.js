@@ -4,32 +4,35 @@ import {
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
-  Image
+  Image,
+  FlatList,
+  Dimensions
 } from "react-native";
 import React, { useState } from "react";
-import { Stack, router } from "expo-router";
-import { Color, FontFamily } from "../../../constants/GlobalStyles";
+import { router } from "expo-router";
+import {
+  Color,
+  FontFamily,
+  globalStyles,
+  sizeManager
+} from "../../../constants/GlobalStyles";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import { LargeBtn } from "../../../components/misc";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const ProfileHomeScreen = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const openLoginPage = () => {
     router.push("../../../screens/loginV2");
   };
+
+  const profileOptions = ["Personal", "Manage Ads", "Manage Bookings"];
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Stack.Screen
-        options={{
-          headerTintColor: Color.dark,
-          headerTitle: "Profile",
-          headerShadowVisible: false
-        }}
-      />
       <View style={styles.mainContainer}>
         {!isLoggedIn
           ? <View style={styles.noLoginScreen}>
@@ -45,8 +48,28 @@ const ProfileHomeScreen = () => {
                 onPress={openLoginPage}
               />
             </View>
-          : <View style={styles.section}>
-              <TouchableOpacity style={styles.dpContainer} />
+          : <View style={styles.mainContainer}>
+              <View style={styles.section}>
+                <TouchableOpacity style={styles.dpContainer} />
+                <Text style={styles.headerText}>Anis Urrahman</Text>
+              </View>
+
+              <View style={[styles.section, { alignItems: "flex-start" }]}>
+                <FlatList
+                  data={profileOptions}
+                  renderItem={({ item }) =>
+                    <TouchableOpacity style={globalStyles.verticalFlatListBtn}>
+                      <Text style={globalStyles.flatListButtonLabelStyle}>
+                        {item}
+                      </Text>
+                      <Icon
+                        name="arrow-circle-right"
+                        size={30}
+                        color={Color.dark}
+                      />
+                    </TouchableOpacity>}
+                />
+              </View>
             </View>}
       </View>
     </SafeAreaView>
@@ -59,11 +82,10 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white
   },
   section: {
-    flex: 1 / 4,
+    flex: 1 / 3,
     justifyContent: "center",
     alignItems: "center",
-    borderBottomWidth: wp(0.2),
-    borderColor: Color.dark
+    padding: wp(2)
   },
   dpContainer: {
     width: "40%",
@@ -86,10 +108,14 @@ const styles = StyleSheet.create({
   },
   noLoginSloggen: {
     fontFamily: FontFamily.ubuntuRegular,
-    fontSize: 16,
+    fontSize: sizeManager(3),
     marginVertical: 30,
     paddingBottom: 40,
     textAlign: "center"
+  },
+  headerText: {
+    fontFamily: FontFamily.ubuntuMedium,
+    fontSize: sizeManager(3)
   }
 });
 

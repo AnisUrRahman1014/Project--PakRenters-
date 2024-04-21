@@ -15,22 +15,31 @@ export default function TabsLayout() {
             <FontAwesome name={"home"} color={color} size={30} />
         }}
       />
-      {/* <Tabs.Screen
-        name="loginV2"
+      <Tabs.Screen
+        name="notificationScreen"
         options={{
           headerShown: false,
-          title: "Login",
+          title: "Notification",
           tabBarIcon: ({ color }) =>
-            <FontAwesome name={"lock"} color={color} size={30} />
+            <FontAwesome name={"bell"} color={color} size={25} />
         }}
-      /> */}
+      />
+      <Tabs.Screen
+        name="inboxScreen"
+        options={{
+          headerShown: false,
+          title: "Messages",
+          tabBarIcon: ({ color }) =>
+            <FontAwesome name="inbox" color={color} size={30} />
+        }}
+      />
       <Tabs.Screen
         name="(profile)"
         options={{
           headerShown: false,
           title: "Profile",
           tabBarIcon: ({ color }) =>
-            <FontAwesome name="user" color={color} size={30} />
+            <FontAwesome name="user" color={color} size={25} />
         }}
       />
     </Tabs>

@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const notificationScreen = () => {
+const inboxScreen = () => {
   return (
     <View>
-      <Text>notificationScreen</Text>
+      <Text>inboxScreen</Text>
     </View>
   );
 };
 
-export default notificationScreen;
+export default inboxScreen;
