@@ -7,7 +7,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import Separator from "../components/separator";
+import { Dropdown } from "react-native-element-dropdown";
+import { useState } from "react";
 
 export const CustomFormInputField = ({
   iconName,
@@ -83,10 +84,39 @@ export const CustomAdInputField = ({
 
 export const LargeBtn = ({ onPress, btnLabel, btnColor }) => {
   return (
-    <TouchableOpacity style={styles.largeBtn} onPress={onPress}>
-      <Text style={[styles.largeLabel, { backgroundColor: { btnColor } }]}>
+    <TouchableOpacity style={styles.largeBtn(btnColor)} onPress={onPress}>
+      <Text style={[styles.largeLabel]}>
         {btnLabel}
       </Text>
+    </TouchableOpacity>
+  );
+};
+
+export const LargeBtnWithIcon = ({
+  onPress,
+  btnLabel,
+  btnColor,
+  icon,
+  iconColor
+}) => {
+  return (
+    <TouchableOpacity
+      style={[
+        styles.largeBtn(btnColor),
+        {
+          justifyContent: "space-between",
+          flexDirection: "row",
+          paddingHorizontal: sizeManager(1),
+          width: "auto",
+          gap: sizeManager(2)
+        }
+      ]}
+      onPress={onPress}
+    >
+      <Text style={[styles.largeLabel, { paddingLeft: sizeManager(1) }]}>
+        {btnLabel}
+      </Text>
+      <Icon name={icon} size={30} color={iconColor} />
     </TouchableOpacity>
   );
 };
@@ -123,6 +153,33 @@ export const SpecsDisplay = ({ specLabel, iconName }) => {
     </View>
   );
 };
+export const SpecsDisplayInput = ({ iconName, options, setValue }) => {
+  const [isFocus, setIsFocus] = useState(false);
+  return (
+    <View style={styles.specsDisplayContainer}>
+      <View style={styles.specsIconContainer}>
+        <MaterialCommunityIcon name={iconName} size={30} color={Color.dark} />
+      </View>
+      <Dropdown
+        style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
+        placeholderStyle={styles.dropdownPlaceholder}
+        selectedTextStyle={styles.selectedTextStyle}
+        data={options}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? "Select" : "..."}
+        // value={value}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={item => {
+          setValue(item.value);
+          setIsFocus(false);
+        }}
+      />
+    </View>
+  );
+};
 
 const styles = {
   innerContainer: {
@@ -140,15 +197,15 @@ const styles = {
     padding: wp(1),
     borderColor: Color.dark
   },
-  largeBtn: {
+  largeBtn: btnColor => ({
     position: "relative",
-    backgroundColor: Color.dark,
+    backgroundColor: btnColor,
     width: wp(50),
     height: hp(5),
     borderRadius: hp(25),
     justifyContent: "center",
     alignItems: "center"
-  },
+  }),
   largeLabel: {
     fontFamily: FontFamily.ubuntuRegular,
     fontSize: hp(2),
@@ -182,5 +239,13 @@ const styles = {
     fontSize: wp(4.5),
     color: Color.grey,
     paddingHorizontal: wp(2)
+  },
+  dropdown: {
+    width: sizeManager(14),
+    fontFamily: FontFamily.ubuntuLight,
+    marginHorizontal: sizeManager(1)
+  },
+  dropdownPlaceholder: {
+    fontFamily: FontFamily.ubuntuRegular
   }
 };

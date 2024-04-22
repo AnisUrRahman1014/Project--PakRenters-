@@ -24,7 +24,7 @@ import { LargeBtn } from "../../../components/misc";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const ProfileHomeScreen = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const openLoginPage = () => {
     router.push("../../../screens/loginV2");
@@ -46,6 +46,7 @@ const ProfileHomeScreen = () => {
               <LargeBtn
                 btnLabel={"Login to continue"}
                 onPress={openLoginPage}
+                btnColor={Color.focus}
               />
             </View>
           : <View style={styles.mainContainer}>

@@ -20,7 +20,7 @@ const Layout = () => {
       <Stack.Screen
         name="screens/(postAdScreens)"
         options={{
-          headerShown: true,
+          headerShown: false,
           title: "Create a post",
           headerShadowVisible: false,
           headerTintColor: Color.dark

@@ -61,6 +61,7 @@ const SignUpScreen2 = () => {
           <View style={styles.btnContainer}>
             <LargeBtn
               btnLabel={"Proceed"}
+              btnColor={Color.dark}
               onPress={() => {
                 handleContinue();
                 router.push("../../screens/signUpScreens/signUpScreen3");

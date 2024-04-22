@@ -14,15 +14,29 @@ import {
   FontFamily,
   sizeManager
 } from "../../../constants/GlobalStyles";
-import { CustomAdInputField } from "../../../components/misc";
+import { CustomAdInputField, LargeBtnWithIcon } from "../../../components/misc";
 
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Icon from "react-native-vector-icons/AntDesign";
 import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
+import User from "../../classes/User";
+import Post from "../../classes/Post0";
 
 const PostAdScreen1 = () => {
   const [images, setImages] = useState([]);
+  const [post, setPost] = useState(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [rent, setRent] = useState("");
+  const [location, setLocation] = useState("");
 
+  const user = new User(
+    "i_a_n_33_s",
+    "anisrahman1014@gmail.com",
+    "ab26856de8",
+    "03304089490"
+  );
   const pickImage = async () => {
     // Ask for permission
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -63,12 +77,11 @@ const PostAdScreen1 = () => {
     }
   };
 
-  const data = [
-    { id: "1", text: "Item 1" },
-    { id: "2", text: "Item 2" },
-    { id: "3", text: "Item 3" }
-    // Add more items as needed
-  ];
+  const handleProceed = () => {
+    const post = new Post("1", user, title, description, location);
+    setPost(post);
+    console.log(post);
+  };
 
   // Function to render each item
   const renderItem = ({ item }) =>
@@ -109,7 +122,10 @@ const PostAdScreen1 = () => {
         <View style={styles.section}>
           <View style={styles.container}>
             <Text style={styles.label}>Title: *</Text>
-            <CustomAdInputField placeHolder={"Enter your title here"} />
+            <CustomAdInputField
+              placeHolder={"Enter your title here"}
+              onChange={text => setTitle(text)}
+            />
           </View>
 
           <View style={styles.container}>
@@ -117,6 +133,7 @@ const PostAdScreen1 = () => {
             <CustomAdInputField
               placeHolder={"Enter post description here"}
               multiline={true}
+              onChange={text => setDescription(text)}
             />
           </View>
 
@@ -125,6 +142,7 @@ const PostAdScreen1 = () => {
             <CustomAdInputField
               placeHolder={"Enter Rent-Per-Day"}
               keyboardType="numeric"
+              onChange={text => setRent(text)}
             />
           </View>
 
@@ -135,6 +153,23 @@ const PostAdScreen1 = () => {
               provider={PROVIDER_GOOGLE}
               showsUserLocation
               showsMyLocationButton
+            />
+          </View>
+          <View
+            style={[
+              styles.container,
+              { justifyContent: "center", alignItems: "flex-end" }
+            ]}
+          >
+            <LargeBtnWithIcon
+              btnLabel={"Vehicle Details"}
+              btnColor={Color.dark}
+              icon={"arrow-circle-right"}
+              iconColor={Color.white}
+              onPress={() => {
+                handleProceed();
+                router.push("./postAdScreen2");
+              }}
             />
           </View>
         </View>

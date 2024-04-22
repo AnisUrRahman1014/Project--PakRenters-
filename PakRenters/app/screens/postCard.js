@@ -6,7 +6,8 @@ import {
   FlatList,
   SafeAreaView,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Linking
 } from "react-native";
 import React from "react";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -21,6 +22,19 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const PostCard = () => {
   const { currentVehicle } = useLocalSearchParams();
+  const openDialScreen = number => {
+    const url = Platform.OS === "ios" ? `telprompt:${number}` : `tel:${number}`;
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          console.log("Can't handle url: " + url);
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch(err => console.error("An error occurred", err));
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
@@ -135,7 +149,10 @@ const PostCard = () => {
           <Text style={styles.buttonLabels}>Message</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.endButton}>
+        <TouchableOpacity
+          style={styles.endButton}
+          onPress={() => openDialScreen("03304089490")}
+        >
           <Icon name="phone" size={20} color={Color.white} />
           <Text style={styles.buttonLabels}>Call</Text>
         </TouchableOpacity>

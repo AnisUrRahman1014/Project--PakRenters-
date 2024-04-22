@@ -1,5 +1,5 @@
 import { useState, React } from "react";
-import { router } from "expo-router";
+import { Stack, router } from "expo-router";
 import {
   View,
   Text,
@@ -53,6 +53,11 @@ const LoginV2 = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <Stack.Screen
+        options={{
+          headerShown: false
+        }}
+      />
       <ScrollView style={styles.mainContainer}>
         <View style={styles.logoContainer}>
           <Image
@@ -93,7 +98,11 @@ const LoginV2 = () => {
 
           {/* Login Button */}
           <View style={styles.loginBtnContainer}>
-            <LargeBtn btnLabel={"Login"} onPress={handleLogin} />
+            <LargeBtn
+              btnLabel={"Login"}
+              onPress={handleLogin}
+              btnColor={Color.dark}
+            />
           </View>
         </View>
 
