@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema(
     memberSince: {
       type: Date,
       default: Date.now
+    },
+    reputation: {
+      type: Number,
+      default: 0
     }
   },
   { collection: "User" }

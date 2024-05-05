@@ -11,7 +11,7 @@ class Vehicle {
     absBrakes,
     cruise
   ) {
-    this.postId = id;
+    this.vehicle = id;
     this.make = make;
     this.model = model;
     this.variant = variant;

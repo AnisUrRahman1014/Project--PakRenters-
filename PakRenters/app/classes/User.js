@@ -4,6 +4,7 @@ class User {
     this.email = email;
     this.password = password;
     this.phoneNo = phoneNo;
+    this.postCount = 0;
   }
 
   setProfilePic(image) {
@@ -34,6 +35,14 @@ class User {
     this.city = city;
   }
 
+  updateReputation(reputation) {
+    this.reputation = reputation;
+  }
+
+  updatePostCount() {
+    this.postCount += 1;
+  }
+
   getCity() {
     return this.city;
   }
@@ -53,6 +62,13 @@ class User {
   getPhoneNo() {
     return this.phoneNo;
   }
-}
 
+  getReputation() {
+    return this.reputation;
+  }
+
+  getPostCount() {
+    return this.postCount;
+  }
+}
 export default User;

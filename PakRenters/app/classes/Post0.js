@@ -1,10 +1,19 @@
+import User from "./User";
+
 class Post {
-  constructor(postID, user, title, description, location) {
-    this.postID = postID;
+  constructor(user, title, description, category, location, rent) {
     this.user = user;
+    this.postId = this.generatePostId();
     this.title = title;
+    this.category = category;
     this.location = location;
     this.description = description;
+    this.rent = rent;
+  }
+
+  generatePostId() {
+    let postId = this.user.getUsername().concat("#" + this.user.getPostCount());
+    return postId;
   }
 
   isFeatured() {
@@ -13,6 +22,26 @@ class Post {
 
   setFeatured(featured) {
     this.featured = featured;
+  }
+
+  setVehicle(vehicle) {
+    this.vehicle = vehicle;
+  }
+
+  getVehicle() {
+    return this.vehicle;
+  }
+
+  getRent() {
+    return this.rent;
+  }
+
+  getUser() {
+    return this.user;
+  }
+
+  getPostCategory() {
+    return this.category;
   }
 }
 

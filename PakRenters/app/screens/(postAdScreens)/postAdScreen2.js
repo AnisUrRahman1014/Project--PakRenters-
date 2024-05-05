@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  Image,
+  TouchableOpacity
+} from "react-native";
 import React, { useState } from "react";
 import {
   Color,
@@ -10,9 +18,12 @@ import {
   LargeBtnWithIcon,
   SpecsDisplayInput
 } from "../../../components/misc";
+import Icon from "react-native-vector-icons/AntDesign";
+import * as ImagePicker from "expo-image-picker";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
 const VehicleDetailsScreen = () => {
+  const [images, setImages] = useState([]);
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
   const [variant, setVariant] = useState("");
@@ -23,10 +34,82 @@ const VehicleDetailsScreen = () => {
   const [seats, setSeats] = useState("");
   const [cruise, setCruise] = useState("");
 
+  const pickImage = async () => {
+    // Ask for permission
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
+
+    // Allow multiple selection in the image picker
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true, // This is available only on web currently
+      aspect: [4, 3],
+      quality: 1
+    });
+
+    if (!result.canceled && result.assets) {
+      setImages(prevImages => [...prevImages, ...result.assets]); // Correctly merge previous images with new ones
+    }
+  };
+
+  const takePhoto = async () => {
+    // Ask for camera permissions
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") {
+      alert("Sorry, we need camera permissions to make this work!");
+      return;
+    }
+
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1
+    });
+
+    if (!result.cancelled) {
+      setImages([...images, result.uri]);
+    }
+  };
+  // Function to render each item
+  const renderItem = ({ item }) =>
+    <View style={styles.imageUploadContainer}>
+      <Image
+        source={{ uri: item.uri }}
+        style={{
+          width: "100%",
+          aspectRatio: 3 / 4,
+          resizeMode: "contain",
+          borderRadius: sizeManager(2)
+        }}
+      />
+    </View>;
+
+  // Render Footer to show the add button
+  const renderFooter = () =>
+    <TouchableOpacity style={styles.imageUploadContainer} onPress={pickImage}>
+      <Icon name="plus" size={50} color="grey" />
+    </TouchableOpacity>;
+
   const postAd = () => {};
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.imageContainer}>
+        <FlatList
+          data={images}
+          renderItem={renderItem}
+          keyExtractor={item => item.uri}
+          ListFooterComponent={renderFooter}
+          contentContainerStyle={{
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+          horizontal
+        />
+      </View>
       <View style={styles.mainContainer}>
         <View style={styles.container}>
           <Text style={styles.label}>Make *</Text>
@@ -137,6 +220,21 @@ const VehicleDetailsScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  imageContainer: {
+    flex: 0.5,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    backgroundColor: Color.white
+  },
+  imageUploadContainer: {
+    width: sizeManager(20),
+    aspectRatio: 3 / 4,
+    margin: sizeManager(2),
+    borderRadius: sizeManager(2),
+    backgroundColor: Color.lightGrey,
+    alignItems: "center",
+    justifyContent: "center"
+  },
   mainContainer: {
     flex: 1,
     backgroundColor: Color.white,

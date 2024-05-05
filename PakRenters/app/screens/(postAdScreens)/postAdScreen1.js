@@ -1,14 +1,5 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-  Image
-} from "react-native";
-import React, { useState } from "react";
+import { View, Text, SafeAreaView, StyleSheet, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
 import {
   Color,
   FontFamily,
@@ -16,20 +7,30 @@ import {
 } from "../../../constants/GlobalStyles";
 import { CustomAdInputField, LargeBtnWithIcon } from "../../../components/misc";
 
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import Icon from "react-native-vector-icons/AntDesign";
-import * as ImagePicker from "expo-image-picker";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { router } from "expo-router";
 import User from "../../classes/User";
 import Post from "../../classes/Post0";
-
+import { Dropdown } from "react-native-element-dropdown";
+import * as Location from "expo-location";
 const PostAdScreen1 = () => {
-  const [images, setImages] = useState([]);
   const [post, setPost] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [rent, setRent] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState({});
+
+  const [addressString, setAddressString] = useState("");
+
+  const [isFocus, setIsFocus] = useState(false);
+  const [postCategory, setPostCategory] = useState("");
+
+  const [mapRegion, setMapRegion] = useState({
+    latitude: 30.3753,
+    longitude: 69.3451,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421
+  });
 
   const user = new User(
     "i_a_n_33_s",
@@ -37,87 +38,81 @@ const PostAdScreen1 = () => {
     "ab26856de8",
     "03304089490"
   );
-  const pickImage = async () => {
-    // Ask for permission
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  const userLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
+      setErrorMsg("Permission to access location was denied");
       return;
     }
-
-    // Allow multiple selection in the image picker
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true, // This is available only on web currently
-      aspect: [4, 3],
-      quality: 1
+    let currentLocation = await Location.getCurrentPositionAsync({
+      enableHighAccuracy: true
     });
+    setLocation(currentLocation);
+    setMapRegion({
+      latitude: currentLocation.coords.latitude,
+      longitude: currentLocation.coords.longitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421
+    });
+  };
 
-    if (!result.canceled && result.assets) {
-      setImages(prevImages => [...prevImages, ...result.assets]); // Correctly merge previous images with new ones
+  const reverseGeocode = async () => {
+    let currentLocation = await Location.getCurrentPositionAsync({
+      enableHighAccuracy: true
+    });
+    const address = await Location.reverseGeocodeAsync({
+      longitude: currentLocation.coords.longitude,
+      latitude: currentLocation.coords.latitude
+    });
+    if (address.length > 0) {
+      const firstAddress = address[0]; // Assuming you want to use the first address
+      const { name, city, region } = firstAddress;
+
+      let addressString = "";
+      if (name) {
+        addressString += `${name}, `;
+      }
+      if (city) {
+        addressString += `${city}, `;
+      }
+      if (region) {
+        addressString += `${region}`;
+      }
+      setAddressString(addressString);
+    } else {
+      setAddressString("Address not found");
     }
   };
 
-  const takePhoto = async () => {
-    // Ask for camera permissions
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
-      alert("Sorry, we need camera permissions to make this work!");
-      return;
-    }
+  useEffect(() => {
+    userLocation();
+  }, []);
 
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1
-    });
-
-    if (!result.cancelled) {
-      setImages([...images, result.uri]);
-    }
-  };
+  useEffect(
+    () => {
+      if (location) {
+        reverseGeocode();
+      }
+    },
+    [location]
+  );
 
   const handleProceed = () => {
-    const post = new Post("1", user, title, description, location);
+    reverseGeocode();
+    const post = new Post(
+      user,
+      title,
+      description,
+      postCategory,
+      location,
+      rent
+    );
     setPost(post);
-    console.log(post);
   };
-
-  // Function to render each item
-  const renderItem = ({ item }) =>
-    <View style={styles.imageUploadContainer}>
-      <Image
-        source={{ uri: item.uri }}
-        style={{
-          width: "100%",
-          aspectRatio: 3 / 4,
-          resizeMode: "contain",
-          borderRadius: sizeManager(2)
-        }}
-      />
-    </View>;
-
-  // Render Footer to show the add button
-  const renderFooter = () =>
-    <TouchableOpacity style={styles.imageUploadContainer} onPress={pickImage}>
-      <Icon name="plus" size={50} color="grey" />
-    </TouchableOpacity>;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.imageContainer}>
-        <FlatList
-          data={images}
-          renderItem={renderItem}
-          keyExtractor={item => item.uri}
-          ListFooterComponent={renderFooter}
-          contentContainerStyle={{
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-          horizontal
-        />
-      </View>
       <ScrollView style={styles.mainContainer}>
         <View style={styles.section}>
           <View style={styles.container}>
@@ -147,14 +142,56 @@ const PostAdScreen1 = () => {
           </View>
 
           <View style={styles.container}>
+            <Text style={styles.label}>Category: *</Text>
+            <Dropdown
+              style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
+              placeholderStyle={styles.dropdownPlaceholder}
+              selectedTextStyle={styles.selectedTextStyle}
+              data={[
+                { label: "Car", value: "car" },
+                { label: "Truck", value: "truck" },
+                { label: "Bus", value: "bus" },
+                { label: "Bike", value: "motorbike" },
+                { label: "Loader", value: "truck-flatbed" },
+                { label: "Construction Vehicle", value: "excavator" }
+              ]}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder={!isFocus ? "Select" : "..."}
+              value={postCategory}
+              onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+              onChange={item => {
+                setPostCategory(item.value);
+                setIsFocus(false);
+              }}
+            />
+          </View>
+
+          <View style={styles.container}>
+            <Text style={styles.label}>Address: *</Text>
+            <CustomAdInputField
+              placeHolder={"Click the small icon on maps to fetch address"}
+              editable={false}
+              value={addressString}
+            />
+          </View>
+          {/* Map Container */}
+          <View style={styles.container}>
             <Text style={styles.label}>Location: *</Text>
             <MapView
               style={{ width: 370, height: 200 }}
               provider={PROVIDER_GOOGLE}
-              showsUserLocation
-              showsMyLocationButton
-            />
+              showsUserLocation={true}
+              showsMyLocationButton={true}
+              followUserLocation={true}
+            >
+              <Marker coordinate={mapRegion} />
+            </MapView>
           </View>
+
+          {/* Next Button Container */}
           <View
             style={[
               styles.container,
@@ -183,21 +220,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.white
   },
-  imageContainer: {
-    flex: 0.5,
-    justifyContent: "center",
-    alignItems: "flex-start",
-    backgroundColor: Color.white
-  },
-  imageUploadContainer: {
-    width: sizeManager(20),
-    aspectRatio: 3 / 4,
-    margin: sizeManager(2),
-    borderRadius: sizeManager(2),
-    backgroundColor: Color.lightGrey,
-    alignItems: "center",
-    justifyContent: "center"
-  },
   section: {
     display: "flex",
     flex: 5,
@@ -210,6 +232,15 @@ const styles = StyleSheet.create({
   },
   container: {
     marginVertical: sizeManager(0.5)
+  },
+  dropdown: {
+    width: sizeManager(47),
+    fontFamily: FontFamily.ubuntuLight,
+    borderWidth: sizeManager(0.1),
+    paddingHorizontal: sizeManager(1)
+  },
+  dropdownPlaceholder: {
+    fontFamily: FontFamily.ubuntuRegular
   }
 });
 

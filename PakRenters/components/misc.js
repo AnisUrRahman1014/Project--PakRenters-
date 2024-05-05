@@ -58,7 +58,9 @@ export const CustomAdInputField = ({
   value,
   textType,
   keyboardType = "default",
-  multiline = false
+  multiline = false,
+  editable = true,
+  id
 }) => {
   return (
     <View style={styles.mainContainer}>
@@ -75,6 +77,8 @@ export const CustomAdInputField = ({
           textContentType={textType}
           keyboardType={keyboardType}
           multiline={multiline}
+          editable={editable}
+          id={id}
         />
       </View>
       {/* <Separator width={70} height={0.2} /> */}
