@@ -8,7 +8,7 @@ import {
 import { Color, FontFamily } from "../../../constants/GlobalStyles";
 import ImageViewer from "../../../components/ImageViewerCustom";
 import * as ImagePicker from "expo-image-picker";
-import { LargeBtn, TextOnlyBtn } from "../../../components/misc";
+import { LargeBtn } from "../../../components/misc";
 
 const SignUpScreen2 = () => {
   const { newUser } = useLocalSearchParams();

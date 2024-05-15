@@ -14,7 +14,6 @@ import Post from "../../classes/Post0";
 import { Dropdown } from "react-native-element-dropdown";
 import * as Location from "expo-location";
 const PostAdScreen1 = () => {
-  const [post, setPost] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [rent, setRent] = useState("");
@@ -97,18 +96,13 @@ const PostAdScreen1 = () => {
     },
     [location]
   );
-
+  let post;
   const handleProceed = () => {
     reverseGeocode();
-    const post = new Post(
-      user,
-      title,
-      description,
-      postCategory,
-      location,
-      rent
-    );
-    setPost(post);
+    post = new Post(user, title, description, postCategory, location, rent);
+    console.log(post);
+    router.push("./postAdScreen2");
+    router.setParams({ newPost: post });
   };
 
   return (
@@ -205,7 +199,6 @@ const PostAdScreen1 = () => {
               iconColor={Color.white}
               onPress={() => {
                 handleProceed();
-                router.push("./postAdScreen2");
               }}
             />
           </View>

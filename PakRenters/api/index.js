@@ -1,12 +1,17 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const crypto = require("crypto");
+const nodeMailer = require("nodemailer");
 
 const app = express();
 const port = 8000;
 const cors = require("cors");
 app.use(cors());
-app.use(express.json());
+// app.use(express.json());
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 mongoose
   .connect(
@@ -47,6 +52,29 @@ app.post("/register", async (req, res) => {
   // Hash password before saving it to the database
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
+
+  const newUser = new User({
+    username,
+    email,
+    password,
+    phoneNumber,
+    profilePic,
+    province,
+    city,
+    cnic
+  });
+
+  newUser.verificationToken = crypto.randomBytes(20).toString("hex");
+
+  await newUser.save();
+
+  //send verification email
+  sendVerificationEmail(newUser.email, newUser.verificationToken);
+
+  res.status(202).json({
+    message:
+      "Registration successful. Please check your email for verification."
+  });
   try {
     await user.create({
       username: username,
@@ -64,10 +92,50 @@ app.post("/register", async (req, res) => {
   }
 });
 
-const bcrypt = require("bcryptjs");
+const sendVerificationEmail = async (email, verficationToken) => {
+  const transporter = nodeMailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "anisrahman1014@gmail.com",
+      pass: "ddth mhvt iktd rhha"
+    }
+  });
+  const mailOptions = {
+    from: "PakRenters@gmail.com",
+    to: email,
+    subject: "Email Verification",
+    text: `Please click the following link to verify your email: https://localhost:8000/verify/${verificationToken}`
+  };
 
-// Assuming user model is already defined and imported as 'user'
-// Also assuming the passwords stored in the database are hashed
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Verification mail sent");
+  } catch (err) {
+    console.log("Error sending verification email");
+  }
+};
+
+app.get("/verify/:token", async (req, res) => {
+  try {
+    const token = req.params.token;
+
+    const user = await User.findOne({ verificationToken: token });
+    if (!user) {
+      return res.status(404).json({ message: "Invalid verification token" });
+    }
+
+    // marks the use as verified
+    user.verified = true;
+    user.verificationToken = undefined;
+
+    await user.save();
+    res.status(200).json({ message: "Verification successfull" });
+  } catch (err) {
+    res.status(500).json({ message: "Email verification failed" });
+  }
+});
+
+const bcrypt = require("bcryptjs");
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;

@@ -20,9 +20,10 @@ import {
 } from "../../../components/misc";
 import Icon from "react-native-vector-icons/AntDesign";
 import * as ImagePicker from "expo-image-picker";
-import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import { useLocalSearchParams } from "expo-router";
 
 const VehicleDetailsScreen = () => {
+  const { newPost } = useLocalSearchParams();
   const [images, setImages] = useState([]);
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
@@ -33,6 +34,8 @@ const VehicleDetailsScreen = () => {
   const [AC, setAC] = useState("");
   const [seats, setSeats] = useState("");
   const [cruise, setCruise] = useState("");
+
+  console.log(newPost);
 
   const pickImage = async () => {
     // Ask for permission
