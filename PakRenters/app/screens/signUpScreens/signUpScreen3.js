@@ -49,7 +49,7 @@ const SingUpScreen3 = () => {
     };
 
     axios
-      .post("http://192.168.1.21:8000/register", userData)
+      .post("http://192.168.1.13:8000/register", userData)
       .then(res => {
         Alert.alert(
           "Registration Successful",

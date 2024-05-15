@@ -8,10 +8,10 @@ const app = express();
 const port = 8000;
 const cors = require("cors");
 app.use(cors());
-// app.use(express.json());
+app.use(express.json());
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
 mongoose
   .connect(
@@ -92,7 +92,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-const sendVerificationEmail = async (email, verficationToken) => {
+const sendVerificationEmail = async (email, verificationToken) => {
   const transporter = nodeMailer.createTransport({
     service: "gmail",
     auth: {
@@ -136,6 +136,7 @@ app.get("/verify/:token", async (req, res) => {
 });
 
 const bcrypt = require("bcryptjs");
+const User = require("./models/UserDetails");
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
