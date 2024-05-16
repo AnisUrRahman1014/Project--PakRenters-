@@ -21,12 +21,8 @@ import {
 import Icon from "react-native-vector-icons/AntDesign";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams } from "expo-router";
-import { useRoute } from "@react-navigation/native";
 
 const VehicleDetailsScreen = () => {
-  // const route = useRoute();
-  // const { newPost } = route.params;
-
   const { newPost } = useLocalSearchParams();
 
   const [images, setImages] = useState([]);
