@@ -1,5 +1,3 @@
-import User from "./User";
-
 class Post {
   constructor(user, title, description, category, location, rent) {
     this.user = user;

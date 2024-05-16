@@ -8,12 +8,14 @@ import {
 import { CustomAdInputField, LargeBtnWithIcon } from "../../../components/misc";
 
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import { router } from "expo-router";
+import { useNavigation } from "expo-router";
 import User from "../../classes/User";
 import Post from "../../classes/Post0";
 import { Dropdown } from "react-native-element-dropdown";
 import * as Location from "expo-location";
 const PostAdScreen1 = () => {
+  const navigation = useNavigation();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [rent, setRent] = useState("");
@@ -101,8 +103,9 @@ const PostAdScreen1 = () => {
     reverseGeocode();
     post = new Post(user, title, description, postCategory, location, rent);
     console.log(post);
-    router.push("./postAdScreen2");
-    router.setParams({ newPost: post });
+    // router.setParams({ newPost: post });
+    // router.push("../(postAdScreens)/postAdScreen2");
+    navigation.navigate("postAdScreen2", { newPost: post });
   };
 
   return (
