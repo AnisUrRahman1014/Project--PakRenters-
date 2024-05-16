@@ -24,8 +24,10 @@ import { useLocalSearchParams } from "expo-router";
 import { useRoute } from "@react-navigation/native";
 
 const VehicleDetailsScreen = () => {
-  const route = useRoute();
-  const { newPost } = route.params;
+  // const route = useRoute();
+  // const { newPost } = route.params;
+
+  const { newPost } = useLocalSearchParams();
 
   const [images, setImages] = useState([]);
   const [make, setMake] = useState("");
