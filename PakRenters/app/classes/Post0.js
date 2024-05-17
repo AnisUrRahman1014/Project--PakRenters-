@@ -9,6 +9,10 @@ class Post {
     this.rent = rent;
   }
 
+  getPostId() {
+    return this.postId;
+  }
+
   generatePostId() {
     let postId = this.user.getUsername().concat("#" + this.user.getPostCount());
     return postId;

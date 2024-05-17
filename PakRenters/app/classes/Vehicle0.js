@@ -2,8 +2,8 @@ class Vehicle {
   constructor(
     id,
     make,
-    variant,
     model,
+    year,
     engine,
     seats,
     transmission,
@@ -11,11 +11,10 @@ class Vehicle {
     absBrakes,
     cruise
   ) {
-    this.vehicle = id;
+    this.id = id;
     this.make = make;
     this.model = model;
-    this.variant = variant;
-    this.image = image;
+    this.year = year;
     this.engine = engine;
     this.cruise = cruise;
     this.seats = seats;

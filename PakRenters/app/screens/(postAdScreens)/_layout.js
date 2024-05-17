@@ -6,7 +6,7 @@ const Layout = () => {
   return (
     <Stack>
       <Stack.Screen
-        name="postAdScreen1"
+        name="postDetailScreen"
         options={{
           headerShown: true,
           title: "Create a post",
@@ -15,10 +15,19 @@ const Layout = () => {
         }}
       />
       <Stack.Screen
-        name="postAdScreen2"
+        name="vehicleDetailsScreen"
         options={{
           headerShown: true,
-          title: "Create a post",
+          title: "Enter vehicle details",
+          headerTintColor: Color.dark,
+          headerShadowVisible: false
+        }}
+      />
+      <Stack.Screen
+        name="servicesDetailScreen"
+        options={{
+          headerShown: true,
+          title: "Choose applicable services",
           headerTintColor: Color.dark,
           headerShadowVisible: false
         }}

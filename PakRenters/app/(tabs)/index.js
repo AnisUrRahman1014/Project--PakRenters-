@@ -144,7 +144,7 @@ const Home = () => {
         <TouchableOpacity
           style={styles.postAdBtn}
           onPress={() => {
-            router.push("../screens/(postAdScreens)/postAdScreen1");
+            router.push("../screens/(postAdScreens)/postDetailScreen");
           }}
         >
           <Icon name="plus" color={Color.white} size={25} />

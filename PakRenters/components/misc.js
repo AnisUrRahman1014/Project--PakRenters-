@@ -1,8 +1,13 @@
 import { React } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Switch } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
+import {
+  Color,
+  FontFamily,
+  StatusColors,
+  sizeManager
+} from "../constants/GlobalStyles";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -158,7 +163,14 @@ export const SpecsDisplay = ({ specLabel, iconName }) => {
   );
 };
 export const SpecsDisplayInput = ({ iconName, options, setValue }) => {
+  const [selectedValue, setSelectedValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+
+  const handleValueChange = itemValue => {
+    setSelectedValue(itemValue);
+    setValue(itemValue);
+    setIsFocus(false);
+  };
   return (
     <View style={styles.specsDisplayContainer}>
       <View style={styles.specsIconContainer}>
@@ -169,18 +181,35 @@ export const SpecsDisplayInput = ({ iconName, options, setValue }) => {
         placeholderStyle={styles.dropdownPlaceholder}
         selectedTextStyle={styles.selectedTextStyle}
         data={options}
-        maxHeight={300}
+        maxHeight={100}
         labelField="label"
         valueField="value"
         placeholder={!isFocus ? "Select" : "..."}
-        // value={value}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
-        onChange={item => {
-          setValue(item.value);
-          setIsFocus(false);
-        }}
+        onChange={handleValueChange}
+        value={selectedValue}
       />
+    </View>
+  );
+};
+
+export const ServiceSwitch = ({ serviceLabel, isEnabled, onToggle }) => {
+  return (
+    <View style={styles.serviceSwitch.container}>
+      <View style={styles.serviceSwitch.switchContainer}>
+        <Switch
+          trackColor={{ false: Color.lightGrey, true: Color.dark }}
+          thumbColor={isEnabled ? Color.focus : Color.grey}
+          onValueChange={onToggle}
+          value={isEnabled}
+        />
+      </View>
+      <View style={styles.serviceSwitch.serviceLabelContainer}>
+        <Text style={styles.serviceSwitch.serviceLabel}>
+          {serviceLabel}
+        </Text>
+      </View>
     </View>
   );
 };
@@ -251,5 +280,26 @@ const styles = {
   },
   dropdownPlaceholder: {
     fontFamily: FontFamily.ubuntuRegular
+  },
+  serviceSwitch: {
+    container: {
+      width: "100%",
+      height: "auto",
+      flexDirection: "row",
+      gap: sizeManager(0.5),
+      paddingVertical: sizeManager(1),
+      alignItems: "center"
+    },
+    serviceLabelContainer: {
+      flex: 1,
+      height: "auto"
+    },
+    serviceLabel: {
+      fontFamily: FontFamily.ubuntuRegular,
+      fontSize: sizeManager(2)
+    },
+    switchContainer: {
+      flex: 0.2
+    }
   }
 };
