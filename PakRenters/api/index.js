@@ -26,8 +26,8 @@ app.get("/", (req, res) => {
   res.send({ status: "Started" });
 });
 
-require("./models/UserDetails");
-const user = mongoose.model("User");
+// require("./models/UserDetails");
+// const user = mongoose.model("User");
 
 app.post("/register", async (req, res) => {
   const {
@@ -41,9 +41,9 @@ app.post("/register", async (req, res) => {
     cnic
   } = req.body;
 
-  const oldUser_username = await user.findOne({ username: username });
-  const oldUser_email = await user.findOne({ email: email });
-  const oldUser_phoneNumber = await user.findOne({ phoneNumber: phoneNumber });
+  const oldUser_username = await User.findOne({ username: username });
+  const oldUser_email = await User.findOne({ email: email });
+  const oldUser_phoneNumber = await User.findOne({ phoneNumber: phoneNumber });
 
   if (oldUser_username || oldUser_email || oldUser_phoneNumber) {
     return res.send({ data: "User already exists" });
@@ -65,31 +65,42 @@ app.post("/register", async (req, res) => {
   });
 
   newUser.verificationToken = crypto.randomBytes(20).toString("hex");
-
-  await newUser.save();
-
-  //send verification email
-  sendVerificationEmail(newUser.email, newUser.verificationToken);
-
-  res.status(202).json({
-    message:
-      "Registration successful. Please check your email for verification."
-  });
+  newUser.password = hashedPassword;
   try {
-    await user.create({
-      username: username,
-      email: email,
-      password: hashedPassword,
-      phoneNumber: phoneNumber,
-      profilePic: profilePic,
-      province: province,
-      city: city,
-      cnic: cnic
+    // Attempt to save the new user in the database
+    await newUser.save();
+
+    // Send a verification email if the user was saved successfully
+    sendVerificationEmail(newUser.email, newUser.verificationToken);
+    // Respond with a success message
+    res.status(202).json({
+      message:
+        "Registration successful. Please check your email for verification."
     });
-    res.send({ status: "OK", data: "User Registered" });
   } catch (error) {
-    res.send({ status: "error", data: error });
+    // Log the error or handle it as necessary
+    console.error("Error saving user:", error);
+
+    // Respond with an error message
+    res.status(500).json({
+      message: "Registration failed. Please try again."
+    });
   }
+  // try {
+  //   await user.create({
+  //     username: username,
+  //     email: email,
+  //     password: hashedPassword,
+  //     phoneNumber: phoneNumber,
+  //     profilePic: profilePic,
+  //     province: province,
+  //     city: city,
+  //     cnic: cnic
+  //   });
+  //   res.send({ status: "OK", data: "User Registered" });
+  // } catch (error) {
+  //   res.send({ status: "error", data: error });
+  // }
 });
 
 const sendVerificationEmail = async (email, verificationToken) => {
@@ -101,17 +112,17 @@ const sendVerificationEmail = async (email, verificationToken) => {
     }
   });
   const mailOptions = {
-    from: "PakRenters@gmail.com",
+    from: "anisrahman1014@gmail.com",
     to: email,
     subject: "Email Verification",
-    text: `Please click the following link to verify your email: https://localhost:8000/verify/${verificationToken}`
+    text: `Please click the following link to verify your email: https://192.168.1.13:8000/verify/${verificationToken}`
   };
 
   try {
     await transporter.sendMail(mailOptions);
     console.log("Verification mail sent");
   } catch (err) {
-    console.log("Error sending verification email");
+    console.log("Error sending verification email " + err);
   }
 };
 
@@ -143,7 +154,7 @@ app.post("/login", async (req, res) => {
 
   try {
     // Finding the user by username or email
-    const existingUser = await user.findOne({
+    const existingUser = await User.findOne({
       $or: [{ username: username }, { email: username }]
     });
 

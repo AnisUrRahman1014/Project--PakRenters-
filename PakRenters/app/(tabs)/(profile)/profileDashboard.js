@@ -30,7 +30,12 @@ const ProfileHomeScreen = () => {
     router.push("../../../screens/loginV2");
   };
 
-  const profileOptions = ["Personal", "Manage Ads", "Manage Bookings"];
+  const profileOptions = [
+    "Personal",
+    "Manage Ads",
+    "Manage Bookings",
+    "Manage Vehicles Status"
+  ];
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.mainContainer}>
