@@ -9,15 +9,6 @@ class Post {
     this.rent = rent;
   }
 
-  getPostId() {
-    return this.postId;
-  }
-
-  generatePostId() {
-    let postId = this.user.getUsername().concat("#" + this.user.getPostCount());
-    return postId;
-  }
-
   isFeatured() {
     return this.featured;
   }
@@ -26,8 +17,20 @@ class Post {
     this.featured = featured;
   }
 
+  setServices(services) {
+    this.services = services;
+  }
+
   setVehicle(vehicle) {
     this.vehicle = vehicle;
+  }
+  getPostId() {
+    return this.postId;
+  }
+
+  generatePostId() {
+    let postId = this.user.getUsername().concat("#" + this.user.getPostCount());
+    return postId;
   }
 
   getVehicle() {
@@ -44,6 +47,10 @@ class Post {
 
   getPostCategory() {
     return this.category;
+  }
+
+  getServices() {
+    return this.services;
   }
 }
 

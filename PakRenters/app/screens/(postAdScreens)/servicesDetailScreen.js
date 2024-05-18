@@ -1,36 +1,24 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  Switch,
-  FlatList
-} from "react-native";
+import { View, Text, StyleSheet, SafeAreaView, FlatList } from "react-native";
 import React, { useState } from "react";
 import {
   Color,
   FontFamily,
-  StatusColors,
   sizeManager
 } from "../../../constants/GlobalStyles";
 import { useLocalSearchParams } from "expo-router";
 import { LargeBtnWithIcon, ServiceSwitch } from "../../../components/misc";
+import { Services } from "../../../constants/Services";
 
 const ServicesDetail = () => {
   const { post, vehicle } = useLocalSearchParams();
 
-  const [isSelfDrive, setSelfDrive] = useState(false);
-  const [isWithDriver, setWithDriver] = useState(false);
-  const [isDecoration, setDecoration] = useState(false);
-  const [isPassengerPnD, setPassengerPnD] = useState(false);
-  const [isVehiclePnD, setVehiclePnD] = useState(false);
-
   const [services, setServices] = useState([
-    { label: "Self Drive", isEnabled: true },
-    { label: "With Driver", isEnabled: false },
-    { label: "Decoration", isEnabled: false },
-    { label: "Pick & Drop (Passenger)", isEnabled: false },
-    { label: "Pick & Drop (Vehicle)", isEnabled: false }
+    { label: Services.selfDrive, isEnabled: true },
+    { label: Services.withDriver, isEnabled: false },
+    { label: Services.decoration, isEnabled: false },
+    { label: Services.passengerPnD, isEnabled: false },
+    { label: Services.vehiclePnD, isEnabled: false },
+    { label: Services.tourism, isEnabled: false }
   ]);
 
   const toggleService = index => {
@@ -42,35 +30,15 @@ const ServicesDetail = () => {
     );
   };
 
-  const updateSelectedServiceConstants = () => {
-    services.forEach(service => {
-      switch (service.label) {
-        case "Self Drive":
-          setSelfDrive(service.isEnabled);
-          break;
-        case "With Driver":
-          setWithDriver(service.isEnabled);
-          break;
-        case "Decoration":
-          setDecoration(service.isEnabled);
-          break;
-        case "Pick & Drop (Passenger)":
-          setPassengerPnD(service.isEnabled);
-          break;
-        case "Pick & Drop (Vehicle)":
-          setVehiclePnD(service.isEnabled);
-          break;
-        default:
-          break;
-      }
-    });
+  const handleProceed = () => {
+    post.setServices(services);
+    updateDatabase();
   };
 
-  const handleProceed = () => {
-    updateSelectedServiceConstants();
-    console.log(services);
-    // Additional logic for proceeding, like navigation or API calls
+  const updateDatabase = () => {
+    // IMPLEMENTATION PENDING
   };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.mainContainer}>
