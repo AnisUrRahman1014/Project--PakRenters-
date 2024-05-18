@@ -1,5 +1,5 @@
 import { useState, React, useEffect } from "react";
-import { Stack, router } from "expo-router";
+import { Stack, router, useNavigation } from "expo-router";
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginV2 = () => {
+  const navigation = useNavigation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -45,7 +46,10 @@ const LoginV2 = () => {
         console.log(res.data);
         const token = res.data.token;
         AsyncStorage.setItem("authToken", token);
-        router.replace("../(profile)/profileDashboard");
+        navigation.navigate("(profile)", {
+          screen: "profileDashboard",
+          params: { user: userData }
+        });
       })
       .catch(error => {
         Alert.alert("Login failed", "An error occurred during login");

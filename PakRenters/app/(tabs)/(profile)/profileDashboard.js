@@ -5,10 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  FlatList
+  FlatList,
+  Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   Color,
   FontFamily,
@@ -24,8 +25,9 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileHomeScreen = () => {
+  const { user } = useLocalSearchParams();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  console.log(user);
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
@@ -44,11 +46,29 @@ const ProfileHomeScreen = () => {
     router.push("./loginV2");
   };
 
+  const handleLogout = async () => {
+    try {
+      if (isLoggedIn) {
+        await AsyncStorage.removeItem("authToken");
+        Alert.alert(
+          "Logout Successful",
+          "You have been logged out successfully"
+        );
+        setIsLoggedIn(false);
+        router.replace("./loginV2");
+      }
+    } catch (error) {
+      console.log("Logout failed", error);
+      Alert.alert("Logout failed", "An error occurred during logout");
+    }
+  };
+
   const profileOptions = [
-    "Personal",
-    "Manage Ads",
-    "Manage Bookings",
-    "Manage Vehicles Status"
+    { label: "Personal", function: "" },
+    { label: "Manage Ads", function: "" },
+    { label: "Manage Bookings", function: "" },
+    { label: "Manage Vehicles Status", function: "" },
+    { label: "Log out", function: handleLogout }
   ];
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -78,9 +98,14 @@ const ProfileHomeScreen = () => {
                 <FlatList
                   data={profileOptions}
                   renderItem={({ item }) =>
-                    <TouchableOpacity style={globalStyles.verticalFlatListBtn}>
+                    <TouchableOpacity
+                      style={globalStyles.verticalFlatListBtn}
+                      onPress={() => {
+                        item.function();
+                      }}
+                    >
                       <Text style={globalStyles.flatListButtonLabelStyle}>
-                        {item}
+                        {item.label}
                       </Text>
                       <Icon
                         name="arrow-circle-right"
