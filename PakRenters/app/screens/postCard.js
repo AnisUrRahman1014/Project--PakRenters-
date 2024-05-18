@@ -11,7 +11,12 @@ import {
 } from "react-native";
 import React from "react";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Color, FontFamily, StatusColors } from "../../constants/GlobalStyles";
+import {
+  Color,
+  FontFamily,
+  StatusColors,
+  sizeManager
+} from "../../constants/GlobalStyles";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -268,10 +273,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Color.dark,
-    height: wp(15),
+    height: sizeManager(8),
     borderColor: Color.white,
     borderLeftWidth: wp(0.2),
-    borderRightWidth: wp(0.2)
+    borderRightWidth: wp(0.2),
+    paddingVertical: sizeManager(2)
   },
   buttonLabels: {
     fontFamily: FontFamily.ubuntuLight,
