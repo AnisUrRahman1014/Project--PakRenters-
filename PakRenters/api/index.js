@@ -1,8 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const nodeMailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 const port = 8000;
@@ -10,13 +12,8 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
-
 mongoose
-  .connect(
-    "mongodb+srv://anisrahman1014:zawsar123456@cluster0.if58lga.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("connected to the database"))
   .catch(error => {
     console.log("Error connecting to MongoDB", error);
@@ -25,9 +22,6 @@ mongoose
 app.get("/", (req, res) => {
   res.send({ status: "Started" });
 });
-
-// require("./models/UserDetails");
-// const user = mongoose.model("User");
 
 app.post("/register", async (req, res) => {
   const {
@@ -46,7 +40,7 @@ app.post("/register", async (req, res) => {
   const oldUser_phoneNumber = await User.findOne({ phoneNumber: phoneNumber });
 
   if (oldUser_username || oldUser_email || oldUser_phoneNumber) {
-    return res.send({ data: "User already exists" });
+    return res.send({ status: "error", data: "User already exists" });
   }
 
   // Hash password before saving it to the database
@@ -73,34 +67,15 @@ app.post("/register", async (req, res) => {
     // Send a verification email if the user was saved successfully
     sendVerificationEmail(newUser.email, newUser.verificationToken);
     // Respond with a success message
-    res.status(202).json({
-      message:
-        "Registration successful. Please check your email for verification."
-    });
+    res.send({ status: "OK", data: "User Registered" });
   } catch (error) {
     // Log the error or handle it as necessary
     console.error("Error saving user:", error);
-
     // Respond with an error message
     res.status(500).json({
       message: "Registration failed. Please try again."
     });
   }
-  // try {
-  //   await user.create({
-  //     username: username,
-  //     email: email,
-  //     password: hashedPassword,
-  //     phoneNumber: phoneNumber,
-  //     profilePic: profilePic,
-  //     province: province,
-  //     city: city,
-  //     cnic: cnic
-  //   });
-  //   res.send({ status: "OK", data: "User Registered" });
-  // } catch (error) {
-  //   res.send({ status: "error", data: error });
-  // }
 });
 
 const sendVerificationEmail = async (email, verificationToken) => {
@@ -114,8 +89,8 @@ const sendVerificationEmail = async (email, verificationToken) => {
   const mailOptions = {
     from: "anisrahman1014@gmail.com",
     to: email,
-    subject: "Email Verification",
-    text: `Please click the following link to verify your email: https://192.168.1.13:8000/verify/${verificationToken}`
+    subject: "PakRenters - Email Verification",
+    text: `Please click the following link to verify your email: https://192.168.1.16:8000/verify/${verificationToken}`
   };
 
   try {
@@ -170,12 +145,22 @@ app.post("/login", async (req, res) => {
         .send({ status: "error", data: "Invalid credentials" });
     }
 
-    // Here you might want to generate a token or perform other login success actions
+    const token = jwt.sign({ userId: existingUser._id }, secretKey);
+
+    res.status(200).json({ token });
+
     res.send({ status: "OK", data: "User successfully logged in" });
   } catch (error) {
     res.status(500).send({ status: "error", data: error });
   }
 });
+
+const generateSecretKey = () => {
+  const secretKey = crypto.randomBytes(32).toString("hex");
+  return secretKey;
+};
+
+const secretKey = generateSecretKey();
 
 app.listen(port, () => {
   console.log("Server is running on port", port);

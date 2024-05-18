@@ -26,7 +26,7 @@ const SingUpScreen3 = () => {
     return true;
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (!validateFields()) {
       return null;
     }
@@ -48,24 +48,32 @@ const SingUpScreen3 = () => {
       profilePic: newUser.getProfilePic()
     };
 
-    axios
-      .post("http://192.168.1.13:8000/register", userData)
-      .then(res => {
+    try {
+      const response = await axios.post(
+        "http://192.168.1.16:8000/register",
+        userData
+      );
+
+      if (response.data.status === "OK") {
         Alert.alert(
           "Registration Successful",
-          "You have been registered successfully"
+          "You have been registered successfully. Please check your email to verify your account."
         );
-        console.log(res.data);
-      })
-      .catch(error => {
-        Alert.alert(
-          "Registration failed",
-          "An error occured during registration"
-        );
-        console.log("Registration failed", error);
-      });
+        console.log(response.data);
+        router.push("../../(tabs)/(profile)/profileDashboard");
+      } else if (response.data.status === "error") {
+        Alert.alert("Registration failed", response.data.data);
+        console.log("Registration failed", response.data.data);
+      }
+    } catch (error) {
+      Alert.alert(
+        "Registration failed",
+        "An error occurred during registration"
+      );
+      console.log("Registration failed", error);
+    }
 
-    router.push("../../(tabs)/(profile)/profileDashboard");
+    // router.push("../../(tabs)/(profile)/profileDashboard");
   };
 
   return (

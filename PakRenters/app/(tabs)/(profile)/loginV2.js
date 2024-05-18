@@ -1,4 +1,4 @@
-import { useState, React } from "react";
+import { useState, React, useEffect } from "react";
 import { Stack, router } from "expo-router";
 import {
   View,
@@ -12,10 +12,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import { Color, FontFamily } from "../../constants/GlobalStyles";
+import { Color, FontFamily } from "../../../constants/GlobalStyles";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { LargeBtn, CustomFormInputField } from "../../components/misc";
+import { LargeBtn, CustomFormInputField } from "../../../components/misc";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginV2 = () => {
   const [username, setUsername] = useState("");
@@ -38,17 +39,18 @@ const LoginV2 = () => {
       password: password
     };
     axios
-      .post("http://192.168.1.21:8000/login", userData)
+      .post("http://192.168.1.16:8000/login", userData)
       .then(res => {
         Alert.alert("Login Successful", "You have been logged in successfully");
         console.log(res.data);
+        const token = res.data.token;
+        AsyncStorage.setItem("authToken", token);
+        router.replace("../(profile)/profileDashboard");
       })
       .catch(error => {
-        Alert.alert("Login failed", "An error occured during login");
+        Alert.alert("Login failed", "An error occurred during login");
         console.log("Login failed", error);
       });
-
-    router.push("../(tabs)/(profile)/profileDashboard");
   };
 
   return (
@@ -61,7 +63,7 @@ const LoginV2 = () => {
       <ScrollView style={styles.mainContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("../../assets/images/PakRenters-v3.0.jpg")}
+            source={require("../../../assets/images/PakRenters-v3.0.jpg")}
             style={{
               width: wp(50),
               height: hp(25),

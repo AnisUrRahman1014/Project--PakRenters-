@@ -5,10 +5,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  FlatList,
-  Dimensions
+  FlatList
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { router } from "expo-router";
 import {
   Color,
@@ -22,12 +21,27 @@ import {
 } from "react-native-responsive-screen";
 import { LargeBtn } from "../../../components/misc";
 import Icon from "react-native-vector-icons/FontAwesome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileHomeScreen = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (token) {
+          setIsLoggedIn(true);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    checkLoginStatus();
+  }, []);
+
   const openLoginPage = () => {
-    router.push("../../../screens/loginV2");
+    router.push("./loginV2");
   };
 
   const profileOptions = [
