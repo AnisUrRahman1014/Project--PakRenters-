@@ -1,12 +1,15 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { Color, sizeManager } from "../constants/GlobalStyles";
+import { NotificationTypes } from "../constants/NotificationTypes";
 
 const Notification = ({ type, content }) => {
   const [isFocused, setIsFocused] = useState(true);
+
   const handlePress = () => {
     setIsFocused(false);
   };
+
   return (
     <TouchableOpacity
       style={[
