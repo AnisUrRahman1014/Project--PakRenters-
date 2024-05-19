@@ -82,8 +82,8 @@ const sendVerificationEmail = async (email, verificationToken) => {
   const transporter = nodeMailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
+      user: "anisrahman1014@gmail.com",
+      pass: "ddth mhvt iktd rhha"
     }
   });
   const mailOptions = {
@@ -159,6 +159,40 @@ const generateSecretKey = () => {
 };
 
 const secretKey = generateSecretKey();
+
+// FETCHING USER BASED ON USER ID
+app.get("/profile/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(500).json({ message: "Error retrieving user profile" });
+  }
+});
+
+app.get("/posts/:userId", async (req, res) => {
+  try {
+    const loggedInUserId = req.params.userId;
+
+    const loggedInUser = await User.findById(loggedInUserId).populate(
+      "posts",
+      "_id"
+    );
+    if (!loggedInUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    //get the ID's of the posts by this user
+    const postIds = loggedInUser.posts.map(post => post._id);
+  } catch (err) {
+    console.log("Error retrieving users");
+    res.status(500).json({ message: "Error retrieving users" });
+  }
+});
 
 app.listen(port, () => {
   console.log("Server is running on port", port);

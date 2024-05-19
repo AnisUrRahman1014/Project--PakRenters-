@@ -59,7 +59,13 @@ const PostSchema = new mongoose.Schema({
   services: {
     type: mongoose.Schema.Type.ObjectId,
     ref: "Service"
-  }
+  },
+  bookings: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Booking"
+    }
+  ]
 });
 
 const Post = mongoose.model("Post", postSchema);

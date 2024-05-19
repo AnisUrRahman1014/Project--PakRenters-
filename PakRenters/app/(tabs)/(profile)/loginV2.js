@@ -1,4 +1,4 @@
-import { useState, React, useEffect } from "react";
+import { useState, React } from "react";
 import { Stack, router, useNavigation } from "expo-router";
 import {
   View,
@@ -48,7 +48,7 @@ const LoginV2 = () => {
         AsyncStorage.setItem("authToken", token);
         navigation.navigate("(profile)", {
           screen: "profileDashboard",
-          params: { user: userData }
+          params: { userData: userData }
         });
       })
       .catch(error => {
@@ -116,7 +116,7 @@ const LoginV2 = () => {
         <View style={styles.signUpContainer}>
           <TouchableOpacity
             onPress={() => {
-              router.push("../screens/signUpScreens/signUpScreen1");
+              router.push("../../screens/signUpScreens/signUpScreen1");
             }}
           >
             <Text style={styles.signUpLabel}>

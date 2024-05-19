@@ -9,7 +9,7 @@ import {
   Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import {
   Color,
   FontFamily,
@@ -23,17 +23,36 @@ import {
 import { LargeBtn } from "../../../components/misc";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode"; // Correct import
+import axios from "axios";
+import { Buffer } from "buffer";
+import User from "../../classes/User";
 
+// Polyfill for atob
+if (typeof global.atob === "undefined") {
+  global.atob = base64 => Buffer.from(base64, "base64").toString("binary");
+}
 const ProfileHomeScreen = () => {
-  const { user } = useLocalSearchParams();
+  const navigation = useNavigation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  console.log(user);
+  const [userId, setUserId] = useState("");
+  const [user, setUser] = useState(null);
+
   useEffect(() => {
+    // Polyfill atob for Node.js
+    if (typeof atob === "undefined") {
+      global.atob = function(b64) {
+        return Buffer.from(b64, "base64").toString("binary");
+      };
+    }
     const checkLoginStatus = async () => {
       try {
         const token = await AsyncStorage.getItem("authToken");
         if (token) {
           setIsLoggedIn(true);
+          const decodedToken = jwtDecode(token);
+          const userId = decodedToken.userId;
+          setUserId(userId);
         }
       } catch (err) {
         console.log(err);
@@ -79,6 +98,10 @@ const ProfileHomeScreen = () => {
     router.push("./loginV2");
   };
 
+  const openManagePersonalScreen = () => {
+    navigation.navigate("managePersonalInfo", { user: user });
+  };
+
   const handleLogout = async () => {
     try {
       if (isLoggedIn) {
@@ -97,12 +120,14 @@ const ProfileHomeScreen = () => {
   };
 
   const profileOptions = [
-    { label: "Personal", function: "" },
+    { label: "Personal", function: openManagePersonalScreen },
     { label: "Manage Ads", function: "" },
     { label: "Manage Bookings", function: "" },
     { label: "Manage Vehicles Status", function: "" },
     { label: "Log out", function: handleLogout }
   ];
+
+  // console.log(user.getProfilePic());
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.mainContainer}>
@@ -123,8 +148,19 @@ const ProfileHomeScreen = () => {
             </View>
           : <View style={styles.mainContainer}>
               <View style={styles.section}>
-                <TouchableOpacity style={styles.dpContainer} />
-                <Text style={styles.headerText}>Anis Urrahman</Text>
+                <TouchableOpacity style={styles.dpContainer}>
+                  {user && user.getProfilePic()
+                    ? <Image
+                        source={{
+                          uri: user.getProfilePic().toString("base64")
+                        }}
+                        style={styles.dpContainer}
+                      />
+                    : <Text>No Profile Picture</Text>}
+                </TouchableOpacity>
+                <Text style={styles.headerText}>
+                  {user ? user.getUsername() : "Loading..."}
+                </Text>
               </View>
 
               <View style={[styles.section, { alignItems: "flex-start" }]}>

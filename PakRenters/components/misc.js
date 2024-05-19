@@ -22,7 +22,8 @@ export const CustomFormInputField = ({
   value,
   secureEntry = false,
   textType,
-  keyboardType = "default"
+  keyboardType = "default",
+  editable = true
 }) => {
   return (
     <View style={styles.mainContainer}>
@@ -50,6 +51,7 @@ export const CustomFormInputField = ({
           textContentType={textType}
           keyboardType={keyboardType}
           autoCapitalize="none"
+          editable={editable}
         />
       </View>
       {/* <Separator width={70} height={0.2} /> */}
@@ -106,12 +108,14 @@ export const LargeBtnWithIcon = ({
   btnLabel,
   btnColor,
   icon,
-  iconColor
+  iconColor,
+  btnBorderColor,
+  btnLabelColor
 }) => {
   return (
     <TouchableOpacity
       style={[
-        styles.largeBtn(btnColor),
+        styles.largeBtn(btnColor, btnBorderColor),
         {
           justifyContent: "space-between",
           flexDirection: "row",
@@ -122,7 +126,12 @@ export const LargeBtnWithIcon = ({
       ]}
       onPress={onPress}
     >
-      <Text style={[styles.largeLabel, { paddingLeft: sizeManager(1) }]}>
+      <Text
+        style={[
+          styles.largeLabel(btnLabelColor),
+          { paddingLeft: sizeManager(1) }
+        ]}
+      >
         {btnLabel}
       </Text>
       <Icon name={icon} size={30} color={iconColor} />
@@ -230,20 +239,22 @@ const styles = {
     padding: wp(1),
     borderColor: Color.dark
   },
-  largeBtn: btnColor => ({
+  largeBtn: (btnColor, btnBorderColor) => ({
     position: "relative",
     backgroundColor: btnColor,
     width: wp(50),
     height: hp(5),
     borderRadius: hp(25),
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    borderWidth: btnBorderColor ? sizeManager(0.2) : 0,
+    borderColor: btnBorderColor ? btnBorderColor : Color.white
   }),
-  largeLabel: {
+  largeLabel: btnLabelColor => ({
     fontFamily: FontFamily.ubuntuRegular,
     fontSize: hp(2),
-    color: Color.white
-  },
+    color: btnLabelColor ? btnLabelColor : Color.white
+  }),
   smallBtn: {
     position: "relative",
     backgroundColor: Color.dark,

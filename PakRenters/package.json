@@ -14,6 +14,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-native-fontawesome": "^0.3.0",
+    "@react-native-async-storage/async-storage": "1.18.2",
     "@react-navigation/drawer": "^6.6.11",
     "@react-navigation/material-top-tabs": "^6.6.13",
     "@react-navigation/native": "^6.1.14",
@@ -33,6 +34,7 @@
     "expo-router": "^2.0.14",
     "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
+    "jwt-decode": "^4.0.0",
     "mongodb": "^6.5.0",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
@@ -41,6 +43,7 @@
     "react-native-element-dropdown": "^2.10.4",
     "react-native-elements": "^3.4.3",
     "react-native-gesture-handler": "~2.12.0",
+    "react-native-get-random-values": "~1.9.0",
     "react-native-image-crop-picker": "^0.40.2",
     "react-native-image-picker": "^7.1.0",
     "react-native-maps": "1.7.1",
@@ -53,8 +56,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-vector-icons": "^10.0.3",
     "react-native-web": "~0.19.6",
-    "tailwindcss": "^3.3.2",
-    "@react-native-async-storage/async-storage": "1.18.2"
+    "tailwindcss": "^3.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
