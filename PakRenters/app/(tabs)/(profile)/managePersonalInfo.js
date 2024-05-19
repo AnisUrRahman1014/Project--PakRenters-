@@ -59,6 +59,7 @@ const managePersonalInfo = () => {
               value={phoneNo}
               editable={true}
               onChange={setPhoneNo}
+              keyboardType="numeric"
             />
           </View>
         </View>
@@ -73,6 +74,7 @@ const managePersonalInfo = () => {
               value={cnic}
               editable={true}
               onChange={setCnic}
+              keyboardType="numeric"
             />
           </View>
         </View>
@@ -164,8 +166,9 @@ const styles = StyleSheet.create({
     }
   },
   btnContainer: {
+    flexDirection: "row",
     position: "relative",
-    bottom: -210,
+    bottom: -260,
     width: "100%",
     justifyContent: "center",
     alignItems: "stretch",

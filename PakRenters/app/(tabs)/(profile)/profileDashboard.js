@@ -102,6 +102,18 @@ const ProfileHomeScreen = () => {
     navigation.navigate("managePersonalInfo", { user: user });
   };
 
+  const openManageAdsScreen = () => {
+    navigation.navigate("manageAds", { user: user });
+  };
+
+  const openManageBookingsScreen = () => {
+    navigation.navigate("manageBookings", { user: user });
+  };
+
+  const openManageVehicleStatusScreen = () => {
+    navigation.navigate("manageVehicleStatus", { user: user });
+  };
+
   const handleLogout = async () => {
     try {
       if (isLoggedIn) {
@@ -121,9 +133,12 @@ const ProfileHomeScreen = () => {
 
   const profileOptions = [
     { label: "Personal", function: openManagePersonalScreen },
-    { label: "Manage Ads", function: "" },
-    { label: "Manage Bookings", function: "" },
-    { label: "Manage Vehicles Status", function: "" },
+    { label: "Manage Ads", function: openManageAdsScreen },
+    { label: "Manage Bookings", function: openManageBookingsScreen },
+    {
+      label: "Manage Vehicles Status",
+      function: openManageVehicleStatusScreen
+    },
     { label: "Log out", function: handleLogout }
   ];
 
