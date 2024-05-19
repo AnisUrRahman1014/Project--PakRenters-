@@ -42,6 +42,39 @@ const ProfileHomeScreen = () => {
     checkLoginStatus();
   }, []);
 
+  useEffect(
+    () => {
+      if (userId) {
+        fetchUserProfile();
+      }
+    },
+    [userId]
+  );
+
+  const fetchUserProfile = async () => {
+    try {
+      const res = await axios.get(`http://192.168.1.16:8000/profile/${userId}`);
+      const userData = res.data.user;
+      const user = new User(
+        userData.username,
+        userData.email,
+        userData.password,
+        userData.phoneNumber
+      );
+      user.setProfilePic(userData.profilePic);
+      user.setProvince(userData.province);
+      user.setCNIC(userData.cnic);
+      user.setCity(userData.city);
+      user.updateReputation(userData.reputation);
+      user.postCount = userData.posts.length;
+      console.log(userData);
+      setUser(user);
+      console.log(user.getProfilePic().toString("base64"));
+    } catch (err) {
+      console.log("Error processing user profile", error);
+    }
+  };
+
   const openLoginPage = () => {
     router.push("./loginV2");
   };
