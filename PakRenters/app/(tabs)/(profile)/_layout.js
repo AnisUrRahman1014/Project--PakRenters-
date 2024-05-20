@@ -24,7 +24,15 @@ export default function _layout() {
           headerTintColor: Color.dark
         }}
       />
-      <Stack.Screen name="manageBookings" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="manageBookings"
+        options={{
+          headerShown: true,
+          headerTitle: "Manage Bookings",
+          headerShadowVisible: false,
+          headerTintColor: Color.dark
+        }}
+      />
       <Stack.Screen
         name="manageVehicleStatus"
         options={{ headerShown: false }}

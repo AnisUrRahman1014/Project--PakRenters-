@@ -18,7 +18,7 @@ const VehicleCard = ({ vehicle }) => {
     setIsFocused(isFocused ? false : true);
   };
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card}>
       <View style={styles.leftContainer}>
         <Image source={vehicle.image} style={styles.image} />
       </View>
@@ -56,19 +56,7 @@ const VehicleCard = ({ vehicle }) => {
           </View>
         </View>
       </View>
-      <View style={styles.optionsContainer}>
-        <TouchableOpacity style={styles.optionsContainer.btn}>
-          <Icon name="bell-slash" size={sizeManager(3)} color={Color.focus} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.optionsContainer.btn}>
-          <Icon
-            name="trash"
-            size={sizeManager(3.5)}
-            color={StatusColors.unavailable}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -81,10 +69,12 @@ const styles = StyleSheet.create({
     backgroundColor: Color.dark,
     alignItems: "center",
     gap: sizeManager(1),
-    borderRadius: sizeManager(2)
+    borderRadius: sizeManager(2),
+    elevation: 5,
+    backgroundColor: Color.dark
   },
   leftContainer: {
-    flex: 1,
+    flex: 0.7,
     height: sizeManager(15),
     backgroundColor: Color.focus,
     alignItems: "center",
@@ -95,23 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: sizeManager(15),
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: Color.dark
-  },
-  optionsContainer: {
-    flex: 0.5,
-    backgroundColor: Color.white,
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: sizeManager(0.5),
-    btn: {
-      width: "80%",
-      aspectRatio: 1,
-      padding: "20%",
-      borderColor: Color.dark,
-      borderWidth: sizeManager(0.2)
-    }
+    alignItems: "left"
   },
   image: {
     width: "100%",

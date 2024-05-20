@@ -26,6 +26,16 @@ const Layout = () => {
           headerTintColor: Color.dark
         }}
       />
+      <Stack.Screen
+        name="screens/bookingScreen"
+        options={{
+          headerShown: true,
+          title: "",
+          headerShadowVisible: false,
+          headerTintColor: Color.white,
+          headerTransparent: true
+        }}
+      />
     </Stack>
   );
 };

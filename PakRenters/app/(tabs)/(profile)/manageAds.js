@@ -3,7 +3,7 @@ import React from "react";
 import { Color, sizeManager } from "../../../constants/GlobalStyles";
 import Vehicle from "../../classes/Vehicle";
 import { FlatList } from "react-native-gesture-handler";
-import VehicleCard from "../../../components/vehicleCardLandscape";
+import VehicleCard from "../../../components/vehicleCardManageAds";
 
 const vehicles = [
   new Vehicle(
@@ -64,7 +64,7 @@ const manageAds = () => {
           data={vehicles}
           renderItem={({ item }) => <VehicleCard vehicle={item} />}
           contentContainerStyle={{
-            gap: 3
+            gap: 10
           }}
         />
       </View>

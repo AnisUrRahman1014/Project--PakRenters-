@@ -27,8 +27,8 @@ export const CustomFormInputField = ({
 }) => {
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.innerContainer}>
-        <View style={styles.iconContainer}>
+      <View style={styles.customInputField.innerContainer}>
+        <View style={styles.customInputField.iconContainer}>
           <Icon
             name={iconName}
             size={20}
@@ -38,23 +38,24 @@ export const CustomFormInputField = ({
             justifyContent={"center"}
           />
         </View>
-        <TextInput
-          placeholder={placeHolder}
-          value={value}
-          onChangeText={onChange}
-          placeholderTextColor={Color.grey}
-          fontFamily={FontFamily.ubuntuRegular}
-          fontSize={16}
-          paddingHorizontal={wp(2)}
-          width={wp(67)}
-          secureTextEntry={secureEntry}
-          textContentType={textType}
-          keyboardType={keyboardType}
-          autoCapitalize="none"
-          editable={editable}
-        />
+        <View style={styles.customInputField.fieldContainer}>
+          <TextInput
+            placeholder={placeHolder}
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={Color.grey}
+            fontFamily={FontFamily.ubuntuRegular}
+            fontSize={16}
+            paddingHorizontal={wp(2)}
+            width={"100%"}
+            secureTextEntry={secureEntry}
+            textContentType={textType}
+            keyboardType={keyboardType}
+            autoCapitalize="none"
+            editable={editable}
+          />
+        </View>
       </View>
-      {/* <Separator width={70} height={0.2} /> */}
     </View>
   );
 };
@@ -239,6 +240,20 @@ const styles = {
     flexDirection: "row",
     alignItems: "center",
     width: wp(70)
+  },
+  customInputField: {
+    innerContainer: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      width: "100%"
+    },
+    iconContainer: {
+      flex: 0.1
+    },
+    fieldContainer: {
+      flex: 1
+    }
   },
   iconContainer: {
     width: wp(5)

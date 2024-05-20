@@ -9,8 +9,8 @@ import {
   TouchableOpacity,
   Linking
 } from "react-native";
-import React from "react";
-import { Stack, useLocalSearchParams } from "expo-router";
+import React, { useState } from "react";
+import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import {
   Color,
   FontFamily,
@@ -27,6 +27,17 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const PostCard = () => {
   const { currentVehicle } = useLocalSearchParams();
+  const [isFavourite, setIsFavourite] = useState(false);
+  const navigation = useNavigation();
+
+  const handleFavouritize = () => {
+    setIsFavourite(!isFavourite);
+  };
+
+  const openBookingScreen = () => {
+    navigation.navigate("screens/bookingScreen", { vehicle: currentVehicle });
+  };
+
   const openDialScreen = number => {
     const url = Platform.OS === "ios" ? `telprompt:${number}` : `tel:${number}`;
 
@@ -46,7 +57,15 @@ const PostCard = () => {
         options={{
           headerTitle: "",
           headerShadowVisible: false,
-          headerTintColor: Color.dark
+          headerTintColor: Color.dark,
+          headerRight: () =>
+            <TouchableOpacity onPress={handleFavouritize}>
+              <Icon
+                name={isFavourite ? "heart" : "heart-o"}
+                size={sizeManager(3)}
+                color={Color.dark}
+              />
+            </TouchableOpacity>
         }}
       />
       <ScrollView style={styles.mainContainer}>
@@ -162,7 +181,12 @@ const PostCard = () => {
           <Text style={styles.buttonLabels}>Call</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.endButton}>
+        <TouchableOpacity
+          style={styles.endButton}
+          onPress={() => {
+            openBookingScreen();
+          }}
+        >
           <Icon name="calendar-check-o" size={20} color={Color.white} />
           <Text style={styles.buttonLabels}>Book</Text>
         </TouchableOpacity>
