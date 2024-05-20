@@ -23,12 +23,10 @@ const VehicleCard = ({ vehicle }) => {
           <Image source={vehicle.image} style={styles.image} />
         </View>
       </View>
-      {
-        isFeatured &&
+      {isFeatured &&
         <View style={styles.featuredLabelContainer}>
           <Text style={styles.featuredLabel}>Featured</Text>
-        </View>
-        }
+        </View>}
       {/* Description Container */}
       <View style={styles.descContainer}>
         <Text style={styles.cardLabel}>

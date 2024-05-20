@@ -166,9 +166,8 @@ const styles = StyleSheet.create({
     }
   },
   btnContainer: {
-    flexDirection: "row",
     position: "relative",
-    bottom: -260,
+    bottom: -210,
     width: "100%",
     justifyContent: "center",
     alignItems: "stretch",

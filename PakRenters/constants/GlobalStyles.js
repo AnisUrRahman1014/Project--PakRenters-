@@ -48,10 +48,11 @@ export const globalStyles = {
     alignItems: "center",
     flexDirection: "row"
   },
-  flatListButtonLabelStyle: {
+  flatListButtonLabelStyle: labelColor => ({
     fontFamily: FontFamily.ubuntuRegular,
-    fontSize: hp(2)
-  }
+    fontSize: hp(2),
+    color: labelColor ? labelColor : "black"
+  })
 };
 
 export const sizeManager = size => {

@@ -93,10 +93,10 @@ export const CustomAdInputField = ({
   );
 };
 
-export const LargeBtn = ({ onPress, btnLabel, btnColor }) => {
+export const LargeBtn = ({ onPress, btnLabel, btnColor, btnLabelColor }) => {
   return (
     <TouchableOpacity style={styles.largeBtn(btnColor)} onPress={onPress}>
-      <Text style={[styles.largeLabel]}>
+      <Text style={[styles.largeLabel(btnLabelColor)]}>
         {btnLabel}
       </Text>
     </TouchableOpacity>
@@ -110,7 +110,7 @@ export const LargeBtnWithIcon = ({
   icon,
   iconColor,
   btnBorderColor,
-  btnLabelColor
+  btnLabelColor = Color.white
 }) => {
   return (
     <TouchableOpacity
@@ -139,10 +139,20 @@ export const LargeBtnWithIcon = ({
   );
 };
 
-export const Smallbtn = ({ onPress, btnLabel, btnColor }) => {
+export const Smallbtn = ({
+  onPress,
+  btnLabel,
+  btnColor,
+  btnLabelColor = Color.white
+}) => {
   return (
     <TouchableOpacity style={styles.smallBtn} onPress={onPress}>
-      <Text style={[styles.largeLabel, { backgroundColor: { btnColor } }]}>
+      <Text
+        style={[
+          styles.largeLabel(btnLabelColor),
+          { backgroundColor: { btnColor } }
+        ]}
+      >
         {btnLabel}
       </Text>
     </TouchableOpacity>

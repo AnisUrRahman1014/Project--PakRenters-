@@ -29,7 +29,7 @@ export default function TabsLayout() {
         name="inboxScreen"
         options={{
           headerShown: false,
-          title: "Messages",
+          title: "Chat",
           tabBarIcon: ({ color }) =>
             <FontAwesome name="inbox" color={color} size={30} />
         }}

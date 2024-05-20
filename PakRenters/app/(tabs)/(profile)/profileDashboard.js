@@ -27,6 +27,7 @@ import { jwtDecode } from "jwt-decode"; // Correct import
 import axios from "axios";
 import { Buffer } from "buffer";
 import User from "../../classes/User";
+import { ipAddress } from "../../../constants/misc";
 
 // Polyfill for atob
 if (typeof global.atob === "undefined") {
@@ -72,7 +73,7 @@ const ProfileHomeScreen = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const res = await axios.get(`http://192.168.1.16:8000/profile/${userId}`);
+      const res = await axios.get(`http://${ipAddress}:8000/profile/${userId}`);
       const userData = res.data.user;
       const user = new User(
         userData.username,
@@ -133,13 +134,12 @@ const ProfileHomeScreen = () => {
 
   const profileOptions = [
     { label: "Personal", function: openManagePersonalScreen },
-    { label: "Manage Ads", function: openManageAdsScreen },
+    { label: "Manage Posts", function: openManageAdsScreen },
     { label: "Manage Bookings", function: openManageBookingsScreen },
     {
       label: "Manage Vehicles Status",
       function: openManageVehicleStatusScreen
-    },
-    { label: "Log out", function: handleLogout }
+    }
   ];
 
   // console.log(user.getProfilePic());
@@ -196,6 +196,27 @@ const ProfileHomeScreen = () => {
                         size={30}
                         color={Color.dark}
                       />
+                    </TouchableOpacity>}
+                  ListFooterComponent={() =>
+                    <TouchableOpacity
+                      style={[
+                        globalStyles.verticalFlatListBtn,
+                        {
+                          backgroundColor: Color.dark
+                        }
+                      ]}
+                      onPress={() => {
+                        handleLogout();
+                      }}
+                    >
+                      <Text
+                        style={globalStyles.flatListButtonLabelStyle(
+                          Color.white
+                        )}
+                      >
+                        Logout
+                      </Text>
+                      <Icon name="times-circle" size={30} color={Color.white} />
                     </TouchableOpacity>}
                 />
               </View>

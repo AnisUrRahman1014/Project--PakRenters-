@@ -84,7 +84,10 @@ const sendVerificationEmail = async (email, verificationToken) => {
     auth: {
       user: "anisrahman1014@gmail.com",
       pass: "ddth mhvt iktd rhha"
-    }
+    },
+    port: 465,
+    secure: true,
+    debug: true
   });
   const mailOptions = {
     from: "anisrahman1014@gmail.com",

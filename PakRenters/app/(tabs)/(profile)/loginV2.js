@@ -17,12 +17,13 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { LargeBtn, CustomFormInputField } from "../../../components/misc";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ipAddress } from "../../../constants/misc";
 
 const LoginV2 = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  console.log(process.env.CONNECTION_IP);
   const usernameFieldHandler = inputText => {
     // Update the state for the username
     const removedSpaces = inputText.replace(/\s/g, "");
@@ -40,7 +41,7 @@ const LoginV2 = () => {
       password: password
     };
     axios
-      .post("http://192.168.1.16:8000/login", userData)
+      .post(`http://${ipAddress}:8000/login`, userData)
       .then(res => {
         Alert.alert("Login Successful", "You have been logged in successfully");
         console.log(res.data);
@@ -108,6 +109,7 @@ const LoginV2 = () => {
               btnLabel={"Login"}
               onPress={handleLogin}
               btnColor={Color.dark}
+              btnLabelColor={Color.white}
             />
           </View>
         </View>
