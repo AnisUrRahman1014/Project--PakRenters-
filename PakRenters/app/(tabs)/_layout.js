@@ -16,6 +16,28 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="favourites"
+        options={{
+          headerShown: true,
+          headerTintColor: Color.dark,
+          title: "Favourites",
+          tabBarIcon: ({ color }) =>
+            <FontAwesome name={"heart"} color={color} size={25} />
+        }}
+      />
+      <Tabs.Screen
+        name="inboxScreen"
+        options={{
+          headerShown: true,
+          headerTintColor: Color.white,
+          headerStyle: { backgroundColor: Color.dark },
+          title: "Inbox",
+          tabBarIcon: ({ color }) =>
+            <FontAwesome name="inbox" color={color} size={30} />
+        }}
+      />
+
+      <Tabs.Screen
         name="notificationScreen"
         options={{
           headerShown: true,
@@ -25,15 +47,7 @@ export default function TabsLayout() {
             <FontAwesome name={"bell"} color={color} size={25} />
         }}
       />
-      <Tabs.Screen
-        name="inboxScreen"
-        options={{
-          headerShown: false,
-          title: "Chat",
-          tabBarIcon: ({ color }) =>
-            <FontAwesome name="inbox" color={color} size={30} />
-        }}
-      />
+
       <Tabs.Screen
         name="(profile)"
         options={{

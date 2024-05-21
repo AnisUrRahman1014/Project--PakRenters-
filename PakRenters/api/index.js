@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
   res.send({ status: "Started" });
 });
 
-app.post("/register", async (req, res) => {
+app.app.post("/register", async (req, res) => {
   const {
     username,
     email,

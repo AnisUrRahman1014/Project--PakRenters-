@@ -4,13 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Color, FontFamily, sizeManager } from "../../constants/GlobalStyles";
 import { useLocalSearchParams } from "expo-router";
 import Calendar from "react-native-calendars/src/calendar";
-import {
-  CustomFormInputField,
-  LargeBtn,
-  LargeBtnWithIcon
-} from "../../components/misc";
+import { CustomFormInputField, LargeBtnWithIcon } from "../../components/misc";
 
-const bookingScreen = () => {
+const BookingScreen = () => {
   const { vehicle } = useLocalSearchParams();
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -113,4 +109,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default bookingScreen;
+export default BookingScreen;

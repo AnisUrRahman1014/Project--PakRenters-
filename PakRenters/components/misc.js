@@ -23,21 +23,23 @@ export const CustomFormInputField = ({
   secureEntry = false,
   textType,
   keyboardType = "default",
-  editable = true
+  editable = true,
+  isIcon = true
 }) => {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.customInputField.innerContainer}>
-        <View style={styles.customInputField.iconContainer}>
-          <Icon
-            name={iconName}
-            size={20}
-            color={Color.dark}
-            width={wp(7)}
-            alignItems={"center"}
-            justifyContent={"center"}
-          />
-        </View>
+        {isIcon &&
+          <View style={styles.customInputField.iconContainer}>
+            <Icon
+              name={iconName}
+              size={20}
+              color={Color.dark}
+              width={wp(7)}
+              alignItems={"center"}
+              justifyContent={"center"}
+            />
+          </View>}
         <View style={styles.customInputField.fieldContainer}>
           <TextInput
             placeholder={placeHolder}
