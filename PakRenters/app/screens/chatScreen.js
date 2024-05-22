@@ -9,11 +9,9 @@ import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { Color, sizeManager } from "../../constants/GlobalStyles";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Entypo } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CustomFormInputField } from "../../components/misc";
 import Message from "../../components/message";
-import { Text } from "react-native";
 
 const ChatScreen = () => {
   const { username } = useLocalSearchParams();
@@ -68,8 +66,29 @@ const ChatScreen = () => {
         options={{
           headerShown: true,
           headerTitle: username,
-          headerTintColor: Color.dark,
-          headerTitleAlign: "center"
+          headerTintColor: Color.white,
+          headerStyle: { backgroundColor: Color.dark },
+          headerTitleAlign: "center",
+          headerRight: () =>
+            <TouchableOpacity
+              style={{
+                position: "relative",
+                right: -10,
+                width: sizeManager(5),
+                aspectRatio: 1,
+                backgroundColor: Color.lightGrey,
+                borderRadius: sizeManager(1),
+                alignItems: "center",
+                justifyContent: "center",
+                elevation: 5
+              }}
+            >
+              <MaterialIcons
+                name="phone-enabled"
+                size={25}
+                color={Color.dark}
+              />
+            </TouchableOpacity>
         }}
       />
       {/* MESSAGES CONTAINER */}
@@ -112,7 +131,7 @@ const ChatScreen = () => {
         </View>
         <View style={styles.inputContainer.sendBtnContainer}>
           <TouchableOpacity onPress={handleOnSendBtn}>
-            <MaterialIcons name="send" size={24} color={Color.dark} />
+            <MaterialIcons name="send" size={24} color={Color.focus} />
           </TouchableOpacity>
         </View>
       </View>
@@ -130,6 +149,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: sizeManager(1),
     paddingVertical: sizeManager(1),
+    backgroundColor: Color.white,
     gap: sizeManager(1),
     fieldContainer: {
       flex: 0.9
