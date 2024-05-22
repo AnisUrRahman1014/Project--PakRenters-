@@ -24,10 +24,11 @@ export const CustomFormInputField = ({
   textType,
   keyboardType = "default",
   editable = true,
-  isIcon = true
+  isIcon = true,
+  borderVisible = true
 }) => {
   return (
-    <View style={styles.mainContainer}>
+    <View style={styles.mainContainer(borderVisible)}>
       <View style={styles.customInputField.innerContainer}>
         {isIcon &&
           <View style={styles.customInputField.iconContainer}>
@@ -70,10 +71,11 @@ export const CustomAdInputField = ({
   keyboardType = "default",
   multiline = false,
   editable = true,
-  id
+  id,
+  borderVisible = true
 }) => {
   return (
-    <View style={styles.mainContainer}>
+    <View style={styles.mainContainer(borderVisible)}>
       <View style={styles.innerContainer}>
         <TextInput
           placeholder={placeHolder}
@@ -260,12 +262,12 @@ const styles = {
   iconContainer: {
     width: wp(5)
   },
-  mainContainer: {
+  mainContainer: borderVisible => ({
     flexDirection: "column",
     borderWidth: wp(0.2),
     padding: wp(1),
-    borderColor: Color.dark
-  },
+    borderColor: borderVisible ? Color.dark : "transparent"
+  }),
   largeBtn: (btnColor, btnBorderColor) => ({
     position: "relative",
     backgroundColor: btnColor,

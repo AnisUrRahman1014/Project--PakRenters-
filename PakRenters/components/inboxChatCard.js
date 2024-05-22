@@ -58,8 +58,7 @@ const styles = StyleSheet.create({
     height: sizeManager(10),
     flexDirection: "row",
     borderBottomWidth: sizeManager(0.15),
-    borderColor: Color.grey
-    // marginBottom: sizeManager(0.7)
+    borderColor: Color.dark
   },
   dpContainer: {
     flex: 0.3,

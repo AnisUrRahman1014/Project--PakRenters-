@@ -31,6 +31,8 @@ export default function TabsLayout() {
           headerShown: true,
           headerTintColor: Color.white,
           headerStyle: { backgroundColor: Color.dark },
+          headerTitleAlign: "center",
+          headerShadowVisible: false,
           title: "Inbox",
           tabBarIcon: ({ color }) =>
             <FontAwesome name="inbox" color={color} size={30} />

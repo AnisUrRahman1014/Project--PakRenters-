@@ -2,9 +2,10 @@ import {
   View,
   ScrollView,
   KeyboardAvoidingView,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { Color, sizeManager } from "../../constants/GlobalStyles";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -12,11 +13,11 @@ import { Entypo } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CustomFormInputField } from "../../components/misc";
 import Message from "../../components/message";
+import { Text } from "react-native";
 
 const ChatScreen = () => {
   const { username } = useLocalSearchParams();
   const [messageText, setMessageText] = useState("");
-  const scrollViewRef = useRef();
   //   Dummy Data
   const [messages, setMessages] = useState([
     { from: "you", message: "Hi", time: "07:21 pm" },
@@ -59,8 +60,6 @@ const ChatScreen = () => {
       };
       setMessages(prevMessages => [...prevMessages, newMessage]);
       setMessageText("");
-
-      //   scrollViewRef.current.scrollToEnd({ animated: true });
     }
   };
   return (
@@ -75,9 +74,12 @@ const ChatScreen = () => {
       />
       {/* MESSAGES CONTAINER */}
       <ScrollView
-        style={{ height: sizeManager(2), marginBottom: sizeManager(0.5) }}
+        style={{
+          height: sizeManager(2),
+          marginBottom: sizeManager(0.5),
+          backfaceVisibility: "visible"
+        }}
         contentContainerStyle={{ paddingVertical: sizeManager(1) }}
-        ref={scrollViewRef}
       >
         {messages.map((message, index) =>
           <Message

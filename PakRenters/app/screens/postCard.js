@@ -51,6 +51,8 @@ const PostCard = () => {
       })
       .catch(err => console.error("An error occurred", err));
   };
+
+  const handleOpenChat = () => {};
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
@@ -59,13 +61,18 @@ const PostCard = () => {
           headerShadowVisible: false,
           headerTintColor: Color.dark,
           headerRight: () =>
-            <TouchableOpacity onPress={handleFavouritize}>
-              <Icon
-                name={isFavourite ? "heart" : "heart-o"}
-                size={sizeManager(3)}
-                color={Color.dark}
-              />
-            </TouchableOpacity>
+            <View style={{ flexDirection: "row", gap: 12 }}>
+              <TouchableOpacity onPress={handleOpenChat}>
+                <Icon name="wechat" size={sizeManager(3)} color={Color.dark} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleFavouritize}>
+                <Icon
+                  name={isFavourite ? "heart" : "heart-o"}
+                  size={sizeManager(3)}
+                  color={Color.dark}
+                />
+              </TouchableOpacity>
+            </View>
         }}
       />
       <ScrollView style={styles.mainContainer}>
@@ -167,28 +174,28 @@ const PostCard = () => {
         </View>
       </ScrollView>
       {/* Bottom Buttons Container*/}
-      <View style={styles.endButtonContainer}>
-        <TouchableOpacity style={styles.endButton}>
+      <View style={styles.footer}>
+        {/* <TouchableOpacity style={styles.endButton}>
           <Icon name="wechat" size={20} color={Color.white} />
           <Text style={styles.buttonLabels}>Message</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
+        {/* Rent Container */}
+        <View style={styles.rentLabelContainer}>
+          <Text style={styles.rentLabel}>
+            {currentVehicle.rent} Rs./Day
+          </Text>
+        </View>
+        {/* Book Btn */}
+        <TouchableOpacity style={styles.bookBtn} onPress={openBookingScreen}>
+          <Icon name="calendar-check-o" size={20} color={Color.white} />
+        </TouchableOpacity>
+        {/* Dial btn */}
         <TouchableOpacity
-          style={styles.endButton}
+          style={styles.dialBtn}
           onPress={() => openDialScreen("03304089490")}
         >
-          <Icon name="phone" size={20} color={Color.white} />
-          <Text style={styles.buttonLabels}>Call</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.endButton}
-          onPress={() => {
-            openBookingScreen();
-          }}
-        >
-          <Icon name="calendar-check-o" size={20} color={Color.white} />
-          <Text style={styles.buttonLabels}>Book</Text>
+          <Icon name="phone" size={20} color={Color.dark} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -287,25 +294,63 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap"
   },
-  endButtonContainer: {
+  footer: {
     flexDirection: "row",
-    width: wp(100),
-    paddingHorizontal: wp(2)
+    width: "100%",
+    paddingHorizontal: wp(2),
+    paddingVertical: sizeManager(0.5),
+    justifyContent: "space-between",
+    backgroundColor: Color.white,
+    borderTopWidth: sizeManager(0.3),
+    borderRightWidth: sizeManager(0.1),
+    borderLeftWidth: sizeManager(0.1),
+    borderTopLeftRadius: sizeManager(2),
+    borderTopRightRadius: sizeManager(2),
+    borderColor: Color.dark,
+    backgroundColor: Color.lightGrey
   },
-  endButton: {
-    flex: 1,
+  rentLabelContainer: {
+    flex: 0.8,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Color.dark,
+    backgroundColor: Color.white,
     height: sizeManager(8),
-    borderColor: Color.white,
-    borderLeftWidth: wp(0.2),
-    borderRightWidth: wp(0.2),
-    paddingVertical: sizeManager(2)
+    paddingVertical: sizeManager(2),
+    borderRadius: sizeManager(100),
+    borderWidth: sizeManager(0.1),
+    borderColor: Color.dark,
+    elevation: 10
   },
-  buttonLabels: {
-    fontFamily: FontFamily.ubuntuLight,
-    color: Color.white,
+  dialBtn: {
+    flex: 0.2,
+    justifyContent: "center",
+    alignItems: "center",
+    height: sizeManager(8),
+    paddingVertical: sizeManager(2),
+    borderRadius: sizeManager(100),
+    backgroundColor: Color.white,
+    elevation: 3,
+    borderColor: Color.dark,
+    borderWidth: sizeManager(0.1),
+    marginHorizontal: sizeManager(0.5)
+  },
+  bookBtn: {
+    flex: 0.2,
+    justifyContent: "center",
+    alignItems: "center",
+    height: sizeManager(8),
+    paddingVertical: sizeManager(2),
+    borderRadius: sizeManager(100),
+    backgroundColor: Color.dark,
+    elevation: 3,
+    borderColor: Color.dark,
+    borderWidth: sizeManager(0.1),
+    marginHorizontal: sizeManager(0.5)
+  },
+  rentLabel: {
+    fontFamily: FontFamily.ubuntuBold,
+    color: Color.dark,
+    fontSize: 18,
     paddingVertical: wp(1)
   }
 });
