@@ -1,15 +1,15 @@
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   FlatList,
   SafeAreaView,
   Image,
   TouchableOpacity,
-  Linking
+  Linking,
+  Platform
 } from "react-native";
-import React, { useState } from "react";
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import {
   Color,
@@ -21,21 +21,38 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import { SpecsDisplay } from "../../components/misc";
+import { ServiceSwitch, SpecsDisplay } from "../../components/misc";
 import RenterSummaryCard from "../../components/renterSummaryCard";
 import Icon from "react-native-vector-icons/FontAwesome";
+import DotIndicator from "../../components/dotIndicator";
+import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import { Services } from "../../constants/Services";
 
 const PostCard = () => {
   const { currentVehicle } = useLocalSearchParams();
-  const [isFavourite, setIsFavourite] = useState(false);
   const navigation = useNavigation();
+  const [isFavourite, setIsFavourite] = useState(false);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const flatListRef = useRef(null);
+
+  const [services, setServices] = useState([
+    { label: Services.selfDrive, isEnabled: true },
+    { label: Services.withDriver, isEnabled: false },
+    { label: Services.decoration, isEnabled: false },
+    { label: Services.passengerPnD, isEnabled: false },
+    { label: Services.vehiclePnD, isEnabled: false },
+    { label: Services.tourism, isEnabled: false }
+  ]);
 
   const handleFavouritize = () => {
     setIsFavourite(!isFavourite);
   };
 
   const openBookingScreen = () => {
-    navigation.navigate("screens/bookingScreen", { vehicle: currentVehicle });
+    navigation.navigate("screens/(bookingScreens)/bookingScreen", {
+      vehicle: currentVehicle
+    });
   };
 
   const openDialScreen = number => {
@@ -52,7 +69,201 @@ const PostCard = () => {
       .catch(err => console.error("An error occurred", err));
   };
 
+  const renderImageItem = ({ item }) =>
+    <Image source={item} style={styles.image} />;
+
   const handleOpenChat = () => {};
+
+  const onViewableItemsChanged = useCallback(({ viewableItems }) => {
+    if (viewableItems.length > 0) {
+      setCurrentIndex(viewableItems[0].index);
+    }
+  }, []);
+
+  const viewabilityConfig = { itemVisiblePercentThreshold: 50 };
+
+  const renderTabBar = props =>
+    <TabBar
+      {...props}
+      indicatorStyle={{
+        backgroundColor: "white",
+        elevation: 5,
+        borderRadius: sizeManager(3)
+      }}
+      style={{
+        backgroundColor: Color.dark,
+        borderBottomRightRadius: sizeManager(2),
+        borderBottomLeftRadius: sizeManager(2),
+        marginBottom: sizeManager(1)
+      }}
+      labelStyle={{
+        fontFamily: FontFamily.ubuntuRegular,
+        fontSize: 14,
+        textTransform: "capitalize"
+      }}
+    />;
+
+  const DescriptionRoute = () =>
+    <View style={styles.tabContent}>
+      <Text style={styles.descriptionContainer}>
+        Honda Civic EK 2005 model modified. Audionic Sound system installed with
+        Air suspension and modified allow rims. Perfect for modeling
+        photography, music videos etc.
+      </Text>
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>Make - Model - Variant</Text>
+      </View>
+      <View style={styles.detailsSubContainer}>
+        <SpecsDisplay
+          iconName={"car-info"}
+          specLabel={currentVehicle.make}
+          triplePerRow={true}
+        />
+        <SpecsDisplay
+          iconName={"palette-swatch-variant"}
+          specLabel={currentVehicle.model}
+          triplePerRow={true}
+        />
+        <SpecsDisplay
+          iconName={"calendar"}
+          specLabel={currentVehicle.year}
+          triplePerRow={true}
+        />
+      </View>
+      {/* Specification */}
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>Specifications</Text>
+      </View>
+      <View style={styles.detailsSubContainer}>
+        <SpecsDisplay iconName={"engine"} specLabel={currentVehicle.engine} />
+        <SpecsDisplay
+          iconName={"car-shift-pattern"}
+          specLabel={currentVehicle.transmission}
+        />
+        <SpecsDisplay
+          iconName={"car-brake-abs"}
+          specLabel={currentVehicle.absBrakes}
+        />
+        <SpecsDisplay iconName={"car-seat"} specLabel={currentVehicle.seats} />
+        <SpecsDisplay
+          iconName={"car-cruise-control"}
+          specLabel={currentVehicle.cruise}
+        />
+        <SpecsDisplay
+          iconName={"car-traction-control"}
+          specLabel={currentVehicle.traction}
+        />
+      </View>
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>Renter Details</Text>
+      </View>
+      <View style={styles.detailsSubContainer}>
+        <RenterSummaryCard />
+      </View>
+    </View>;
+
+  const updateServices = index => {
+    setServices();
+  };
+
+  const ServiceRoute = () =>
+    <View style={styles.tabContent}>
+      <FlatList
+        data={services}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) =>
+          <ServiceSwitch
+            serviceLabel={item.label}
+            isEnabled={item.isEnabled}
+            onToggle={() => updateServices(index)}
+            disableToggle={true}
+          />}
+      />
+    </View>;
+
+  const CommentsRoute = () => <View style={styles.tabContent} />;
+
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: "description", title: "Description" },
+    { key: "services", title: "Services" },
+    { key: "comments", title: "Comments" }
+  ]);
+
+  const renderScene = SceneMap({
+    description: DescriptionRoute,
+    services: ServiceRoute,
+    comments: CommentsRoute
+  });
+
+  const renderItem = ({ item }) => {
+    switch (item.key) {
+      case "header":
+        return (
+          <View style={styles.postHeader}>
+            <View style={styles.headerSection}>
+              <Text style={styles.title}>
+                {currentVehicle.toString()}
+              </Text>
+              <Text style={styles.subTitle}>
+                {currentVehicle.location}
+              </Text>
+            </View>
+            <View style={styles.headerSection}>
+              <View style={styles.statusIndicatorContainer}>
+                <View
+                  style={styles.statusIndicatorStyle(StatusColors.available)}
+                />
+                <Text style={styles.status}>Available</Text>
+              </View>
+            </View>
+          </View>
+        );
+      case "images":
+        return (
+          <View style={styles.imageContainer}>
+            <FlatList
+              ref={flatListRef}
+              data={currentVehicle.image}
+              renderItem={renderImageItem}
+              keyExtractor={(item, index) => index.toString()}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              snapToInterval={wp(96)}
+              snapToAlignment="center"
+              decelerationRate="fast"
+              viewabilityConfig={viewabilityConfig}
+              onViewableItemsChanged={onViewableItemsChanged}
+              style={styles.imageContainer}
+            />
+            <DotIndicator
+              currentIndex={currentIndex}
+              totalImages={currentVehicle.image.length}
+            />
+          </View>
+        );
+      case "tabView":
+        return (
+          <TabView
+            navigationState={{ index, routes }}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={{ width: wp(100) }}
+            renderTabBar={renderTabBar}
+            style={{
+              height: "auto",
+              maxHeight: sizeManager(80),
+              minHeight: sizeManager(80),
+              width: "100%",
+              backgroundColor: Color.white
+            }}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
@@ -75,129 +286,35 @@ const PostCard = () => {
             </View>
         }}
       />
-      <ScrollView style={styles.mainContainer}>
-        <View style={styles.postHeader}>
-          <View style={styles.headerSection}>
-            <Text style={styles.title}>
-              {currentVehicle.toString()}
-            </Text>
-            <Text style={styles.subTitle}>
-              {currentVehicle.location}
-            </Text>
-          </View>
-          <View style={styles.headerSection}>
-            <View style={styles.statusIndicatorContainer}>
-              <View
-                style={styles.statusIndicatorStyle(StatusColors.available)}
-              />
-              <Text style={styles.status}>Available</Text>
+      <FlatList
+        data={[{ key: "header" }, { key: "images" }, { key: "tabView" }]}
+        renderItem={renderItem}
+        keyExtractor={item => item.key}
+        contentContainerStyle={{
+          paddingHorizontal: sizeManager(1),
+          justifyContent: "center"
+        }}
+        ListFooterComponent={() =>
+          <View style={styles.footer}>
+            <View style={styles.rentLabelContainer}>
+              <Text style={styles.rentLabel}>
+                {currentVehicle.rent} Rs./Day
+              </Text>
             </View>
-          </View>
-        </View>
-
-        {/* A scrollable container to hold the images of the vehicle */}
-        <View style={styles.imageContainer}>
-          <Image source={currentVehicle.image} style={styles.imageContainer} />
-        </View>
-
-        <View style={styles.detailsContainer}>
-          {/* DESCRIPTION LABEL */}
-          <View style={styles.labelContainer}>
-            <Text style={styles.label}>Description</Text>
-          </View>
-
-          {/* DESCRIPTION */}
-          <Text style={styles.descriptionContainer}>
-            Honda Civic EK 2005 model modified. Audionic Sound system installed
-            with Air suspension and modified allow rims. Perfect for modeling
-            photography, music videos etc.
-          </Text>
-
-          {/* VEHICLE MAKE MODEL CONTAINER LABEL*/}
-          <View style={styles.labelContainer}>
-            <Text style={styles.label}>Make & Model</Text>
-          </View>
-
-          {/* VEHICLE MAKE MODEL CONTAINER */}
-          <View style={styles.detailsSubContainer}>
-            <SpecsDisplay
-              iconName={"car-info"}
-              specLabel={currentVehicle.make}
-            />
-            <SpecsDisplay
-              iconName={"palette-swatch-variant"}
-              specLabel={currentVehicle.model}
-            />
-          </View>
-
-          {/* VEHICLE SPECS CONTAINER LABEL*/}
-          <View style={styles.labelContainer}>
-            <Text style={styles.label}>Specifications</Text>
-          </View>
-
-          {/* VEHICLE SPECS CONTAINER */}
-          <View style={styles.detailsSubContainer}>
-            <SpecsDisplay
-              iconName={"engine"}
-              specLabel={currentVehicle.engine}
-            />
-            <SpecsDisplay
-              iconName={"car-shift-pattern"}
-              specLabel={currentVehicle.transmission}
-            />
-            <SpecsDisplay
-              iconName={"car-brake-abs"}
-              specLabel={currentVehicle.absBrakes}
-            />
-            <SpecsDisplay
-              iconName={"car-seat"}
-              specLabel={currentVehicle.seats}
-            />
-            <SpecsDisplay
-              iconName={"car-cruise-control"}
-              specLabel={currentVehicle.cruise}
-            />
-            <SpecsDisplay
-              iconName={"car-traction-control"}
-              specLabel={currentVehicle.traction}
-            />
-          </View>
-
-          {/* RENTER DETAILS LABEL */}
-          <View style={styles.label}>
-            <Text style={styles.label}>Renter Details</Text>
-          </View>
-          {/* RENTER DETAILS CONTAINER */}
-          <View style={styles.detailsSubContainer}>
-            <RenterSummaryCard />
-          </View>
-        </View>
-      </ScrollView>
-      {/* Bottom Buttons Container*/}
-      <View style={styles.footer}>
-        {/* <TouchableOpacity style={styles.endButton}>
-          <Icon name="wechat" size={20} color={Color.white} />
-          <Text style={styles.buttonLabels}>Message</Text>
-        </TouchableOpacity> */}
-
-        {/* Rent Container */}
-        <View style={styles.rentLabelContainer}>
-          <Text style={styles.rentLabel}>
-            {currentVehicle.rent} Rs./Day
-          </Text>
-        </View>
-        {/* Book Btn */}
-        <TouchableOpacity style={styles.bookBtn} onPress={openBookingScreen}>
-          <Icon name="calendar-check-o" size={20} color={Color.white} />
-        </TouchableOpacity>
-        {/* Dial btn */}
-        <TouchableOpacity
-          style={styles.dialBtn}
-          onPress={() => openDialScreen("03304089490")}
-        >
-          <Icon name="phone" size={20} color={Color.dark} />
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity
+              style={styles.bookBtn}
+              onPress={openBookingScreen}
+            >
+              <Icon name="calendar-check-o" size={20} color={Color.white} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.dialBtn}
+              onPress={() => openDialScreen("03304089490")}
+            >
+              <Icon name="phone" size={20} color={Color.dark} />
+            </TouchableOpacity>
+          </View>}
+      />
     </SafeAreaView>
   );
 };
@@ -225,7 +342,13 @@ const styles = StyleSheet.create({
     marginVertical: wp(2),
     borderRadius: wp(4),
     width: wp(96),
-    height: hp(30),
+    height: hp(31),
+    resizeMode: "cover"
+  },
+  image: {
+    borderRadius: wp(4),
+    width: wp(96),
+    height: hp(28),
     resizeMode: "cover"
   },
   headerSection: {
@@ -271,11 +394,10 @@ const styles = StyleSheet.create({
     fontSize: hp(2.5),
     color: Color.dark
   },
-  detailsContainer: {
+  tabContent: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "flex-start",
-    paddingVertical: wp(3),
+    height: sizeManager(100),
+    paddingVertical: sizeManager(2),
     paddingHorizontal: wp(5),
     borderTopLeftRadius: wp(10),
     borderTopRightRadius: wp(10),
@@ -288,7 +410,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.ubuntuRegular,
     fontSize: wp(4),
     color: Color.grey,
-    textAlign: "left"
+    textAlign: "justify"
   },
   detailsSubContainer: {
     flexDirection: "row",

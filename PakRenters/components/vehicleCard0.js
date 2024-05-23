@@ -20,7 +20,7 @@ const VehicleCard = ({ vehicle }) => {
       {/* Image Container */}
       <View style={{ flex: 1 }}>
         <View style={styles.imageContainer}>
-          <Image source={vehicle.image} style={styles.image} />
+          <Image source={vehicle.image[0]} style={styles.image} />
         </View>
       </View>
       {isFeatured &&

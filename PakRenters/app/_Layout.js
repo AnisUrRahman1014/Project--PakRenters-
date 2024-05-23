@@ -27,13 +27,26 @@ const Layout = () => {
         }}
       />
       <Stack.Screen
-        name="screens/bookingScreen"
+        name="screens/(bookingScreens)/bookingScreen"
         options={{
           headerShown: true,
           title: "",
           headerShadowVisible: false,
           headerTintColor: Color.white,
           headerTransparent: true
+        }}
+      />
+      <Stack.Screen
+        name="screens/(bookingScreens)/bookingReport"
+        options={{
+          headerShown: true,
+          title: "Booking Details",
+          headerShadowVisible: true,
+          headerTintColor: Color.white,
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: Color.dark
+          }
         }}
       />
     </Stack>

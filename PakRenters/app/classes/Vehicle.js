@@ -3,6 +3,7 @@ class Vehicle {
     id,
     make,
     model,
+    year,
     engine,
     seats,
     transmission,
@@ -18,6 +19,7 @@ class Vehicle {
     this.postId = id;
     this.make = make;
     this.model = model;
+    this.year = year;
     this.location = location;
     this.rent = rent;
     this.comments = comments;

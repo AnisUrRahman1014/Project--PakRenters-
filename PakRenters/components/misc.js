@@ -174,13 +174,13 @@ export const TextOnlyBtn = ({ onPress, btnLabel }) => {
   );
 };
 
-export const SpecsDisplay = ({ specLabel, iconName }) => {
+export const SpecsDisplay = ({ specLabel, iconName, triplePerRow = false }) => {
   return (
-    <View style={styles.specsDisplayContainer}>
+    <View style={styles.specsDisplayContainer(triplePerRow)}>
       <View style={styles.specsIconContainer}>
         <MaterialCommunityIcon name={iconName} size={30} color={Color.dark} />
       </View>
-      <Text style={styles.specLabel}>
+      <Text style={styles.specLabel(triplePerRow)}>
         {specLabel}
       </Text>
     </View>
@@ -218,7 +218,12 @@ export const SpecsDisplayInput = ({ iconName, options, setValue }) => {
   );
 };
 
-export const ServiceSwitch = ({ serviceLabel, isEnabled, onToggle }) => {
+export const ServiceSwitch = ({
+  serviceLabel,
+  isEnabled,
+  onToggle,
+  disableToggle = false
+}) => {
   return (
     <View style={styles.serviceSwitch.container}>
       <View style={styles.serviceSwitch.switchContainer}>
@@ -227,6 +232,7 @@ export const ServiceSwitch = ({ serviceLabel, isEnabled, onToggle }) => {
           thumbColor={isEnabled ? Color.focus : Color.grey}
           onValueChange={onToggle}
           value={isEnabled}
+          disabled={disableToggle}
         />
       </View>
       <View style={styles.serviceSwitch.serviceLabelContainer}>
@@ -293,26 +299,27 @@ const styles = {
     justifyContent: "center",
     alignItems: "center"
   },
-  specsDisplayContainer: {
+  specsDisplayContainer: triplePerRow => ({
     flexDirection: "row",
-    width: wp(30),
-    height: hp(5),
+    width: triplePerRow ? sizeManager(30) : sizeManager(15),
+    height: sizeManager(3),
     alignItems: "center",
-    marginHorizontal: wp(6.2),
+    marginHorizontal: triplePerRow ? sizeManager(1.5) : sizeManager(2.5),
     marginVertical: wp(2)
-  },
+  }),
   specsIconContainer: {
     justifyContent: "center",
     alignItems: "center",
     width: wp(8),
     height: wp(7)
   },
-  specLabel: {
+  specLabel: triplePerRow => ({
     fontFamily: FontFamily.ubuntuRegular,
     fontSize: wp(4.5),
     color: Color.grey,
-    paddingHorizontal: wp(2)
-  },
+    paddingLeft: wp(2),
+    marginRight: triplePerRow ? sizeManager(0.5) : sizeManager(1)
+  }),
   dropdown: {
     width: sizeManager(14),
     fontFamily: FontFamily.ubuntuLight,

@@ -4,35 +4,55 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import { Color, FontFamily } from "../constants/GlobalStyles";
+import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import ReputationBar from "./reputationBar";
-export default function RenterSummaryCard({ User }) {
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+export default function RenterSummaryCard({
+  User,
+  showCallBtn = false,
+  showMessageBtn = false,
+  dualBtn = false
+}) {
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.section}>
+      <View style={styles.imageSection}>
         <Image
           style={styles.imageContainer}
           source={require("../assets/images/Anis.jpg")}
         />
       </View>
-      <View style={[styles.section, { marginLeft: wp(2) }]}>
-        <Text style={styles.userName}>Anis Urrahman</Text>
-        <ReputationBar />
-        <Text style={styles.secondaryLabel}>Member since 2024</Text>
-        <TouchableOpacity>
-          <Text
-            style={[
-              styles.secondaryLabel,
-              {
-                textDecorationLine: "underline",
-                textDecorationColor: Color.grey
-              }
-            ]}
-          >
-            View Profile
-          </Text>
-        </TouchableOpacity>
+      <View style={[styles.contentSection(dualBtn), { marginLeft: wp(2) }]}>
+        <View style={dualBtn ? styles.contentContainer : {}}>
+          <Text style={styles.userName}>Anis Urrahman</Text>
+          <ReputationBar />
+          <Text style={styles.secondaryLabel}>Member since 2024</Text>
+          <TouchableOpacity>
+            <Text
+              style={[
+                styles.secondaryLabel,
+                {
+                  textDecorationLine: "underline",
+                  textDecorationColor: Color.grey
+                }
+              ]}
+            >
+              View Profile
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
+      {showMessageBtn &&
+        <View style={styles.btnSection(dualBtn)}>
+          <TouchableOpacity style={styles.btnContainer}>
+            <MaterialIcon name="message" size={30} color={Color.dark} />
+          </TouchableOpacity>
+        </View>}
+      {showCallBtn &&
+        <View style={styles.btnSection(dualBtn)}>
+          <TouchableOpacity style={styles.btnContainer}>
+            <MaterialIcon name="call" size={30} color={Color.dark} />
+          </TouchableOpacity>
+        </View>}
     </View>
   );
 }
@@ -41,12 +61,33 @@ const styles = StyleSheet.create({
   mainContainer: {
     position: "relative",
     width: "100%",
+    height: sizeManager(12),
     flexDirection: "row",
-    paddingVertical: wp(2)
+    paddingVertical: wp(2),
+    alignItems: "center"
   },
-  section: {
-    justifyContent: "flex-start",
-    alignContent: "center"
+  contentSection: dualBtn => ({
+    flex: 1,
+    justifyContent: "center",
+    alignItems: dualBtn ? "center" : "flex-start"
+  }),
+  contentContainer: {
+    alignItems: "flex-start",
+    padding: sizeManager(0.01)
+  },
+  imageSection: {
+    flex: 0.3
+  },
+  btnSection: dualBtn => ({
+    flex: dualBtn ? 0.3 : 0.6,
+    height: "100%"
+  }),
+  btnContainer: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: sizeManager(0.01)
   },
   imageContainer: {
     width: wp(20),
