@@ -321,27 +321,23 @@ const PostCard = () => {
           paddingHorizontal: sizeManager(1),
           justifyContent: "center"
         }}
-        ListFooterComponent={() =>
-          <View style={styles.footer}>
-            <View style={styles.rentLabelContainer}>
-              <Text style={styles.rentLabel}>
-                {currentVehicle.rent} Rs./Day
-              </Text>
-            </View>
-            <TouchableOpacity
-              style={styles.bookBtn}
-              onPress={openBookingScreen}
-            >
-              <Icon name="calendar-check-o" size={20} color={Color.white} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.dialBtn}
-              onPress={() => openDialScreen("03304089490")}
-            >
-              <Icon name="phone" size={20} color={Color.dark} />
-            </TouchableOpacity>
-          </View>}
       />
+      <View style={styles.footer}>
+        <View style={styles.rentLabelContainer}>
+          <Text style={styles.rentLabel}>
+            {currentVehicle.rent} Rs./Day
+          </Text>
+        </View>
+        <TouchableOpacity style={styles.bookBtn} onPress={openBookingScreen}>
+          <Icon name="calendar-check-o" size={20} color={Color.white} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.dialBtn}
+          onPress={() => openDialScreen("03304089490")}
+        >
+          <Icon name="phone" size={20} color={Color.dark} />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

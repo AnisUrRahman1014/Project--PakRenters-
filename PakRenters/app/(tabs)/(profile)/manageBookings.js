@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { View, StyleSheet, SafeAreaView } from "react-native";
 import React from "react";
 import { Color, sizeManager } from "../../../constants/GlobalStyles";
 import VehicleCard from "../../../components/vehicleCardBookingsManage";
@@ -8,6 +8,7 @@ const vehicle = new Vehicle(
   1,
   "Honda",
   "Civic EK",
+  "2005",
   "1.6 cc",
   5,
   "Manual",
@@ -16,9 +17,9 @@ const vehicle = new Vehicle(
   "No",
   "Islamabad,Punjab",
   3500,
-  250,
+  2500,
   4.9,
-  require("../../../assets/images/civic003.jpg")
+  [require("../../../assets/images/civic003.jpg")]
 );
 const manageBookings = () => {
   return (

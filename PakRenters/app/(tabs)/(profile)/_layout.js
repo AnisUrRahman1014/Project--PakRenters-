@@ -35,7 +35,12 @@ export default function _layout() {
       />
       <Stack.Screen
         name="manageVehicleStatus"
-        options={{ headerShown: false }}
+        options={{
+          headerShown: true,
+          headerTitle: "Manage Vehicle Status",
+          headerShadowVisible: false,
+          headerTintColor: Color.dark
+        }}
       />
     </Stack>
   );

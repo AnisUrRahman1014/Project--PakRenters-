@@ -1,22 +1,16 @@
-import { React } from "react";
+import { React, useState } from "react";
 import { Text, View, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
-import {
-  Color,
-  FontFamily,
-  StatusColors,
-  sizeManager
-} from "../constants/GlobalStyles";
+import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation } from "expo-router";
 
-const VehicleCard = ({ vehicle }) => {
-  const navigation = useNavigation();
-  const handlePress = () => {
-    navigation.navigate("screens/postCard", { currentVehicle: vehicle });
+const FavouritizedPostCard = ({ vehicle }) => {
+  const [isFavourite, setIsFavourite] = useState(true);
+  const handleFavouritize = () => {
+    setIsFavourite(!isFavourite);
   };
   return (
-    <TouchableOpacity style={styles.card} onPress={handlePress}>
+    <TouchableOpacity style={styles.card}>
       <View style={styles.leftContainer}>
         <Image source={vehicle.image[0]} style={styles.image} />
       </View>
@@ -54,15 +48,12 @@ const VehicleCard = ({ vehicle }) => {
           </View>
         </View>
       </View>
-      <View style={styles.optionsContainer}>
-        <TouchableOpacity style={styles.optionsContainer.btn}>
-          <Icon name="bell-slash" size={sizeManager(3)} color={Color.focus} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.optionsContainer.btn}>
+      <View style={styles.btnContainer}>
+        <TouchableOpacity style={styles.btn} onPress={handleFavouritize}>
           <Icon
-            name="trash"
-            size={sizeManager(3.5)}
-            color={StatusColors.unavailable}
+            name={isFavourite ? "heart" : "heart-o"}
+            size={30}
+            color={Color.dark}
           />
         </TouchableOpacity>
       </View>
@@ -83,7 +74,7 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   leftContainer: {
-    flex: 1,
+    flex: 0.9,
     height: sizeManager(15),
     backgroundColor: Color.focus,
     alignItems: "center",
@@ -94,23 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: sizeManager(15),
     justifyContent: "center",
-    alignItems: "left",
-    backgroundColor: Color.white
-  },
-  optionsContainer: {
-    flex: 0.5,
-    backgroundColor: Color.white,
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: sizeManager(0.5),
-    btn: {
-      width: "80%",
-      aspectRatio: 1,
-      padding: "20%",
-      borderColor: Color.dark,
-      borderWidth: sizeManager(0.2)
-    }
+    alignItems: "left"
   },
   image: {
     width: "100%",
@@ -137,19 +112,19 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   rentLabelContainer: {
-    width: "70%",
+    width: "50%",
     backgroundColor: Color.focus,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: sizeManager(0.5),
-    paddingHorizontal: sizeManager(0.5),
-    paddingVertical: sizeManager(0.2)
+    borderRadius: sizeManager(0.5)
   },
   rentLabel: {
     fontFamily: FontFamily.ubuntuRegular,
-    fontSize: 16,
-    color: Color.white
+    fontSize: 16
+  },
+  btnContainer: {
+    flex: 0.3
   }
 });
 
-export default VehicleCard;
+export default FavouritizedPostCard;

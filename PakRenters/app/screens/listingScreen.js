@@ -28,6 +28,7 @@ const vehicles = [
     1,
     "Honda",
     "Civic EK",
+    "2005",
     "1.6 cc",
     5,
     "Manual",
@@ -38,12 +39,13 @@ const vehicles = [
     3500,
     250,
     4.9,
-    require("../../assets/images/civic003.jpg")
+    [require("../../assets/images/civic003.jpg")]
   ),
   new Vehicle(
     2, // Assuming '1' as an ID for this example
     "Toyota",
     "Prado", // vehicleName
+    "2012",
     "2.0 cc",
     7,
     "Auto",
@@ -54,12 +56,13 @@ const vehicles = [
     "5000", // rent
     "43", // comments
     "1.0", // rating
-    require("../../assets/images/toyota-prado-1.jpg") // image
+    [require("../../assets/images/toyota-prado-1.jpg")] // image
   ),
   new Vehicle(
     3,
     "Honda",
-    " Civic EK",
+    "Civic EK",
+    "2005",
     "1.6 cc",
     5,
     "Manual",
@@ -70,7 +73,7 @@ const vehicles = [
     3500,
     250,
     4.9,
-    require("../../assets/images/civic003.jpg")
+    [require("../../assets/images/civic003.jpg")]
   )
 ];
 const ListingScreen = ({ route }) => {

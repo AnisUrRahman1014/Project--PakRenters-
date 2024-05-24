@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
-import { Stack, router } from "expo-router";
-import { React, useState } from "react";
+import { router } from "expo-router";
+import { React } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -15,7 +15,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import { Color, FontFamily } from "../../constants/GlobalStyles";
+import { Color, FontFamily, sizeManager } from "../../constants/GlobalStyles";
 import SearchBar from "../../components/searchBar";
 import CategoryBtn from "../../components/categoryBtn";
 import VehicleCard from "../../components/vehicleCard0";
@@ -93,71 +93,103 @@ const Home = () => {
   // Dummy Data
   const isLoading = false;
   const error = false;
+
+  const renderItem = ({ item }) => {
+    switch (item.key) {
+      case "header":
+        return (
+          <View>
+            <View style={styles.tagLineContainer}>
+              <Text style={styles.heading1}>Welcome to PakRenters</Text>
+              <Text style={styles.heading2}>
+                Your ultimate renting companion
+              </Text>
+            </View>
+
+            <View style={styles.searchBarContainer}>
+              <SearchBar />
+            </View>
+          </View>
+        );
+      case "categories":
+        return (
+          <View>
+            {/* CATEGORY LABEL */}
+            <View style={styles.sectionLabelContainer}>
+              <Text style={styles.sectionLabelPrimary}>Categories</Text>
+            </View>
+
+            {/* CATEGORY CONTAINER */}
+            <View style={styles.section}>
+              <FlatList
+                data={categories}
+                renderItem={({ item }) => <CategoryBtn iconName={item} />}
+                numColumns={3}
+                contentContainerStyle={{
+                  alignContent: "center",
+                  justifyContent: "center"
+                }}
+                keyExtractor={item => item}
+              />
+            </View>
+          </View>
+        );
+      case "featuredAds":
+        return (
+          <View>
+            {/* FEATURED LABEL */}
+            <View style={styles.sectionLabelContainer}>
+              <Text style={styles.sectionLabelPrimary}>Featured</Text>
+              <TouchableOpacity>
+                <Text style={styles.sectionLabelSecondary}>View all</Text>
+              </TouchableOpacity>
+            </View>
+            {/* FEATURED CONTAINER */}
+            <View style={[styles.section, { justifyContent: "center" }]}>
+              {isLoading
+                ? <ActivityIndicator size={"large"} color={Color.dark} />
+                : <FlatList
+                    data={vehicles}
+                    renderItem={({ item }) => <VehicleCard vehicle={item} />}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    keyExtractor={item => item.postId}
+                    contentContainerStyle={{
+                      alignItems: "center",
+                      paddingVertical: wp(3)
+                    }}
+                  />}
+            </View>
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={styles.mainContainer}>
-        <View style={styles.tagLineContainer}>
-          <Text style={styles.heading1}>Welcome to PakRenters</Text>
-          <Text style={styles.heading2}>Your ultimate renting companion</Text>
-        </View>
-
-        <View style={styles.searchBarContainer}>
-          <SearchBar />
-        </View>
-        {/* CATEGORY LABEL */}
-        <View style={styles.sectionLabelContainer}>
-          <Text style={styles.sectionLabelPrimary}>Categories</Text>
-        </View>
-
-        {/* CATEGORY CONTAINER */}
-        <View style={styles.section}>
-          <FlatList
-            data={categories}
-            renderItem={({ item }) => <CategoryBtn iconName={item} />}
-            numColumns={3}
-            contentContainerStyle={{
-              alignContent: "center",
-              justifyContent: "center"
+      <View style={styles.mainContainer}>
+        <FlatList
+          data={[
+            { key: "header" },
+            { key: "categories" },
+            { key: "featuredAds" }
+          ]}
+          renderItem={renderItem}
+          keyExtractor={item => item.key}
+        />
+        {/* Post Ad Icon */}
+        <View style={styles.postAdBtnContainer}>
+          <TouchableOpacity
+            style={styles.postAdBtn}
+            onPress={() => {
+              router.push("../screens/(postAdScreens)/postDetailScreen");
             }}
-            keyExtractor={item => item}
-          />
-        </View>
-        {/* FEATURED LABEL */}
-        <View style={styles.sectionLabelContainer}>
-          <Text style={styles.sectionLabelPrimary}>Featured</Text>
-          <TouchableOpacity>
-            <Text style={styles.sectionLabelSecondary}>View all</Text>
+          >
+            <Icon name="plus" color={Color.white} size={25} />
           </TouchableOpacity>
         </View>
-        {/* FEATURED CONTAINER */}
-        <View style={[styles.section, { justifyContent: "center" }]}>
-          {isLoading
-            ? <ActivityIndicator size={"large"} color={Color.dark} />
-            : error
-              ? <Text>Something went wrong</Text>
-              : <FlatList
-                  data={vehicles}
-                  renderItem={({ item }) => <VehicleCard vehicle={item} />}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  keyExtractor={item => item.postId}
-                  contentContainerStyle={{
-                    alignItems: "center",
-                    paddingVertical: wp(3)
-                  }}
-                />}
-        </View>
-      </ScrollView>
-      {/* Post Ad Icon */}
-      <View style={styles.postAdBtnContainer}>
-        <TouchableOpacity
-          style={styles.postAdBtn}
-          onPress={() => {
-            router.push("../screens/(postAdScreens)/postDetailScreen");
-          }}
-        >
-          <Icon name="plus" color={Color.white} size={25} />
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -167,7 +199,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: Color.white,
-    padding: wp(3)
+    paddingHorizontal: sizeManager(1)
   },
   tagLineContainer: {
     flex: 0.1,
