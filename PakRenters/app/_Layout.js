@@ -44,9 +44,27 @@ const Layout = () => {
           headerShadowVisible: true,
           headerTintColor: Color.white,
           headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: Color.dark
-          }
+          headerStyle: { backgroundColor: Color.dark }
+        }}
+      />
+      <Stack.Screen
+        name="screens/userPovProfile"
+        options={{
+          headerShown: true,
+          title: "User Profile",
+          headerShadowVisible: true,
+          headerTintColor: Color.dark,
+          headerTitleAlign: "center"
+        }}
+      />
+      <Stack.Screen
+        name="screens/postsViewUserPov"
+        options={{
+          headerShown: true,
+          title: "Posts",
+          headerShadowVisible: true,
+          headerTintColor: Color.dark,
+          headerTitleAlign: "center"
         }}
       />
     </Stack>

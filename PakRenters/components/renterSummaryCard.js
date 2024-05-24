@@ -7,12 +7,17 @@ import {
 import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import ReputationBar from "./reputationBar";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import { useNavigation } from "expo-router";
 export default function RenterSummaryCard({
-  User,
+  user,
   showCallBtn = false,
   showMessageBtn = false,
   dualBtn = false
 }) {
+  const navigation = useNavigation();
+  const handleViewProfileOnPress = () => {
+    navigation.navigate("screens/userPovProfile", { user: user });
+  };
   return (
     <View style={styles.mainContainer}>
       <View style={styles.imageSection}>
@@ -26,7 +31,7 @@ export default function RenterSummaryCard({
           <Text style={styles.userName}>Anis Urrahman</Text>
           <ReputationBar />
           <Text style={styles.secondaryLabel}>Member since 2024</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleViewProfileOnPress}>
             <Text
               style={[
                 styles.secondaryLabel,

@@ -177,7 +177,7 @@ const PostCard = () => {
         <Text style={styles.label}>Renter Details</Text>
       </View>
       <View style={styles.detailsSubContainer}>
-        <RenterSummaryCard />
+        <RenterSummaryCard user={"user"} />
       </View>
     </View>;
 

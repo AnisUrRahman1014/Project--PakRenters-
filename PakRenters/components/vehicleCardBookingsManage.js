@@ -5,13 +5,17 @@ import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "expo-router";
 
-const VehicleCard = ({ vehicle }) => {
+const VehicleCard = ({ vehicle, onPress = null }) => {
   const navigation = useNavigation();
   const handleOnPress = () => {
     navigation.navigate("screens/bookingDetails", { vehicle: vehicle });
   };
+
+  if (onPress === null) {
+    onPress = handleOnPress;
+  }
   return (
-    <TouchableOpacity style={styles.card} onPress={handleOnPress}>
+    <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.leftContainer}>
         <Image source={vehicle.image[0]} style={styles.image} />
       </View>
