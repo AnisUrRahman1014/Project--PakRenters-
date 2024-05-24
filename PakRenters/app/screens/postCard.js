@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -258,8 +258,8 @@ const PostCard = () => {
               snapToInterval={wp(96)}
               snapToAlignment="center"
               decelerationRate="fast"
-              // viewabilityConfig={viewabilityConfig}
-              // onViewableItemsChanged={onViewableItemsChanged}
+              viewabilityConfig={viewabilityConfig}
+              onViewableItemsChanged={onViewableItemsChanged}
               style={styles.imageContainer}
             />
             <DotIndicator
