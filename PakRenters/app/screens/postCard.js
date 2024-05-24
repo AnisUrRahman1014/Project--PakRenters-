@@ -27,6 +27,9 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import DotIndicator from "../../components/dotIndicator";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { Services } from "../../constants/Services";
+import CommentComponent from "../../components/comment";
+import Comment from "../classes/Comment";
+import { FlatList as InsideFlatList } from "react-native-gesture-handler";
 
 const PostCard = () => {
   const { currentVehicle } = useLocalSearchParams();
@@ -35,6 +38,22 @@ const PostCard = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
+
+  // DUMMY DATA
+  const comments = [
+    new Comment("", "user", "ki hal ay", 3.5),
+    new Comment("", "user", "buray hal jani tu suna", 4),
+    new Comment("", "user", "superaman", 5),
+    new Comment("", "user", "ki hal ay", 3.5),
+    new Comment("", "user", "buray hal jani tu suna", 4),
+    new Comment("", "user", "superaman", 5),
+    new Comment("", "user", "ki hal ay", 3.5),
+    new Comment("", "user", "buray hal jani tu suna", 4),
+    new Comment("", "user", "superaman", 5),
+    new Comment("", "user", "ki hal ay", 3.5),
+    new Comment("", "user", "buray hal jani tu suna", 4),
+    new Comment("", "user", "superaman", 5)
+  ];
 
   const [services, setServices] = useState([
     { label: Services.selfDrive, isEnabled: true },
@@ -163,12 +182,13 @@ const PostCard = () => {
     </View>;
 
   const updateServices = index => {
+    // Implementation pending
     setServices();
   };
 
   const ServiceRoute = () =>
     <View style={styles.tabContent}>
-      <FlatList
+      <InsideFlatList
         data={services}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) =>
@@ -181,7 +201,13 @@ const PostCard = () => {
       />
     </View>;
 
-  const CommentsRoute = () => <View style={styles.tabContent} />;
+  const CommentsRoute = () =>
+    <View style={styles.tabContent}>
+      <InsideFlatList
+        data={comments}
+        renderItem={({ item }) => <CommentComponent comment={item} />}
+      />
+    </View>;
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -232,8 +258,8 @@ const PostCard = () => {
               snapToInterval={wp(96)}
               snapToAlignment="center"
               decelerationRate="fast"
-              viewabilityConfig={viewabilityConfig}
-              onViewableItemsChanged={onViewableItemsChanged}
+              // viewabilityConfig={viewabilityConfig}
+              // onViewableItemsChanged={onViewableItemsChanged}
               style={styles.imageContainer}
             />
             <DotIndicator
@@ -251,8 +277,9 @@ const PostCard = () => {
             initialLayout={{ width: wp(100) }}
             renderTabBar={renderTabBar}
             style={{
+              flex: 1,
               height: "auto",
-              maxHeight: sizeManager(80),
+              maxHeight: sizeManager(500),
               minHeight: sizeManager(80),
               width: "100%",
               backgroundColor: Color.white
@@ -396,7 +423,7 @@ const styles = StyleSheet.create({
   },
   tabContent: {
     flex: 1,
-    height: sizeManager(100),
+    // height: sizeManager(100),
     paddingVertical: sizeManager(2),
     paddingHorizontal: wp(5),
     borderTopLeftRadius: wp(10),
