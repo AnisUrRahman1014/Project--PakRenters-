@@ -16,10 +16,7 @@ import {
   globalStyles,
   sizeManager
 } from "../../../constants/GlobalStyles";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp
-} from "react-native-responsive-screen";
+import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { LargeBtn } from "../../../components/misc";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -89,9 +86,6 @@ const ProfileHomeScreen = () => {
       user.postCount = userData.posts.length;
       console.log(userData);
       setUser(user);
-
-      // Fetch and log the profile picture URL
-      const profilePicUrl = user.getProfilePic();
     } catch (err) {
       console.log("Error processing user profile", error);
     }
@@ -165,7 +159,7 @@ const ProfileHomeScreen = () => {
             </View>
           : <View style={styles.mainContainer}>
               <View style={styles.section}>
-                <TouchableOpacity style={styles.dpContainer}>
+                <View style={styles.dpContainer}>
                   {user && user.getProfilePic()
                     ? <Image
                         source={{ uri: user.getProfilePic() }}
@@ -175,7 +169,7 @@ const ProfileHomeScreen = () => {
                         source={require("../../../assets/images/userDemoPic.png")}
                         style={styles.image}
                       />}
-                </TouchableOpacity>
+                </View>
                 <Text style={styles.headerText}>
                   {user ? user.getUsername() : "Loading..."}
                 </Text>

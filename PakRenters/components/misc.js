@@ -122,7 +122,8 @@ export const LargeBtnWithIcon = ({
   icon,
   iconColor,
   btnBorderColor,
-  btnLabelColor = Color.white
+  btnLabelColor = Color.white,
+  iconSize = 30
 }) => {
   return (
     <TouchableOpacity
@@ -146,7 +147,7 @@ export const LargeBtnWithIcon = ({
       >
         {btnLabel}
       </Text>
-      <Icon name={icon} size={30} color={iconColor} />
+      <Icon name={icon} size={iconSize} color={iconColor} />
     </TouchableOpacity>
   );
 };

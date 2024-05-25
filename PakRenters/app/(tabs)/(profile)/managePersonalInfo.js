@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  Alert
+} from "react-native";
 import React, { useState } from "react";
 import {
   Color,
@@ -10,6 +17,7 @@ import {
   CustomFormInputField,
   LargeBtnWithIcon
 } from "../../../components/misc";
+import * as ImagePicker from "expo-image-picker";
 
 const managePersonalInfo = () => {
   const { user } = useLocalSearchParams();
@@ -19,6 +27,34 @@ const managePersonalInfo = () => {
   const [cnic, setCnic] = useState(user.getCNIC());
   const [province, setProvince] = useState(user.getProvince());
   const [city, setCity] = useState(user.getCity());
+
+  const [displayMoreOptions, setDisplayMoreOptions] = useState(false);
+  const toggleMoreOptions = () => {
+    setDisplayMoreOptions(!displayMoreOptions);
+  };
+
+  const moreOptions = [
+    {
+      label: "Change profile picture",
+      function: handleProfileChangeRequest
+    },
+    { label: "Apply for verification", function: handleVerificationRequest }
+  ];
+
+  const handleProfileChangeRequest = async () => {
+    console.log("superman");
+    const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!result) {
+      Alert.alert(
+        "Permission denied",
+        "Need permission to access your gallery"
+      );
+    }
+  };
+
+  const handleVerificationRequest = () => {
+    console.log(" Hello World ");
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -35,7 +71,11 @@ const managePersonalInfo = () => {
             <Text style={styles.fieldContainer.label}>Username:</Text>
           </View>
           <View style={styles.fieldContainer.right}>
-            <CustomFormInputField value={username} editable={false} />
+            <CustomFormInputField
+              value={username}
+              editable={false}
+              isIcon={false}
+            />
           </View>
         </View>
 
@@ -45,7 +85,11 @@ const managePersonalInfo = () => {
             <Text style={styles.fieldContainer.label}>Email:</Text>
           </View>
           <View style={styles.fieldContainer.right}>
-            <CustomFormInputField value={email} editable={false} />
+            <CustomFormInputField
+              value={email}
+              editable={false}
+              isIcon={false}
+            />
           </View>
         </View>
 
@@ -60,6 +104,7 @@ const managePersonalInfo = () => {
               editable={true}
               onChange={setPhoneNo}
               keyboardType="numeric"
+              isIcon={false}
             />
           </View>
         </View>
@@ -75,6 +120,7 @@ const managePersonalInfo = () => {
               editable={true}
               onChange={setCnic}
               keyboardType="numeric"
+              isIcon={false}
             />
           </View>
         </View>
@@ -89,6 +135,7 @@ const managePersonalInfo = () => {
               value={province}
               editable={true}
               onChange={setProvince}
+              isIcon={false}
             />
           </View>
         </View>
@@ -103,20 +150,51 @@ const managePersonalInfo = () => {
               value={city}
               editable={true}
               onChange={setCity}
+              isIcon={false}
             />
           </View>
         </View>
 
         {/* Button Container */}
         <View style={styles.btnContainer}>
-          <LargeBtnWithIcon
-            btnColor={Color.white}
-            btnLabel={"More Options"}
-            btnBorderColor={Color.dark}
-            btnLabelColor={Color.dark}
-            icon={"arrow-circle-up"}
-            iconColor={Color.dark}
-          />
+          <View
+            style={[
+              { height: "50%" },
+              displayMoreOptions
+                ? styles.displayMoreOptionsEnabled
+                : styles.displayMoreOptionsDisabled
+            ]}
+          >
+            <LargeBtnWithIcon
+              btnColor={!displayMoreOptions ? Color.white : Color.dark}
+              btnLabel={"More Options"}
+              btnBorderColor={!displayMoreOptions ? Color.dark : Color.white}
+              btnLabelColor={!displayMoreOptions ? Color.dark : Color.white}
+              icon={
+                !displayMoreOptions ? "arrow-circle-up" : "arrow-circle-down"
+              }
+              iconColor={!displayMoreOptions ? Color.dark : Color.white}
+              onPress={toggleMoreOptions}
+            />
+            {displayMoreOptions &&
+              <View style={styles.optionsBtnInnerContainer}>
+                <FlatList
+                  data={moreOptions}
+                  renderItem={({ item }) =>
+                    <LargeBtnWithIcon
+                      icon={"chevron-right"}
+                      iconColor={Color.dark}
+                      btnLabel={item.label}
+                      btnLabelColor={Color.dark}
+                      iconSize={15}
+                      btnBorderColor={Color.dark}
+                    />}
+                  contentContainerStyle={{
+                    gap: 10
+                  }}
+                />
+              </View>}
+          </View>
 
           <LargeBtnWithIcon
             btnColor={Color.dark}
@@ -166,12 +244,24 @@ const styles = StyleSheet.create({
     }
   },
   btnContainer: {
-    position: "relative",
-    bottom: -210,
     width: "100%",
     justifyContent: "center",
     alignItems: "stretch",
     gap: sizeManager(2)
+  },
+  displayMoreOptionsDisabled: {
+    justifyContent: "flex-end"
+  },
+  displayMoreOptionsEnabled: {
+    justifyContent: "flex-start",
+    borderBottomRightRadius: sizeManager(5),
+    borderBottomLeftRadius: sizeManager(5),
+    backgroundColor: Color.white,
+    elevation: 10
+  },
+  optionsBtnInnerContainer: {
+    paddingVertical: sizeManager(1),
+    paddingHorizontal: sizeManager(2)
   }
 });
 
