@@ -1,8 +1,15 @@
-import { SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity,ScrollView } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView
+} from "react-native";
 import React, { useState } from "react";
 import { Color, FontFamily, sizeManager } from "../../constants/GlobalStyles";
-import {CustomFormInputField} from "../../components/misc";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { CustomFormInputField } from "../../components/misc";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const BundleRequestForm = () => {
   const [description, setDescription] = useState();
@@ -23,26 +30,25 @@ const BundleRequestForm = () => {
           <Text style={styles.descriptionLabel}>
             Please provide the complete detail of your request:
           </Text>
-          <CustomFormInputField placeHolder="e.g. I want 5 grandes in black (model: 2020 or above) without driver and a prado in White with driver." value={description} onChange={setDescription} width={"100%"} multiline={true} isIcon= {false}/>
+          <CustomFormInputField
+            placeHolder="e.g. I want 5 grandes in black (model: 2020 or above) without driver and a prado in White with driver."
+            value={description}
+            onChange={setDescription}
+            width={"100%"}
+            multiline={true}
+            isIcon={false}
+          />
         </View>
         <View style={styles.section}>
-              <TouchableOpacity
-                style={styles.bundleBtn}
-              >
-                <View style={styles.bundleBtn.contentContainer}>
-                  <Text style={styles.bundleBtn.label}>
-                    Send Request
-                  </Text>
-                </View>
-                <View style={styles.bundleBtn.endContainer}>
-                  <Icon
-                    name="chevron-circle-right"
-                    size={25}
-                    color={Color.white}
-                  />
-                </View>
-              </TouchableOpacity>
+          <TouchableOpacity style={styles.bundleBtn}>
+            <View style={styles.bundleBtn.contentContainer}>
+              <Text style={styles.bundleBtn.label}>Send Request</Text>
             </View>
+            <View style={styles.bundleBtn.endContainer}>
+              <Icon name="chevron-circle-right" size={25} color={Color.white} />
+            </View>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -79,7 +85,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Color.dark,
     textAlign: "justify"
-  },section: {
+  },
+  section: {
     flex: 0.3,
     flexDirection: "row",
     flexWrap: "wrap",
@@ -87,7 +94,8 @@ const styles = StyleSheet.create({
     margin: sizeManager(1),
     paddingHorizontal: sizeManager(5),
     alignItems: "top"
-  },bundleBtn: {
+  },
+  bundleBtn: {
     flex: 1,
     backgroundColor: Color.dark,
     flexDirection: "row",

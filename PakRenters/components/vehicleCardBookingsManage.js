@@ -8,7 +8,7 @@ import { useNavigation } from "expo-router";
 const VehicleCard = ({ vehicle, onPress = null }) => {
   const navigation = useNavigation();
   const handleOnPress = () => {
-    navigation.navigate("screens/bookingDetails", { vehicle: vehicle });
+    navigation.navigate("screens/bookingsScreen", { vehicle: vehicle });
   };
 
   if (onPress === null) {

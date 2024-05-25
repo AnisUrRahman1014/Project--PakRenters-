@@ -57,7 +57,7 @@ export const CustomFormInputField = ({
             keyboardType={keyboardType}
             autoCapitalize="none"
             editable={editable}
-            multiline = {multiline}
+            multiline={multiline}
           />
         </View>
       </View>
@@ -188,7 +188,12 @@ export const SpecsDisplay = ({ specLabel, iconName, triplePerRow = false }) => {
     </View>
   );
 };
-export const SpecsDisplayInput = ({ iconName, options, setValue }) => {
+export const SpecsDisplayInput = ({
+  iconName,
+  options,
+  setValue,
+  triplePerRow = false
+}) => {
   const [selectedValue, setSelectedValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
 
@@ -198,7 +203,7 @@ export const SpecsDisplayInput = ({ iconName, options, setValue }) => {
     setIsFocus(false);
   };
   return (
-    <View style={styles.specsDisplayContainer}>
+    <View style={styles.specsDisplayContainer(triplePerRow)}>
       <View style={styles.specsIconContainer}>
         <MaterialCommunityIcon name={iconName} size={30} color={Color.dark} />
       </View>
@@ -285,12 +290,12 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     borderWidth: btnBorderColor ? sizeManager(0.2) : 0,
-    borderColor: btnBorderColor ? btnBorderColor : Color.white
+    borderColor: btnBorderColor
   }),
   largeLabel: btnLabelColor => ({
     fontFamily: FontFamily.ubuntuRegular,
     fontSize: hp(2),
-    color: btnLabelColor ? btnLabelColor : Color.white
+    color: btnLabelColor
   }),
   smallBtn: {
     position: "relative",

@@ -11,8 +11,10 @@ import { LargeBtnWithIcon } from "../../../components/misc";
 import DebitCardSummary from "../../../components/debitCardSummary";
 
 const BookingReportScreen = () => {
-  const { user, report } = useLocalSearchParams();
-  console.log(report);
+  const { user, report, accessType } = useLocalSearchParams();
+  if (!accessType) {
+    console.log("No Access Type");
+  }
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.mainContainer}>
@@ -104,20 +106,23 @@ const BookingReportScreen = () => {
           </View>
         </View>
 
-        <View style={styles.container}>
-          <DebitCardSummary user={user} />
-        </View>
+        {!accessType &&
+          <View>
+            <View style={styles.container}>
+              <DebitCardSummary user={user} />
+            </View>
 
-        {/* Payment Btn Container */}
-        <View style={styles.paymentBtnContainer}>
-          <LargeBtnWithIcon
-            icon={"check-circle"}
-            iconColor={"white"}
-            btnColor={Color.focus}
-            btnLabel={"Book Now"}
-            btnLabelColor={Color.white}
-          />
-        </View>
+            {/* Payment Btn Container */}
+            <View style={styles.paymentBtnContainer}>
+              <LargeBtnWithIcon
+                icon={"check-circle"}
+                iconColor={"white"}
+                btnColor={Color.focus}
+                btnLabel={"Book Now"}
+                btnLabelColor={Color.white}
+              />
+            </View>
+          </View>}
       </View>
     </SafeAreaView>
   );

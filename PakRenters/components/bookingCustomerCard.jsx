@@ -13,7 +13,8 @@ const BookingCustomerCard = ({ vehicle }) => {
   let report = new BookingReport(vehicle, startDate, endDate, totalDays, 3000);
   const handleOnPress = () => {
     navigation.navigate("screens/(bookingScreens)/bookingReport", {
-      report: report
+      report: report,
+      accessType: "restricted"
     });
   };
   return (

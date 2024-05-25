@@ -166,10 +166,8 @@ const ProfileHomeScreen = () => {
                 <TouchableOpacity style={styles.dpContainer}>
                   {user && user.getProfilePic()
                     ? <Image
-                        source={{
-                          uri: user.getProfilePic().toString("base64")
-                        }}
-                        style={styles.dpContainer}
+                        source={require("../../../assets/images/Anis.jpg")}
+                        style={styles.image}
                       />
                     : <Text>No Profile Picture</Text>}
                 </TouchableOpacity>
@@ -242,6 +240,12 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1,
     backgroundColor: Color.lightGrey,
     borderRadius: wp(100)
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    aspectRatio: 1,
+    borderRadius: sizeManager(100)
   },
   demoPic: {
     position: "relative",

@@ -40,7 +40,7 @@ const Layout = () => {
         name="screens/(bookingScreens)/bookingReport"
         options={{
           headerShown: true,
-          title: "Booking Details",
+          title: "Booking Report",
           headerShadowVisible: true,
           headerTintColor: Color.white,
           headerTitleAlign: "center",
