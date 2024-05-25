@@ -1,5 +1,5 @@
 import "react-native-get-random-values";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { React } from "react";
 import {
   ActivityIndicator,
@@ -20,7 +20,7 @@ import SearchBar from "../../components/searchBar";
 import CategoryBtn from "../../components/categoryBtn";
 import VehicleCard from "../../components/vehicleCard0";
 import Vehicle from "../classes/Vehicle";
-import Icon from "react-native-vector-icons/AntDesign";
+import Icon from "react-native-vector-icons/FontAwesome";
 const categories = [
   "car",
   "motorbike",
@@ -90,9 +90,14 @@ const vehicles = [
 ];
 
 const Home = () => {
+  const navigation = useNavigation();
   // Dummy Data
   const isLoading = false;
   const error = false;
+
+  const handleBundleRequestOnPress = () => {
+    navigation.navigate("screens/bundleRequestForm");
+  };
 
   const renderItem = ({ item }) => {
     switch (item.key) {
@@ -162,6 +167,39 @@ const Home = () => {
             </View>
           </View>
         );
+      case "bundleRequest":
+        return (
+          <View>
+            {/* FEATURED LABEL */}
+            <View style={styles.sectionLabelContainer}>
+              <Text style={styles.sectionLabelPrimary}>Request Bundle</Text>
+            </View>
+            <View style={styles.section}>
+              <TouchableOpacity
+                style={styles.bundleBtn}
+                onPress={handleBundleRequestOnPress}
+              >
+                <View style={styles.bundleBtn.iconContainer}>
+                  <View style={styles.bundleBtn.iconInnerContainer}>
+                    <Icon name="briefcase" size={30} color={Color.white} />
+                  </View>
+                </View>
+                <View style={styles.bundleBtn.contentContainer}>
+                  <Text style={styles.bundleBtn.label}>
+                    Request Vehicle Bundle
+                  </Text>
+                </View>
+                <View style={styles.bundleBtn.endContainer}>
+                  <Icon
+                    name="chevron-circle-right"
+                    size={25}
+                    color={Color.white}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        );
       default:
         return null;
     }
@@ -174,10 +212,15 @@ const Home = () => {
           data={[
             { key: "header" },
             { key: "categories" },
-            { key: "featuredAds" }
+            { key: "featuredAds" },
+            { key: "bundleRequest" }
           ]}
           renderItem={renderItem}
           keyExtractor={item => item.key}
+          contentContainerStyle={{
+            paddingTop: sizeManager(2),
+            paddingBottom: sizeManager(10)
+          }}
         />
         {/* Post Ad Icon */}
         <View style={styles.postAdBtnContainer}>
@@ -267,6 +310,38 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 5
+  },
+  bundleBtn: {
+    flex: 1,
+    backgroundColor: Color.dark,
+    flexDirection: "row",
+    padding: sizeManager(1),
+    borderRadius: sizeManager(100),
+    elevation: 5,
+    label: {
+      fontFamily: FontFamily.ubuntuRegular,
+      fontSize: 16,
+      color: Color.white
+    },
+    iconContainer: {
+      flex: 0.3,
+      justifyContent: "center",
+      alignItems: "center"
+    },
+    contentContainer: {
+      flex: 0.7,
+      justifyContent: "center",
+      alignItems: "center"
+    },
+    iconInnerContainer: {
+      width: "70&",
+      aspectRatio: 1
+    },
+    endContainer: {
+      flex: 0.2,
+      justifyContent: "center",
+      alignItems: "center"
+    }
   }
 });
 

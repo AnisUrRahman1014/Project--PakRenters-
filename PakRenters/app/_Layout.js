@@ -67,6 +67,16 @@ const Layout = () => {
           headerTitleAlign: "center"
         }}
       />
+      <Stack.Screen
+        name="screens/bundleRequestForm"
+        options={{
+          headerShown: true,
+          title: "Request a custom bundle",
+          headerShadowVisible: true,
+          headerTintColor: Color.dark,
+          headerTitleAlign: "center"
+        }}
+      />
     </Stack>
   );
 };

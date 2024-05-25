@@ -25,7 +25,8 @@ export const CustomFormInputField = ({
   keyboardType = "default",
   editable = true,
   isIcon = true,
-  borderVisible = true
+  borderVisible = true,
+  multiline = false
 }) => {
   return (
     <View style={styles.mainContainer(borderVisible)}>
@@ -56,6 +57,7 @@ export const CustomFormInputField = ({
             keyboardType={keyboardType}
             autoCapitalize="none"
             editable={editable}
+            multiline = {multiline}
           />
         </View>
       </View>
