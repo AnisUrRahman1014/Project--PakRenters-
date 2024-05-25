@@ -4,7 +4,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import { Color, FontFamily } from "../../../constants/GlobalStyles";
+import {
+  Color,
+  FontFamily,
+  sizeManager
+} from "../../../constants/GlobalStyles";
 import { Stack, router } from "expo-router";
 import { LargeBtn, CustomFormInputField } from "../../../components/misc";
 import { ScrollView } from "react-native-gesture-handler";
@@ -148,7 +152,7 @@ const styles = {
   mainContainer: {
     display: "flex",
     flex: 1,
-    padding: wp(2),
+    padding: sizeManager(2),
     backgroundColor: Color.white
   },
   logoContainer: {
@@ -168,7 +172,7 @@ const styles = {
   },
   componentContainer: {
     flex: 5,
-    paddingHorizontal: wp(2),
+    paddingHorizontal: sizeManager(4),
     paddingVertical: hp(3),
     gap: hp(3),
     alignItems: "center",

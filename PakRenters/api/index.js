@@ -11,6 +11,7 @@ const port = 8000;
 const cors = require("cors");
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -23,13 +24,15 @@ app.get("/", (req, res) => {
   res.send({ status: "Started" });
 });
 
-app.post("/register", async (req, res) => {
+const upload = require("./middleware/upload");
+app.use("/uploads", express.static("uploads"));
+
+app.post("/register", upload.single("profilePic"), async (req, res, next) => {
   const {
     username,
     email,
     password,
     phoneNumber,
-    profilePic,
     province,
     city,
     cnic
@@ -50,16 +53,15 @@ app.post("/register", async (req, res) => {
   const newUser = new User({
     username,
     email,
-    password,
+    password: hashedPassword,
     phoneNumber,
-    profilePic,
+    profilePic: req.file.path,
     province,
     city,
-    cnic
+    cnic,
+    verificationToken: crypto.randomBytes(20).toString("hex")
   });
 
-  newUser.verificationToken = crypto.randomBytes(20).toString("hex");
-  newUser.password = hashedPassword;
   try {
     // Attempt to save the new user in the database
     await newUser.save();
@@ -171,9 +173,27 @@ app.get("/profile/:userId", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    // Send the profile picture file
     res.status(200).json({ user });
   } catch (err) {
     res.status(500).json({ message: "Error retrieving user profile" });
+  }
+});
+
+// Serve profile picture
+app.get("/profilePic/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+
+    if (!user || !user.profilePic) {
+      return res.status(404).json({ message: "Profile picture not found" });
+    }
+
+    // Send the profile picture file
+    res.sendFile(path.resolve(user.profilePic));
+  } catch (err) {
+    res.status(500).json({ message: "Error retrieving profile picture" });
   }
 });
 

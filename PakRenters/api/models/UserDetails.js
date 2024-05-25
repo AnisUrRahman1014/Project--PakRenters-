@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   profilePic: {
-    type: mongoose.Schema.Types.Buffer,
+    type: String,
     required: false
   },
   cnic: {

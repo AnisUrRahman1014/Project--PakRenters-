@@ -81,7 +81,7 @@ const ProfileHomeScreen = () => {
         userData.password,
         userData.phoneNumber
       );
-      user.setProfilePic(userData.profilePic);
+      user.setProfilePic(`http://${ipAddress}:8000/${userData.profilePic}`);
       user.setProvince(userData.province);
       user.setCNIC(userData.cnic);
       user.setCity(userData.city);
@@ -89,7 +89,9 @@ const ProfileHomeScreen = () => {
       user.postCount = userData.posts.length;
       console.log(userData);
       setUser(user);
-      console.log(user.getProfilePic().toString("base64"));
+
+      // Fetch and log the profile picture URL
+      const profilePicUrl = user.getProfilePic();
     } catch (err) {
       console.log("Error processing user profile", error);
     }
@@ -166,10 +168,13 @@ const ProfileHomeScreen = () => {
                 <TouchableOpacity style={styles.dpContainer}>
                   {user && user.getProfilePic()
                     ? <Image
-                        source={require("../../../assets/images/Anis.jpg")}
+                        source={{ uri: user.getProfilePic() }}
                         style={styles.image}
                       />
-                    : <Text>No Profile Picture</Text>}
+                    : <Image
+                        source={require("../../../assets/images/userDemoPic.png")}
+                        style={styles.image}
+                      />}
                 </TouchableOpacity>
                 <Text style={styles.headerText}>
                   {user ? user.getUsername() : "Loading..."}
@@ -199,9 +204,7 @@ const ProfileHomeScreen = () => {
                     <TouchableOpacity
                       style={[
                         globalStyles.verticalFlatListBtn,
-                        {
-                          backgroundColor: Color.dark
-                        }
+                        { backgroundColor: Color.dark }
                       ]}
                       onPress={() => {
                         handleLogout();
@@ -239,7 +242,8 @@ const styles = StyleSheet.create({
     width: "40%",
     aspectRatio: 1 / 1,
     backgroundColor: Color.lightGrey,
-    borderRadius: wp(100)
+    borderRadius: wp(100),
+    elevation: 10
   },
   image: {
     width: "100%",

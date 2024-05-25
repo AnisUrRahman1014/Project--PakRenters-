@@ -100,7 +100,12 @@ export const CustomAdInputField = ({
   );
 };
 
-export const LargeBtn = ({ onPress, btnLabel, btnColor, btnLabelColor }) => {
+export const LargeBtn = ({
+  onPress,
+  btnLabel,
+  btnColor,
+  btnLabelColor = Color.white
+}) => {
   return (
     <TouchableOpacity style={styles.largeBtn(btnColor)} onPress={onPress}>
       <Text style={[styles.largeLabel(btnLabelColor)]}>

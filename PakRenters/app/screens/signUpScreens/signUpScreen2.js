@@ -17,8 +17,8 @@ const SignUpScreen2 = () => {
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      quality: 1
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true
     });
     if (!result.canceled) {
       console.log(result);
@@ -30,6 +30,7 @@ const SignUpScreen2 = () => {
 
   const handleContinue = () => {
     newUser.setProfilePic(selectedImage);
+    console.log(selectedImage);
   };
 
   return (

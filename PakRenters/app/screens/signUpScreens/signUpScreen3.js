@@ -8,6 +8,7 @@ import {
 import { Color, FontFamily } from "../../../constants/GlobalStyles";
 import { CustomFormInputField, Smallbtn } from "../../../components/misc";
 import axios from "axios";
+import { ipAddress } from "../../../constants/misc";
 
 const SingUpScreen3 = () => {
   const { newUser } = useLocalSearchParams();
@@ -35,23 +36,44 @@ const SingUpScreen3 = () => {
     newUser.setProvince(province);
     newUser.setCity(city);
 
-    console.log(newUser);
+    // const userData = {
+    //   username: newUser.getUsername(),
+    //   email: newUser.getEmail(),
+    //   password: newUser.getPassword(),
+    //   phoneNumber: newUser.getPhoneNo(),
+    //   cnic: newUser.getCNIC(),
+    //   province: newUser.getProvince(),
+    //   city: newUser.getCity(),
+    //   profilePic: newUser.getProfilePic()
+    // };
 
-    const userData = {
-      username: newUser.getUsername(),
-      email: newUser.getEmail(),
-      password: newUser.getPassword(),
-      phoneNumber: newUser.getPhoneNo(),
-      cnic: newUser.getCNIC(),
-      province: newUser.getProvince(),
-      city: newUser.getCity(),
-      profilePic: newUser.getProfilePic()
-    };
+    const uri = newUser.profilePic;
+    const fileName = uri.split("/").pop();
+    const fileType = fileName.split(".").pop();
+    const formData = new FormData();
+    formData.append("username", newUser.username);
+    formData.append("email", newUser.email);
+    formData.append("password", newUser.password);
+    formData.append("phoneNumber", newUser.phoneNo);
+    formData.append("province", province);
+    formData.append("city", city);
+    formData.append("cnic", cnic);
+    formData.append("profilePic", {
+      name: fileName,
+      uri,
+      type: `image/${fileType}`
+    });
 
     try {
       const response = await axios.post(
-        "http://192.168.1.16:8000/register",
-        userData
+        `http://192.168.1.8:8000/register`,
+        formData,
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data"
+          }
+        }
       );
 
       if (response.data.status === "OK") {
@@ -72,8 +94,6 @@ const SingUpScreen3 = () => {
       );
       console.log("Registration failed", error);
     }
-
-    // router.push("../../(tabs)/(profile)/profileDashboard");
   };
 
   return (
