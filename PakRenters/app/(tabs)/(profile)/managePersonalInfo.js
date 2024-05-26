@@ -18,17 +18,20 @@ import {
   LargeBtnWithIcon
 } from "../../../components/misc";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { ipAddress } from "../../../constants/misc";
 
-const managePersonalInfo = () => {
+const ManagePersonalInfo = () => {
   const { user } = useLocalSearchParams();
-  const [username, setUsername] = useState(user.getUsername());
-  const [email, setEmail] = useState(user.getEmail());
+  const username = user.getUsername();
+  const email = user.getEmail();
   const [phoneNo, setPhoneNo] = useState(user.getPhoneNo());
   const [cnic, setCnic] = useState(user.getCNIC());
   const [province, setProvince] = useState(user.getProvince());
   const [city, setCity] = useState(user.getCity());
-
   const [displayMoreOptions, setDisplayMoreOptions] = useState(false);
+
   const toggleMoreOptions = () => {
     setDisplayMoreOptions(!displayMoreOptions);
   };
@@ -36,19 +39,76 @@ const managePersonalInfo = () => {
   const moreOptions = [
     {
       label: "Change profile picture",
-      function: handleProfileChangeRequest
+      function: () => handleProfileChangeRequest
     },
-    { label: "Apply for verification", function: handleVerificationRequest }
+    {
+      label: "Apply for verification",
+      function: () => handleVerificationRequest
+    }
   ];
 
   const handleProfileChangeRequest = async () => {
-    console.log("superman");
-    const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!result) {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
       Alert.alert(
         "Permission denied",
         "Need permission to access your gallery"
       );
+      return;
+    }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1]
+    });
+    if (!result.canceled) {
+      updateInDb(result.assets[0].uri);
+    } else {
+      alert("You did not select any image.");
+    }
+  };
+
+  const updateInDb = async uri => {
+    const fileName = uri.split("/").pop();
+    const fileType = fileName.split(".").pop();
+
+    const formData = new FormData();
+    formData.append("profilePic", {
+      name: fileName,
+      uri,
+      type: `image/${fileType}`
+    });
+
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      if (!token) {
+        Alert.alert(
+          "Unauthorized",
+          "Please log in to update your profile picture"
+        );
+        return;
+      }
+
+      const response = await axios.post(
+        `http://${ipAddress}:8000/updateProfilePic/${user._id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.status === 200) {
+        Alert.alert("Success", "Profile picture updated successfully.");
+        // Optionally, update the local user state to reflect the new profile picture
+      } else {
+        Alert.alert("Error", "Failed to update profile picture");
+      }
+    } catch (error) {
+      console.log("Error uploading image", error);
+      Alert.alert("Error", "An error occurred while uploading the image");
     }
   };
 
@@ -188,6 +248,7 @@ const managePersonalInfo = () => {
                       btnLabelColor={Color.dark}
                       iconSize={15}
                       btnBorderColor={Color.dark}
+                      onPress={item.function()}
                     />}
                   contentContainerStyle={{
                     gap: 10
@@ -265,4 +326,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default managePersonalInfo;
+export default ManagePersonalInfo;

@@ -18,7 +18,8 @@ const SignUpScreen2 = () => {
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true
+      allowsEditing: true,
+      aspect: [1, 1]
     });
     if (!result.canceled) {
       console.log(result);

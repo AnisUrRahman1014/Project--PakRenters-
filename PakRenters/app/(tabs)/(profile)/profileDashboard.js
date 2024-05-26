@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useNavigation } from "expo-router";
@@ -35,6 +36,7 @@ const ProfileHomeScreen = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState("");
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Polyfill atob for Node.js
@@ -54,6 +56,8 @@ const ProfileHomeScreen = () => {
         }
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoading(false);
       }
     };
     checkLoginStatus();
@@ -69,6 +73,7 @@ const ProfileHomeScreen = () => {
   );
 
   const fetchUserProfile = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(`http://${ipAddress}:8000/profile/${userId}`);
       const userData = res.data.user;
@@ -84,10 +89,13 @@ const ProfileHomeScreen = () => {
       user.setCity(userData.city);
       user.updateReputation(userData.reputation);
       user.postCount = userData.posts.length;
-      console.log(userData);
+      user._id = userId;
       setUser(user);
+      console.log(user);
     } catch (err) {
       console.log("Error processing user profile", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -138,84 +146,98 @@ const ProfileHomeScreen = () => {
     }
   ];
 
+  const renderContent = () => {
+    if (!isLoggedIn) {
+      return (
+        <View style={styles.noLoginScreen}>
+          <Image
+            source={require("../../../assets/images/PakRenters-v3.0.jpg")}
+            style={styles.demoPic}
+          />
+          <Text style={styles.noLoginSloggen}>
+            Break the chains and join the ultimate renting platform
+          </Text>
+          <LargeBtn
+            btnLabel={"Login to continue"}
+            onPress={openLoginPage}
+            btnColor={Color.focus}
+          />
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.mainContainer}>
+          <View style={styles.section}>
+            <View style={styles.dpContainer}>
+              {user && user.getProfilePic()
+                ? <Image
+                    source={{ uri: user.getProfilePic() }}
+                    style={styles.image}
+                  />
+                : <Image
+                    source={require("../../../assets/images/userDemoPic.png")}
+                    style={styles.image}
+                  />}
+            </View>
+            <Text style={styles.headerText}>
+              {user ? user.getUsername() : "Loading..."}
+            </Text>
+          </View>
+
+          <View style={[styles.section, { alignItems: "flex-start" }]}>
+            <FlatList
+              data={profileOptions}
+              renderItem={({ item }) =>
+                <TouchableOpacity
+                  style={globalStyles.verticalFlatListBtn}
+                  onPress={() => {
+                    item.function();
+                  }}
+                >
+                  <Text style={globalStyles.flatListButtonLabelStyle}>
+                    {item.label}
+                  </Text>
+                  <Icon
+                    name="arrow-circle-right"
+                    size={30}
+                    color={Color.dark}
+                  />
+                </TouchableOpacity>}
+              ListFooterComponent={() =>
+                <TouchableOpacity
+                  style={[
+                    globalStyles.verticalFlatListBtn,
+                    { backgroundColor: Color.dark }
+                  ]}
+                  onPress={() => {
+                    handleLogout();
+                  }}
+                >
+                  <Text
+                    style={globalStyles.flatListButtonLabelStyle(Color.white)}
+                  >
+                    Logout
+                  </Text>
+                  <Icon name="times-circle" size={30} color={Color.white} />
+                </TouchableOpacity>}
+            />
+          </View>
+        </View>
+      );
+    }
+  };
+
   // console.log(user.getProfilePic());
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.mainContainer}>
-        {!isLoggedIn
-          ? <View style={styles.noLoginScreen}>
-              <Image
-                source={require("../../../assets/images/PakRenters-v3.0.jpg")}
-                style={styles.demoPic}
-              />
-              <Text style={styles.noLoginSloggen}>
-                Break the chains and join the ultimate renting platform
-              </Text>
-              <LargeBtn
-                btnLabel={"Login to continue"}
-                onPress={openLoginPage}
-                btnColor={Color.focus}
-              />
-            </View>
-          : <View style={styles.mainContainer}>
-              <View style={styles.section}>
-                <View style={styles.dpContainer}>
-                  {user && user.getProfilePic()
-                    ? <Image
-                        source={{ uri: user.getProfilePic() }}
-                        style={styles.image}
-                      />
-                    : <Image
-                        source={require("../../../assets/images/userDemoPic.png")}
-                        style={styles.image}
-                      />}
-                </View>
-                <Text style={styles.headerText}>
-                  {user ? user.getUsername() : "Loading..."}
-                </Text>
-              </View>
-
-              <View style={[styles.section, { alignItems: "flex-start" }]}>
-                <FlatList
-                  data={profileOptions}
-                  renderItem={({ item }) =>
-                    <TouchableOpacity
-                      style={globalStyles.verticalFlatListBtn}
-                      onPress={() => {
-                        item.function();
-                      }}
-                    >
-                      <Text style={globalStyles.flatListButtonLabelStyle}>
-                        {item.label}
-                      </Text>
-                      <Icon
-                        name="arrow-circle-right"
-                        size={30}
-                        color={Color.dark}
-                      />
-                    </TouchableOpacity>}
-                  ListFooterComponent={() =>
-                    <TouchableOpacity
-                      style={[
-                        globalStyles.verticalFlatListBtn,
-                        { backgroundColor: Color.dark }
-                      ]}
-                      onPress={() => {
-                        handleLogout();
-                      }}
-                    >
-                      <Text
-                        style={globalStyles.flatListButtonLabelStyle(
-                          Color.white
-                        )}
-                      >
-                        Logout
-                      </Text>
-                      <Icon name="times-circle" size={30} color={Color.white} />
-                    </TouchableOpacity>}
-                />
-              </View>
-            </View>}
+        {loading
+          ? <ActivityIndicator
+              size="large"
+              color={Color.focus}
+              style={styles.loader}
+            />
+          : renderContent()}
       </View>
     </SafeAreaView>
   );
@@ -234,7 +256,7 @@ const styles = StyleSheet.create({
   },
   dpContainer: {
     width: "40%",
-    aspectRatio: 1 / 1,
+    aspectRatio: 1,
     backgroundColor: Color.lightGrey,
     borderRadius: wp(100),
     elevation: 10
@@ -268,6 +290,11 @@ const styles = StyleSheet.create({
   headerText: {
     fontFamily: FontFamily.ubuntuMedium,
     fontSize: sizeManager(3)
+  },
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 

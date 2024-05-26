@@ -36,17 +36,6 @@ const SingUpScreen3 = () => {
     newUser.setProvince(province);
     newUser.setCity(city);
 
-    // const userData = {
-    //   username: newUser.getUsername(),
-    //   email: newUser.getEmail(),
-    //   password: newUser.getPassword(),
-    //   phoneNumber: newUser.getPhoneNo(),
-    //   cnic: newUser.getCNIC(),
-    //   province: newUser.getProvince(),
-    //   city: newUser.getCity(),
-    //   profilePic: newUser.getProfilePic()
-    // };
-
     const uri = newUser.profilePic;
     const fileName = uri.split("/").pop();
     const fileType = fileName.split(".").pop();
@@ -66,7 +55,7 @@ const SingUpScreen3 = () => {
 
     try {
       const response = await axios.post(
-        `http://192.168.1.8:8000/register`,
+        `http://${ipAddress}:8000/register`,
         formData,
         {
           headers: {
