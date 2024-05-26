@@ -21,6 +21,7 @@ import CategoryBtn from "../../components/categoryBtn";
 import VehicleCard from "../../components/vehicleCard0";
 import Vehicle from "../classes/Vehicle";
 import Icon from "react-native-vector-icons/FontAwesome";
+
 const categories = [
   "car",
   "motorbike",

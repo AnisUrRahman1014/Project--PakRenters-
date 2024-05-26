@@ -3,6 +3,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { Color } from "../constants/GlobalStyles";
 SplashScreen.preventAutoHideAsync();
+
 const Layout = () => {
   const [fontsLoaded] = useFonts({
     "Ubuntu-Bold": require("../assets/fonts/Ubuntu-Bold.ttf"),
@@ -17,6 +18,7 @@ const Layout = () => {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
       <Stack.Screen
         name="screens/(postAdScreens)"
         options={{
