@@ -27,6 +27,18 @@ app.get("/", (req, res) => {
 const upload = require("./middleware/upload");
 app.use("/uploads", express.static("uploads"));
 
+// Authentication middleware
+// const authenticateToken = (req, res, next) => {
+//   const authHeader = req.headers["authorization"];
+//   const token = authHeader && authHeader.split(" ")[1];
+//   if (token == null) return res.sendStatus(401);
+//   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//     if (err) return res.sendStatus(403);
+//     req.user = user;
+//     next();
+//   });
+// };
+
 app.post("/register", upload.single("profilePic"), async (req, res, next) => {
   const {
     username,
@@ -215,14 +227,66 @@ app.post(
       user.profilePic = filePath;
       await user.save();
 
-      res
-        .status(200)
-        .json({
-          message: "Profile picture updated successfully",
-          profilePic: filePath
-        });
+      res.status(200).json({
+        message: "Profile picture updated successfully",
+        profilePic: filePath
+      });
     } catch (error) {
       console.error("Error updating profile picture:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
+// Update user information endpoint
+app.post("/updateUserInfo/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { phoneNo, cnic, province, city } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user information
+    user.phoneNo = phoneNo;
+    user.cnic = cnic;
+    user.province = province;
+    user.city = city;
+
+    await user.save();
+    res.status(200).json({ message: "User information updated successfully" });
+  } catch (error) {
+    console.error("Error updating user information:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+const uploadPDF = require("./middleware/uploadPdf");
+
+app.post(
+  "/uploadCNIC/:userId",
+  uploadPDF.single("idCard"),
+  async (req, res, next) => {
+    try {
+      const filePath = req.file.path;
+      const userId = req.params.userId;
+
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Here you might want to save the filePath to the user's document record in the database
+      user.idCardPDF = filePath;
+      await user.save();
+
+      res
+        .status(200)
+        .json({ message: "PDF uploaded successfully", filePath: filePath });
+    } catch (error) {
+      console.error("Error uploading PDF:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   }

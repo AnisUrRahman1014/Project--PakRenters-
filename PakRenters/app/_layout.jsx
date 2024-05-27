@@ -79,6 +79,16 @@ const Layout = () => {
           headerTitleAlign: "center"
         }}
       />
+      <Stack.Screen
+        name="screens/applyForVerificationForm"
+        options={{
+          headerShown: true,
+          title: "Verification Form",
+          headerShadowVisible: true,
+          headerTintColor: Color.dark,
+          headerTitleAlign: "center"
+        }}
+      />
     </Stack>
   );
 };

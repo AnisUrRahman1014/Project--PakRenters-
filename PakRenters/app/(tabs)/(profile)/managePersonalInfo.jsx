@@ -12,7 +12,7 @@ import {
   FontFamily,
   sizeManager
 } from "../../../constants/GlobalStyles";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import {
   CustomFormInputField,
   LargeBtnWithIcon
@@ -23,6 +23,7 @@ import axios from "axios";
 import { ipAddress } from "../../../constants/misc";
 
 const ManagePersonalInfo = () => {
+  const navigation = useNavigation();
   const { user } = useLocalSearchParams();
   const username = user.getUsername();
   const email = user.getEmail();
@@ -31,6 +32,7 @@ const ManagePersonalInfo = () => {
   const [province, setProvince] = useState(user.getProvince());
   const [city, setCity] = useState(user.getCity());
   const [displayMoreOptions, setDisplayMoreOptions] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
 
   const toggleMoreOptions = () => {
     setDisplayMoreOptions(!displayMoreOptions);
@@ -44,8 +46,16 @@ const ManagePersonalInfo = () => {
     {
       label: "Apply for verification",
       function: () => handleVerificationRequest
+    },
+    {
+      label: "Edit information",
+      function: () => handleEditInfoRequest
     }
   ];
+
+  const handleEditInfoRequest = () => {
+    setIsEditable(true);
+  };
 
   const handleProfileChangeRequest = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -113,7 +123,75 @@ const ManagePersonalInfo = () => {
   };
 
   const handleVerificationRequest = () => {
-    console.log(" Hello World ");
+    navigation.navigate("screens/applyForVerificationForm", { user: user });
+  };
+
+  const validateFields = () => {
+    const cnicRegex = /^[0-9]{13}$/;
+    const phoneRegex = /^((\+92|0)3\d{9})$/;
+
+    if (!phoneNo || !cnic || !province || !city) {
+      Alert.alert("Error", "All fields are required.");
+      return false;
+    }
+
+    if (!cnicRegex.test(cnic)) {
+      Alert.alert(
+        "Error",
+        "CNIC must be exactly 13 digits long and contain only numbers."
+      );
+      return false;
+    }
+
+    if (!phoneRegex.test(phoneNo)) {
+      Alert.alert(
+        "Error",
+        "Phone number must be valid. If starting with '0', it should be 11 digits long. If starting with '+92', it should be 13 digits long."
+      );
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSaveAndExit = async () => {
+    if (!validateFields()) {
+      return;
+    }
+
+    const updatedInfo = { phoneNo, cnic, province, city };
+
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      if (!token) {
+        Alert.alert(
+          "Unauthorized",
+          "Please log in to update your information."
+        );
+        return;
+      }
+
+      const response = await axios.post(
+        `http://${ipAddress}:8000/updateUserInfo/${user._id}`,
+        updatedInfo,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.status === 200) {
+        Alert.alert("Success", "Information updated successfully.");
+        navigation.goBack();
+      } else {
+        Alert.alert("Error", "Failed to update information.");
+      }
+    } catch (error) {
+      console.error("Error updating information", error);
+      Alert.alert("Error", "An error occurred while updating the information.");
+    }
   };
 
   return (
@@ -153,7 +231,7 @@ const ManagePersonalInfo = () => {
           </View>
         </View>
 
-        {/* EMAIL */}
+        {/* Phone Number */}
         <View style={styles.fieldContainer}>
           <View style={styles.fieldContainer.left}>
             <Text style={styles.fieldContainer.label}>Phone Number:</Text>
@@ -161,7 +239,7 @@ const ManagePersonalInfo = () => {
           <View style={styles.fieldContainer.right}>
             <CustomFormInputField
               value={phoneNo}
-              editable={true}
+              editable={isEditable}
               onChange={setPhoneNo}
               keyboardType="numeric"
               isIcon={false}
@@ -177,7 +255,7 @@ const ManagePersonalInfo = () => {
           <View style={styles.fieldContainer.right}>
             <CustomFormInputField
               value={cnic}
-              editable={true}
+              editable={isEditable}
               onChange={setCnic}
               keyboardType="numeric"
               isIcon={false}
@@ -193,7 +271,7 @@ const ManagePersonalInfo = () => {
           <View style={styles.fieldContainer.right}>
             <CustomFormInputField
               value={province}
-              editable={true}
+              editable={isEditable}
               onChange={setProvince}
               isIcon={false}
             />
@@ -208,7 +286,7 @@ const ManagePersonalInfo = () => {
           <View style={styles.fieldContainer.right}>
             <CustomFormInputField
               value={city}
-              editable={true}
+              editable={isEditable}
               onChange={setCity}
               isIcon={false}
             />
@@ -227,7 +305,7 @@ const ManagePersonalInfo = () => {
           >
             <LargeBtnWithIcon
               btnColor={!displayMoreOptions ? Color.white : Color.dark}
-              btnLabel={"More Options"}
+              btnLabel={"Options"}
               btnBorderColor={!displayMoreOptions ? Color.dark : Color.white}
               btnLabelColor={!displayMoreOptions ? Color.dark : Color.white}
               icon={
@@ -250,9 +328,7 @@ const ManagePersonalInfo = () => {
                       btnBorderColor={Color.dark}
                       onPress={item.function()}
                     />}
-                  contentContainerStyle={{
-                    gap: 10
-                  }}
+                  contentContainerStyle={{ gap: 10 }}
                 />
               </View>}
           </View>
@@ -262,6 +338,7 @@ const ManagePersonalInfo = () => {
             btnLabel={"Save & Exit"}
             icon={"check-circle"}
             iconColor={Color.white}
+            onPress={handleSaveAndExit}
           />
         </View>
       </View>

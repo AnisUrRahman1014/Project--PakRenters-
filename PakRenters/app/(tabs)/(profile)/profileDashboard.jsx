@@ -9,8 +9,8 @@ import {
   Alert,
   ActivityIndicator
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { router, useNavigation } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import {
   Color,
   FontFamily,
@@ -63,13 +63,15 @@ const ProfileHomeScreen = () => {
     checkLoginStatus();
   }, []);
 
-  useEffect(
-    () => {
-      if (userId) {
-        fetchUserProfile();
-      }
-    },
-    [userId]
+  useFocusEffect(
+    useCallback(
+      () => {
+        if (userId) {
+          fetchUserProfile();
+        }
+      },
+      [userId]
+    )
   );
 
   const fetchUserProfile = async () => {

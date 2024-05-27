@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  idCardPDF: {
+    type: String,
+    required: false
+  },
   province: {
     type: String,
     required: false
