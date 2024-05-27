@@ -19,16 +19,18 @@ import {
   LargeBtnWithIcon,
   SpecsDisplayInput
 } from "../../../components/misc";
-import Icon from "react-native-vector-icons/AntDesign";
+import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import Vehicle from "../../classes/Vehicle0";
+
 const VehicleDetailsScreen = () => {
   const navigation = useNavigation();
 
   const { newPost } = useLocalSearchParams();
 
   const [images, setImages] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
   const [year, setYear] = useState("");
@@ -52,7 +54,7 @@ const VehicleDetailsScreen = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true, // This is available only on web currently
       aspect: [4, 3],
-      quality: 1
+      selectionLimit: 8
     });
 
     if (!result.canceled && result.assets) {
@@ -79,19 +81,55 @@ const VehicleDetailsScreen = () => {
       setImages(prevImages => [...prevImages, ...result.assets]); // Correctly merge previous images with new ones
     }
   };
+
+  const handleImagePress = uri => {
+    if (selectedImage !== "" && selectedImage === uri) {
+      const newImages = images.filter(image => image.uri !== uri);
+      setImages(newImages);
+    } else {
+      setSelectedImage(uri);
+    }
+  };
+
   // Function to render each item
-  const renderItem = ({ item }) =>
-    <View style={styles.imageUploadContainer}>
-      <Image
-        source={{ uri: item.uri }}
-        style={{
-          width: "100%",
-          aspectRatio: 3 / 4,
-          resizeMode: "contain",
-          borderRadius: sizeManager(2)
-        }}
-      />
-    </View>;
+  const renderItem = ({ item }) => {
+    const isPortrait = item.width > item.height;
+    const isSelected = selectedImage === item.uri;
+
+    return (
+      <TouchableOpacity
+        style={styles.imageUploadContainer}
+        onPress={() => handleImagePress(item.uri)}
+      >
+        <Image
+          source={{ uri: item.uri }}
+          style={{
+            width: "100%",
+            aspectRatio: !isPortrait ? 3 / 4 : 4 / 3,
+            resizeMode: "contain",
+            borderRadius: !isPortrait ? sizeManager(2) : 0
+          }}
+        />
+        {/* Overlay */}
+        {isSelected &&
+          <View
+            style={{
+              ...StyleSheet.absoluteFillObject,
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              backgroundColor: Color.dark,
+              borderRadius: sizeManager(2),
+              opacity: 0.8,
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            <Icon name="trash" size={40} color={Color.white} />
+          </View>}
+      </TouchableOpacity>
+    );
+  };
 
   // Render Footer to show the add button
   const renderFooter = () =>
@@ -296,6 +334,12 @@ const styles = StyleSheet.create({
     backgroundColor: Color.lightGrey,
     alignItems: "center",
     justifyContent: "center"
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Color.focus,
+    opacity: 60,
+    borderRadius: sizeManager(2)
   },
   mainContainer: {
     flex: 1,

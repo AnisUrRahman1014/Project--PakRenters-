@@ -1,4 +1,11 @@
-import { View, Text, SafeAreaView, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  Alert
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import {
   Color,
@@ -14,6 +21,7 @@ import Post from "../../classes/Post0";
 import { Dropdown } from "react-native-element-dropdown";
 import * as Location from "expo-location";
 import axios from "axios";
+
 const PostAdScreen1 = () => {
   const navigation = useNavigation();
 
@@ -101,8 +109,60 @@ const PostAdScreen1 = () => {
     [location]
   );
 
+  const validateFields = () => {
+    // Check for empty fields
+    if (!title.trim()) {
+      alert("Post title is required.");
+      return false;
+    }
+    if (!description.trim()) {
+      alert("Description is required.");
+      return false;
+    }
+    if (!rent.trim()) {
+      alert("Rent is required.");
+      return false;
+    }
+    if (!postCategory) {
+      alert("Category is required.");
+      return false;
+    }
+    if (!cityProvinceString.trim()) {
+      alert("City and Province are required.");
+      return false;
+    }
+
+    // Validate Rent
+    const rentPattern = /^[0-9]+$/;
+    if (!rentPattern.test(rent)) {
+      alert("Rent should only contain digits (0-9).");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleTitleChange = text => {
+    if (text.length <= 50) {
+      setTitle(text);
+    } else {
+      Alert.alert("Post title should not exceed 50 characters.");
+    }
+  };
+
+  const handleDescriptionChange = text => {
+    if (text.length <= 500) {
+      setDescription(text);
+    } else {
+      Alert.alert("Description should not exceed 500 characters.");
+    }
+  };
+
   let post;
   const handleProceed = () => {
+    if (!validateFields()) {
+      return;
+    }
     reverseGeocode();
     setAddressString(street.concat(", " + cityProvinceString));
     let temp = location;
@@ -124,7 +184,8 @@ const PostAdScreen1 = () => {
             <Text style={styles.label}>Post Title: *</Text>
             <CustomAdInputField
               placeHolder={"e.g. Honda Civic Ek Black"}
-              onChange={text => setTitle(text)}
+              value={title}
+              onChange={handleTitleChange}
             />
           </View>
 
@@ -133,7 +194,8 @@ const PostAdScreen1 = () => {
             <CustomAdInputField
               placeHolder={"e.g. Details of the vehicle"}
               multiline={true}
-              onChange={text => setDescription(text)}
+              value={description}
+              onChange={handleDescriptionChange}
             />
           </View>
 
@@ -183,7 +245,7 @@ const PostAdScreen1 = () => {
             <Text style={styles.label}>Street, House No. : </Text>
             <CustomAdInputField
               value={street}
-              onChange={setStreet}
+              onChange={text => setStreet(text)}
               placeHolder={"e.g. Shehzad Colony"}
             />
           </View>
@@ -197,6 +259,7 @@ const PostAdScreen1 = () => {
               showsUserLocation={true}
               showsMyLocationButton={true}
               followUserLocation={true}
+              region={mapRegion}
             >
               <Marker coordinate={mapRegion} />
             </MapView>

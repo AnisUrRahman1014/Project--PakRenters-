@@ -38,7 +38,7 @@ const PostSchema = new mongoose.Schema({
   comments: [
     {
       user: {
-        type: mnogoose.Schema.Type.ObjectId,
+        type: mongoose.Schema.Type.ObjectId,
         ref: "User"
       },
       text: String,
