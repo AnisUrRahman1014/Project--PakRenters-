@@ -92,14 +92,40 @@ const ApplyForVerificationForm = () => {
     const fileName = uri.split("/").pop();
     const fileType = fileName.split(".").pop();
     let formData = new FormData();
-    formData.append("idCard", {
+    formData.append("userId", user._id);
+    formData.append("whatsappNumber", whatsAppNumber);
+    formData.append("cnicNumber", idCardNumber);
+    formData.append("idCardFile", {
       name: fileName,
       uri,
       type: `application/${fileType}`
     });
+    // try {
+    //   const response = await axios.post(
+    //     `http://${ipAddress}:8000/uploadCNIC/${user._id}`,
+    //     formData,
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //         "Content-Type": "multipart/form-data"
+    //       }
+    //     }
+    //   );
+
+    //   if (response.status === 200) {
+    //     Alert.alert("CNIC file stored");
+    //     // navigation.goBack();
+    //   } else {
+    //     Alert.alert("Error", "Failed to upload file.");
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    //   Alert.alert("Request failed", "Please try later");
+    // }
     try {
+      // Uploading in verificatoin request schema
       const response = await axios.post(
-        `http://${ipAddress}:8000/uploadCNIC/${user._id}`,
+        `http://${ipAddress}:8000/uploadVerificationRequest`,
         formData,
         {
           headers: {
@@ -123,6 +149,7 @@ const ApplyForVerificationForm = () => {
       Alert.alert("Request failed", "Please try later");
     }
   };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.mainContainer}>

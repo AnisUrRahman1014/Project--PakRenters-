@@ -292,6 +292,70 @@ app.post(
   }
 );
 
+// Upload in VerificationRequests
+const VerificationRequests = require("./models/VerificationRequests");
+app.post(
+  "/uploadVerificationRequest/",
+  uploadPDF.single("idCardFile"),
+  async (req, res, next) => {
+    try {
+      const filePath = req.file.path;
+      const { whatsappNumber, cnicNumber, userId } = req.body;
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      user.idCardFile = filePath;
+      user.save();
+
+      const newRequest = new VerificationRequests({
+        user,
+        whatsappNumber,
+        cnicNumber,
+        idCardFile: filePath
+      });
+      await newRequest.save();
+      res.status(200).json({
+        message: "Request Posted Successfully",
+        filePath: filePath
+      });
+      sendVerificationRequestEmail(newRequest.whatsappNumber);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        message: error
+      });
+    }
+  }
+);
+
+const sendVerificationRequestEmail = async whatsappNumber => {
+  email = "anisrahman1014@gmail.com";
+  const transporter = nodeMailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "anisrahman1014@gmail.com",
+      pass: "ddth mhvt iktd rhha"
+    },
+    port: 465,
+    secure: true,
+    debug: true
+  });
+  const mailOptions = {
+    from: "anisrahman1014@gmail.com",
+    to: email,
+    subject: "PakRenters - Verification Request",
+    text: `You have received a new verification request. Kindly contact ${whatsappNumber} asap.`
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Verification Request Sent");
+  } catch (err) {
+    console.log("Error sending verification request " + err);
+  }
+};
+
 app.get("/posts/:userId", async (req, res) => {
   try {
     const loggedInUserId = req.params.userId;

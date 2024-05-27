@@ -43,13 +43,14 @@ const ManagePersonalInfo = () => {
       label: "Change profile picture",
       function: () => handleProfileChangeRequest
     },
-    {
-      label: "Apply for verification",
-      function: () => handleVerificationRequest
-    },
+
     {
       label: "Edit information",
       function: () => handleEditInfoRequest
+    },
+    {
+      label: "Apply for verification",
+      function: () => handleVerificationRequest
     }
   ];
 
