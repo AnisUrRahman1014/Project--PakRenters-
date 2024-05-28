@@ -385,13 +385,20 @@ app.post(
       } = req.body;
       console.log(services);
 
+      // Update the user's posts array with the new post
+      const user = await User.findById(userId).session(session);
+      if (!user) {
+        throw new Error("User not found");
+      }
+
       // Assuming `req.files` contains the uploaded files
       const imageFiles = req.files;
       const imagePaths = imageFiles.map(file => file.path);
+      let updatedPostId = postId.toString().concat(user.posts.length);
 
       // Create a new vehicle document
       const newVehicle = new Vehicle({
-        postId,
+        postId: updatedPostId,
         make,
         model,
         year,
@@ -411,7 +418,7 @@ app.post(
       const parsedServices = JSON.parse(services);
 
       const newPost = new Post({
-        postId,
+        postId: updatedPostId,
         user: userId,
         title,
         description,
@@ -425,11 +432,6 @@ app.post(
       // Save the post document
       const savedPost = await newPost.save({ session });
 
-      // Update the user's posts array with the new post
-      const user = await User.findById(userId).session(session);
-      if (!user) {
-        throw new Error("User not found");
-      }
       user.posts.push(savedPost._id);
       await user.save();
 
