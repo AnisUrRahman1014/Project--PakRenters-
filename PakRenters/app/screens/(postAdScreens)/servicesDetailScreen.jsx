@@ -64,7 +64,7 @@ const ServicesDetail = () => {
       formData.append("postId", post.id);
       formData.append("title", post.title);
       formData.append("description", post.description);
-      formData.append("location", post.location.toString());
+      formData.append("location", JSON.stringify(post.location));
       formData.append("rentPerDay", post.rent);
 
       formData.append("services", JSON.stringify(post.getServices()));
