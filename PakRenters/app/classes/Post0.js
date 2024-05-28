@@ -50,7 +50,7 @@ class Post {
   }
 
   getServices() {
-    return services.map(service => ({
+    return this.services.map(service => ({
       label: service.label,
       isEnabled: service.isEnabled
     }));

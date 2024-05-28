@@ -47,63 +47,28 @@ const ServicesDetail = () => {
   };
 
   const updateDatabase = async post => {
-    // Store Vehicle in Database
-    storeVehicle();
-    // Store Post in Database
+    console.log(post.getServices());
     try {
       const authToken = await AsyncStorage.getItem("authToken");
       if (!authToken) {
         Alert.alert("Failed to post ad", "The user must be logged in");
         return;
       }
+
       const decodedToken = jwtDecode(authToken);
       const userId = decodedToken.userId;
 
-      const userData = {
-        postId: post.id,
-        user: userId,
-        title: post.title,
-        description: post.description,
-        category: post.postCategory,
-        location: post.location.toString(),
-        rentPerDay: post.rent,
-        services: post.getServices(),
-        vehicleId: await fetchVehicleId(post.vehicle) // Make sure to await this call
-      };
-
-      if (!userData.vehicleId) {
-        Alert.alert("Failed to post ad", "Unable to fetch vehicle ID");
-        return;
-      }
-
-      const response = await axios.post(
-        `http://${ipAddress}:8000/posts/${userId}`,
-        userData
-      );
-
-      if (response.status === 201) {
-        Alert.alert("Success", "Your post has been successfully created!");
-      } else {
-        Alert.alert(
-          "Failed to post ad",
-          "An error occurred while creating your post."
-        );
-      }
-    } catch (error) {
-      Alert.alert("Failed to post ad", `An error occurred: ${error.message}`);
-    }
-  };
-
-  const storeVehicle = async () => {
-    try {
-      const authToken = await AsyncStorage.getItem("authToken");
-      if (!authToken) {
-        Alert.alert("Failed to post ad", "The user must be logged in");
-        return;
-      }
-      const vehicle = post.vehicle;
       const formData = new FormData();
+
       formData.append("postId", post.id);
+      formData.append("title", post.title);
+      formData.append("description", post.description);
+      formData.append("location", post.location.toString());
+      formData.append("rentPerDay", post.rent);
+
+      formData.append("services", JSON.stringify(post.getServices()));
+
+      const vehicle = post.vehicle;
       formData.append("make", vehicle.make);
       formData.append("model", vehicle.model);
       formData.append("year", vehicle.year);
@@ -120,8 +85,9 @@ const ServicesDetail = () => {
           type: "image/jpeg" // or the correct mime type
         });
       });
+
       const response = await axios.post(
-        `http://${ipAddress}:8000/vehicle`,
+        `http://${ipAddress}:8000/createPostWithVehicle/${userId}`,
         formData,
         {
           headers: {
@@ -131,14 +97,17 @@ const ServicesDetail = () => {
         }
       );
 
-      if (response.status !== 201) {
+      if (response.status === 201) {
+        Alert.alert("Success", "Your post has been successfully created!");
+      } else {
         Alert.alert(
-          "Failed to upload vehicle ad",
+          "Failed to post ad",
           "An error occurred while creating your post."
         );
       }
     } catch (error) {
-      Alert.alert("Error", error);
+      console.log(error);
+      Alert.alert("Failed to post ad", `An error occurred: ${error.message}`);
     }
   };
 

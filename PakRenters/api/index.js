@@ -358,48 +358,102 @@ const sendVerificationRequestEmail = async whatsappNumber => {
 
 const Vehicle = require("./models/VehicleSchema");
 const Post = require("./models/PostDetails");
-app.post("/vehicle", upload.array("images"), async (req, res, next) => {
-  try {
-    const {
-      postId,
-      make,
-      model,
-      year,
-      transmission,
-      engine,
-      ac,
-      cruise,
-      seatingCapacity,
-      abs
-    } = req.body;
+app.post(
+  "/createPostWithVehicle/:userId",
+  upload.array("images"),
+  async (req, res, next) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const { userId } = req.params;
+      const {
+        postId,
+        title,
+        description,
+        rentPerDay,
+        location,
+        make,
+        model,
+        year,
+        transmission,
+        engine,
+        ac,
+        cruise,
+        seatingCapacity,
+        abs,
+        services
+      } = req.body;
+      console.log(services);
 
-    const imageFiles = req.files;
-    // Assuming `req.files` contains the uploaded files
-    const imagePaths = imageFiles.map(file => file.path);
+      // Assuming `req.files` contains the uploaded files
+      const imageFiles = req.files;
+      const imagePaths = imageFiles.map(file => file.path);
 
-    const newVehicle = new Vehicle({
-      postId,
-      make,
-      model,
-      year,
-      transmission,
-      engine,
-      ac: ac === "true",
-      cruise: cruise === "true",
-      seatingCapacity: parseInt(seatingCapacity),
-      abs: abs === "true",
-      images: imagePaths
-    });
+      // Create a new vehicle document
+      const newVehicle = new Vehicle({
+        postId,
+        make,
+        model,
+        year,
+        transmission,
+        engine,
+        ac: ac === "true",
+        cruise: cruise === "true",
+        seatingCapacity: parseInt(seatingCapacity),
+        abs: abs === "true",
+        images: imagePaths
+      });
 
-    await newVehicle.save();
-    res
-      .status(201)
-      .json({ message: "Vehicle uploaded successfully", vehicle: newVehicle });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "An error occurred", error });
+      // Save the vehicle document
+      const savedVehicle = await newVehicle.save({ session });
+
+      // Ensure services is parsed if it's sent as a JSON string
+      const parsedServices = JSON.parse(services);
+
+      const newPost = new Post({
+        postId,
+        user: userId,
+        title,
+        description,
+        rentPerDay,
+        location,
+        vehicleId: savedVehicle._id,
+        services: parsedServices, // Directly use parsedServices
+        createdOn: new Date()
+      });
+
+      // Save the post document
+      const savedPost = await newPost.save({ session });
+
+      // Update the user's posts array with the new post
+      const user = await User.findById(userId).session(session);
+      if (!user) {
+        throw new Error("User not found");
+      }
+      user.posts.push(savedPost._id);
+      await user.save();
+
+      // Commit the transaction
+      await session.commitTransaction();
+      session.endSession();
+
+      // Respond with success message and saved post data
+      res.status(201).json({
+        message: "Post and Vehicle created successfully",
+        post: savedPost,
+        vehicle: savedVehicle
+      });
+    } catch (error) {
+      // If an error occurred, abort the transaction
+      await session.abortTransaction();
+      session.endSession();
+      console.error("Error creating post and vehicle:", error);
+      res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
   }
-});
+);
 
 app.get("/vehicles/:postId", async (req, res) => {
   // Notice the plural form 'vehicles'
@@ -424,57 +478,6 @@ app.get("/vehicles/:postId", async (req, res) => {
     }
   } catch (error) {
     console.error("Error fetching vehicle:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-app.post("/posts/:userId", async (req, res) => {
-  try {
-    // Extract post data from the request body
-    const userId = req.params.userId;
-    const {
-      postId,
-      title,
-      description,
-      rentPerDay,
-      location,
-      vehicleId,
-      services // Ensure services is extracted from the body
-    } = req.body;
-
-    // Find the vehicle by ID to ensure it exists
-    const vehicle = await Vehicle.findById(vehicleId);
-    if (!vehicle) {
-      return res.status(404).json({ message: "Vehicle not found" });
-    }
-
-    // Create a new post document
-    const newPost = new Post({
-      postId,
-      user: userId,
-      title,
-      description,
-      rentPerDay,
-      location,
-      vehicleId: vehicleId,
-      services, // Directly use services from the request body
-      createdOn: new Date()
-    });
-
-    // Save the post document to the Post collection
-    const savedPost = await newPost.save();
-
-    // Update the user's posts array with the new post
-    const user = await User.findById(userId);
-    user.posts.push(savedPost._id);
-    await user.save();
-
-    // Respond with success message and saved post data
-    res
-      .status(201)
-      .json({ message: "Post created successfully", post: savedPost });
-  } catch (error) {
-    console.error("Error creating post:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
