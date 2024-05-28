@@ -1,6 +1,6 @@
 class Vehicle {
   constructor(
-    id,
+    postId,
     make,
     model,
     year,
@@ -11,7 +11,7 @@ class Vehicle {
     absBrakes,
     cruise
   ) {
-    this.id = id;
+    this.postId = postId;
     this.make = make;
     this.model = model;
     this.year = year;

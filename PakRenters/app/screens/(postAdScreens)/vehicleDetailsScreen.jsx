@@ -36,10 +36,10 @@ const VehicleDetailsScreen = () => {
   const [year, setYear] = useState("");
   const [engine, setEngine] = useState("");
   const [transmission, setTransmission] = useState("");
-  const [abs, setAbs] = useState("");
-  const [AC, setAC] = useState("");
+  const [abs, setAbs] = useState(false);
+  const [ac, setAC] = useState(false);
   const [seats, setSeats] = useState("");
-  const [cruise, setCruise] = useState("");
+  const [cruise, setCruise] = useState(false);
 
   const pickImage = async () => {
     // Ask for permission
@@ -164,26 +164,26 @@ const VehicleDetailsScreen = () => {
 
   let vehicle;
   const handleProceed = () => {
-    let vehicleId = newPost
-      .getPostId()
-      .concat("_" + this.make + "_" + this.model + "_" + this.year);
     vehicle = new Vehicle(
-      vehicleId,
+      newPost.id,
       make,
       model,
       year,
       engine,
       seats,
       transmission,
-      AC,
+      ac,
       abs,
       cruise
     );
-    vehicle.setImages(images);
+    // Extract URIs from images
+    const imageUris = images.map(image => image.uri);
+    vehicle.setImages(imageUris);
+    console.log(vehicle.images);
+
     newPost.setVehicle(vehicle);
     navigation.navigate("servicesDetailScreen", {
-      post: newPost,
-      vehicle: vehicle
+      post: newPost
     });
   };
 
@@ -260,35 +260,35 @@ const VehicleDetailsScreen = () => {
             <SpecsDisplayInput
               iconName={"car-seat-cooler"}
               options={[
-                { label: "Yes", value: "1" },
-                { label: "No", value: "0" }
+                { label: "Yes", value: true },
+                { label: "No", value: false }
               ]}
               setValue={setAC}
             />
             <SpecsDisplayInput
               iconName={"car-seat"}
               options={[
-                { label: "2", value: "2" },
-                { label: "4", value: "4" },
-                { label: "5", value: "5" },
-                { label: "7", value: "7" },
-                { label: "11", value: "11" }
+                { label: "2", value: 2 },
+                { label: "4", value: 4 },
+                { label: "5", value: 5 },
+                { label: "7", value: 7 },
+                { label: "11", value: 11 }
               ]}
               setValue={setSeats}
             />
             <SpecsDisplayInput
               iconName={"car-brake-abs"}
               options={[
-                { label: "Yes", value: "1" },
-                { label: "No", value: "0" }
+                { label: "Yes", value: true },
+                { label: "No", value: false }
               ]}
               setValue={setAbs}
             />
             <SpecsDisplayInput
               iconName={"car-cruise-control"}
               options={[
-                { label: "Yes", value: "1" },
-                { label: "No", value: "0" }
+                { label: "Yes", value: true },
+                { label: "No", value: false }
               ]}
               setValue={setCruise}
             />

@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, SafeAreaView, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  Alert
+} from "react-native";
 import React, { useState } from "react";
 import {
   Color,
@@ -8,9 +15,13 @@ import {
 import { useLocalSearchParams } from "expo-router";
 import { LargeBtnWithIcon, ServiceSwitch } from "../../../components/misc";
 import { Services } from "../../../constants/Services";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
+import { ipAddress } from "../../../constants/misc";
+import axios from "axios";
 
 const ServicesDetail = () => {
-  const { post, vehicle } = useLocalSearchParams();
+  const { post } = useLocalSearchParams();
 
   const [services, setServices] = useState([
     { label: Services.selfDrive, isEnabled: true },
@@ -32,11 +43,116 @@ const ServicesDetail = () => {
 
   const handleProceed = () => {
     post.setServices(services);
-    updateDatabase();
+    updateDatabase(post);
   };
 
-  const updateDatabase = () => {
-    // IMPLEMENTATION PENDING
+  const updateDatabase = async post => {
+    // Store Vehicle in Database
+    storeVehicle();
+    // Store Post in Database
+    try {
+      const authToken = await AsyncStorage.getItem("authToken");
+      if (!authToken) {
+        Alert.alert("Failed to post ad", "The user must be logged in");
+        return;
+      }
+      const decodedToken = jwtDecode(authToken);
+      const userId = decodedToken.userId;
+
+      const userData = {
+        postId: post.id,
+        user: userId,
+        title: post.title,
+        description: post.description,
+        category: post.postCategory,
+        location: post.location.toString(),
+        rentPerDay: post.rent,
+        services: post.getServices(),
+        vehicleId: await fetchVehicleId(post.vehicle) // Make sure to await this call
+      };
+
+      if (!userData.vehicleId) {
+        Alert.alert("Failed to post ad", "Unable to fetch vehicle ID");
+        return;
+      }
+
+      const response = await axios.post(
+        `http://${ipAddress}:8000/posts/${userId}`,
+        userData
+      );
+
+      if (response.status === 201) {
+        Alert.alert("Success", "Your post has been successfully created!");
+      } else {
+        Alert.alert(
+          "Failed to post ad",
+          "An error occurred while creating your post."
+        );
+      }
+    } catch (error) {
+      Alert.alert("Failed to post ad", `An error occurred: ${error.message}`);
+    }
+  };
+
+  const storeVehicle = async () => {
+    try {
+      const authToken = await AsyncStorage.getItem("authToken");
+      if (!authToken) {
+        Alert.alert("Failed to post ad", "The user must be logged in");
+        return;
+      }
+      const vehicle = post.vehicle;
+      const formData = new FormData();
+      formData.append("postId", post.id);
+      formData.append("make", vehicle.make);
+      formData.append("model", vehicle.model);
+      formData.append("year", vehicle.year);
+      formData.append("transmission", vehicle.transmission);
+      formData.append("engine", vehicle.engine);
+      formData.append("ac", vehicle.AC);
+      formData.append("cruise", vehicle.cruise);
+      formData.append("seatingCapacity", vehicle.seats);
+      formData.append("abs", vehicle.absBrakes);
+      vehicle.images.forEach((image, index) => {
+        formData.append("images", {
+          uri: image,
+          name: image.split("/").pop(),
+          type: "image/jpeg" // or the correct mime type
+        });
+      });
+      const response = await axios.post(
+        `http://${ipAddress}:8000/vehicle`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`
+          }
+        }
+      );
+
+      if (response.status !== 201) {
+        Alert.alert(
+          "Failed to upload vehicle ad",
+          "An error occurred while creating your post."
+        );
+      }
+    } catch (error) {
+      Alert.alert("Error", error);
+    }
+  };
+
+  const fetchVehicleId = async vehicle => {
+    try {
+      const response = await axios.get(
+        `http://${ipAddress}:8000/vehicles/${vehicle.postId}`
+      );
+      if (response.status === 200) {
+        return response.data.vehicleId; // Make sure to access response.data.vehicleId
+      }
+    } catch (error) {
+      Alert.alert("Error", error);
+    }
   };
 
   return (

@@ -356,23 +356,126 @@ const sendVerificationRequestEmail = async whatsappNumber => {
   }
 };
 
-app.get("/posts/:userId", async (req, res) => {
+const Vehicle = require("./models/VehicleSchema");
+const Post = require("./models/PostDetails");
+app.post("/vehicle", upload.array("images"), async (req, res, next) => {
   try {
-    const loggedInUserId = req.params.userId;
+    const {
+      postId,
+      make,
+      model,
+      year,
+      transmission,
+      engine,
+      ac,
+      cruise,
+      seatingCapacity,
+      abs
+    } = req.body;
 
-    const loggedInUser = await User.findById(loggedInUserId).populate(
-      "posts",
-      "_id"
-    );
-    if (!loggedInUser) {
-      return res.status(404).json({ message: "User not found" });
+    const imageFiles = req.files;
+    // Assuming `req.files` contains the uploaded files
+    const imagePaths = imageFiles.map(file => file.path);
+
+    const newVehicle = new Vehicle({
+      postId,
+      make,
+      model,
+      year,
+      transmission,
+      engine,
+      ac: ac === "true",
+      cruise: cruise === "true",
+      seatingCapacity: parseInt(seatingCapacity),
+      abs: abs === "true",
+      images: imagePaths
+    });
+
+    await newVehicle.save();
+    res
+      .status(201)
+      .json({ message: "Vehicle uploaded successfully", vehicle: newVehicle });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "An error occurred", error });
+  }
+});
+
+app.get("/vehicles/:postId", async (req, res) => {
+  // Notice the plural form 'vehicles'
+  try {
+    const vehicleId = req.params.vehicleId;
+    console.log(vehicleId);
+
+    // Find the vehicle document based on the postId
+    const vehicle = await Vehicle.findOne({ vehicleId });
+    console.log(vehicle);
+
+    // If vehicle found, return its _id
+    if (vehicle) {
+      console.log(vehicle._id);
+      res.status(200).json({ vehicleId: vehicle._id });
+    } else {
+      // If vehicle not found, return appropriate message
+      console.log("Vehicle not found");
+      res
+        .status(404)
+        .json({ message: "Vehicle not found for the given postId" });
+    }
+  } catch (error) {
+    console.error("Error fetching vehicle:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.post("/posts/:userId", async (req, res) => {
+  try {
+    // Extract post data from the request body
+    const userId = req.params.userId;
+    const {
+      postId,
+      title,
+      description,
+      rentPerDay,
+      location,
+      vehicleId,
+      services // Ensure services is extracted from the body
+    } = req.body;
+
+    // Find the vehicle by ID to ensure it exists
+    const vehicle = await Vehicle.findById(vehicleId);
+    if (!vehicle) {
+      return res.status(404).json({ message: "Vehicle not found" });
     }
 
-    //get the ID's of the posts by this user
-    const postIds = loggedInUser.posts.map(post => post._id);
-  } catch (err) {
-    console.log("Error retrieving users");
-    res.status(500).json({ message: "Error retrieving users" });
+    // Create a new post document
+    const newPost = new Post({
+      postId,
+      user: userId,
+      title,
+      description,
+      rentPerDay,
+      location,
+      vehicleId: vehicleId,
+      services, // Directly use services from the request body
+      createdOn: new Date()
+    });
+
+    // Save the post document to the Post collection
+    const savedPost = await newPost.save();
+
+    // Update the user's posts array with the new post
+    const user = await User.findById(userId);
+    user.posts.push(savedPost._id);
+    await user.save();
+
+    // Respond with success message and saved post data
+    res
+      .status(201)
+      .json({ message: "Post created successfully", post: savedPost });
+  } catch (error) {
+    console.error("Error creating post:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

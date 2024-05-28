@@ -204,8 +204,8 @@ export const SpecsDisplayInput = ({
   const [isFocus, setIsFocus] = useState(false);
 
   const handleValueChange = itemValue => {
-    setSelectedValue(itemValue);
-    setValue(itemValue);
+    setSelectedValue(itemValue.value);
+    setValue(itemValue.value);
     setIsFocus(false);
   };
   return (

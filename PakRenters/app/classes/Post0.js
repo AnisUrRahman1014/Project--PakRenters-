@@ -1,7 +1,7 @@
 class Post {
   constructor(user, title, description, category, location, rent) {
     this.user = user;
-    this.postId = this.generatePostId();
+    this.id = this.generatePostId();
     this.title = title;
     this.category = category;
     this.location = location;
@@ -25,7 +25,7 @@ class Post {
     this.vehicle = vehicle;
   }
   getPostId() {
-    return this.postId;
+    return this.id;
   }
 
   generatePostId() {
@@ -50,7 +50,10 @@ class Post {
   }
 
   getServices() {
-    return this.services;
+    return services.map(service => ({
+      label: service.label,
+      isEnabled: service.isEnabled
+    }));
   }
 }
 

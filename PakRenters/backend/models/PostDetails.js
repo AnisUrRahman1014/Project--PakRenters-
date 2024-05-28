@@ -3,11 +3,10 @@ const mongoose = require("mongoose");
 const PostSchema = new mongoose.Schema({
   postId: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Type.ObjectId,
     ref: "User",
     required: true
   },
@@ -39,7 +38,7 @@ const PostSchema = new mongoose.Schema({
   comments: [
     {
       user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Type.ObjectId,
         ref: "User"
       },
       text: String,
@@ -57,12 +56,10 @@ const PostSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  services: [
-    {
-      label: String,
-      isEnabled: Boolean
-    }
-  ],
+  services: {
+    type: mongoose.Schema.Type.ObjectId,
+    ref: "Service"
+  },
   bookings: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -71,5 +68,5 @@ const PostSchema = new mongoose.Schema({
   ]
 });
 
-const Post = mongoose.model("Post", PostSchema);
+const Post = mongoose.model("Post", postSchema);
 module.exports = Post;
