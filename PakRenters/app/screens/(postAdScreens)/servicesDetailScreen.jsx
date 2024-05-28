@@ -12,7 +12,7 @@ import {
   FontFamily,
   sizeManager
 } from "../../../constants/GlobalStyles";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import { LargeBtnWithIcon, ServiceSwitch } from "../../../components/misc";
 import { Services } from "../../../constants/Services";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -22,6 +22,7 @@ import axios from "axios";
 
 const ServicesDetail = () => {
   const { post } = useLocalSearchParams();
+  const navigation = useNavigation();
 
   const [services, setServices] = useState([
     { label: Services.selfDrive, isEnabled: true },
@@ -99,6 +100,7 @@ const ServicesDetail = () => {
 
       if (response.status === 201) {
         Alert.alert("Success", "Your post has been successfully created!");
+        navigation.navigate("index");
       } else {
         Alert.alert(
           "Failed to post ad",
