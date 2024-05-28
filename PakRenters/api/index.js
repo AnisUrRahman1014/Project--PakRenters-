@@ -394,7 +394,7 @@ app.post(
       // Assuming `req.files` contains the uploaded files
       const imageFiles = req.files;
       const imagePaths = imageFiles.map(file => file.path);
-      let updatedPostId = postId.toString().concat(user.posts.length);
+      let updatedPostId = postId.toString().concat(user.posts.length + 1);
 
       // Create a new vehicle document
       const newVehicle = new Vehicle({

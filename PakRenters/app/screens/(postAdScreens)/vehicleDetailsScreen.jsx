@@ -42,6 +42,11 @@ const VehicleDetailsScreen = () => {
   const [cruise, setCruise] = useState(false);
 
   const pickImage = async () => {
+    if (images.length >= 8) {
+      Alert.alert("Limit Reached", "You can only upload up to 8 images.");
+      return;
+    }
+
     // Ask for permission
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -54,7 +59,7 @@ const VehicleDetailsScreen = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true, // This is available only on web currently
       aspect: [4, 3],
-      selectionLimit: 8
+      selectionLimit: 8 - images.length // Limit based on remaining slots
     });
 
     if (!result.canceled && result.assets) {
@@ -63,6 +68,11 @@ const VehicleDetailsScreen = () => {
   };
 
   const takePhoto = async () => {
+    if (images.length >= 8) {
+      Alert.alert("Limit Reached", "You can only upload up to 8 images.");
+      return;
+    }
+
     // Ask for camera permissions
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
@@ -131,8 +141,9 @@ const VehicleDetailsScreen = () => {
     );
   };
 
-  // Render Footer to show the add button
+  // Render Footer to show the add button if less than 8 images
   const renderFooter = () =>
+    images.length < 8 &&
     <TouchableOpacity
       style={styles.imageUploadContainer}
       onPress={handleImageChooseRequest}
@@ -162,8 +173,44 @@ const VehicleDetailsScreen = () => {
     );
   };
 
+  const validateFields = () => {
+    if (!make) {
+      Alert.alert("Validation Error", "Please enter the make of the vehicle.");
+      return false;
+    }
+    if (!model) {
+      Alert.alert("Validation Error", "Please enter the model of the vehicle.");
+      return false;
+    }
+    if (!year || isNaN(year)) {
+      Alert.alert("Validation Error", "Please enter a valid year.");
+      return false;
+    }
+    if (!engine) {
+      Alert.alert("Validation Error", "Please select the engine type.");
+      return false;
+    }
+    if (!transmission) {
+      Alert.alert("Validation Error", "Please select the transmission type.");
+      return false;
+    }
+    if (!seats || isNaN(seats)) {
+      Alert.alert("Validation Error", "Please select the number of seats.");
+      return false;
+    }
+    if (images.length === 0) {
+      Alert.alert("Validation Error", "Please upload at least one image.");
+      return false;
+    }
+    return true;
+  };
+
   let vehicle;
   const handleProceed = () => {
+    if (!validateFields()) {
+      return;
+    }
+
     vehicle = new Vehicle(
       newPost.id,
       make,
@@ -309,9 +356,7 @@ const VehicleDetailsScreen = () => {
             btnColor={Color.dark}
             icon={"arrow-circle-right"}
             iconColor={Color.white}
-            onPress={() => {
-              handleProceed();
-            }}
+            onPress={handleProceed}
           />
         </View>
       </View>
