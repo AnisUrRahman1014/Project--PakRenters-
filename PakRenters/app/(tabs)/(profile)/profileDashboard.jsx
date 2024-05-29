@@ -77,7 +77,9 @@ const ProfileHomeScreen = () => {
   const fetchUserProfile = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://${ipAddress}:8000/profile/${userId}`);
+      const res = await axios.get(
+        `http://${ipAddress}:8000/user/profile/${userId}`
+      );
       const userData = res.data.user;
       const user = new User(
         userData.username,
@@ -85,7 +87,9 @@ const ProfileHomeScreen = () => {
         userData.password,
         userData.phoneNumber
       );
-      user.setProfilePic(`http://${ipAddress}:8000/${userData.profilePic}`);
+      console.log(userData.profilePic);
+      user.setProfilePic(`http://${ipAddress}:8000/user/profilePic/${userId}`);
+      console.log(user.profilePic);
       user.setProvince(userData.province);
       user.setCNIC(userData.cnic);
       user.setCity(userData.city);
@@ -93,7 +97,6 @@ const ProfileHomeScreen = () => {
       user.postCount = userData.posts.length;
       user._id = userId;
       setUser(user);
-      console.log(user);
     } catch (err) {
       console.log("Error processing user profile", error);
     } finally {

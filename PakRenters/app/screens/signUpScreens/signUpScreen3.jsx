@@ -55,7 +55,7 @@ const SingUpScreen3 = () => {
 
     try {
       const response = await axios.post(
-        `http://${ipAddress}:8000/register`,
+        `http://${ipAddress}:8000/auth/register`,
         formData,
         {
           headers: {

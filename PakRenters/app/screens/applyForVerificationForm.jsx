@@ -125,7 +125,7 @@ const ApplyForVerificationForm = () => {
     try {
       // Uploading in verificatoin request schema
       const response = await axios.post(
-        `http://${ipAddress}:8000/uploadVerificationRequest`,
+        `http://${ipAddress}:8000/user/uploadVerificationRequest`,
         formData,
         {
           headers: {

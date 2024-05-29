@@ -41,7 +41,7 @@ const LoginV2 = () => {
       password: password
     };
     axios
-      .post(`http://${ipAddress}:8000/login`, userData)
+      .post(`http://${ipAddress}:8000/auth/login`, userData)
       .then(res => {
         Alert.alert("Login Successful", "You have been logged in successfully");
         console.log(res.data);

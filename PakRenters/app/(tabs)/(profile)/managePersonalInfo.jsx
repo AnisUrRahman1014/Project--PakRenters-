@@ -101,7 +101,7 @@ const ManagePersonalInfo = () => {
       }
 
       const response = await axios.post(
-        `http://${ipAddress}:8000/updateProfilePic/${user._id}`,
+        `http://${ipAddress}:8000/user/updateProfilePic/${user._id}`,
         formData,
         {
           headers: {
@@ -173,7 +173,7 @@ const ManagePersonalInfo = () => {
       }
 
       const response = await axios.post(
-        `http://${ipAddress}:8000/updateUserInfo/${user._id}`,
+        `http://${ipAddress}:8000/user/updateUserInfo/${user._id}`,
         updatedInfo,
         {
           headers: {

@@ -88,7 +88,7 @@ const ServicesDetail = () => {
       });
 
       const response = await axios.post(
-        `http://${ipAddress}:8000/createPostWithVehicle/${userId}`,
+        `http://${ipAddress}:8000/post/createPostWithVehicle/${userId}`,
         formData,
         {
           headers: {
