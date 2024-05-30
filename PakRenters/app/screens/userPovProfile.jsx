@@ -1,5 +1,6 @@
 import {
   Image,
+  Linking,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -11,15 +12,29 @@ import { Color, FontFamily, sizeManager } from "../../constants/GlobalStyles";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import ReputationBar from "../../components/reputationBar";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import { ipAddress } from "../../constants/misc";
 
 const UserPOVprofile = () => {
   const { user } = useLocalSearchParams();
   const navigation = useNavigation();
-  //Dummy Data
-  const username = "i_a_n_33_s";
+  console.log(user);
 
-  const handleOnPress_ViewProfile = () => {
+  const handleOnPress_ViewPosts = () => {
     navigation.navigate("screens/postsViewUserPov", { user: user });
+  };
+
+  const openDialScreen = number => {
+    const url = Platform.OS === "ios" ? `telprompt:${number}` : `tel:${number}`;
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          console.log("Can't handle url: " + url);
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch(err => console.error("An error occurred", err));
   };
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -31,14 +46,14 @@ const UserPOVprofile = () => {
           <View style={styles.header}>
             <View style={styles.dpContainer}>
               <Image
-                source={require("../../assets/images/Anis.jpg")}
+                source={{ uri: `http://${ipAddress}:8000/${user.profilePic}` }}
                 style={styles.image}
               />
             </View>
             {/* Username */}
             <View style={styles.usernameContainer}>
               <Text style={styles.username}>
-                @{username}
+                @{user.username}
               </Text>
             </View>
           </View>
@@ -49,18 +64,22 @@ const UserPOVprofile = () => {
               {/* Reputation */}
               <View style={styles.horizontalSection}>
                 <Text style={styles.sectionLabel}>Reputation: </Text>
-                <ReputationBar />
+                <ReputationBar reputation={user.reputation} />
               </View>
               {/* Province */}
               <View style={styles.horizontalSection}>
                 <Text style={styles.sectionLabel}>Province: </Text>
-                <Text style={styles.value}>Punjab</Text>
+                <Text style={styles.value}>
+                  {user.province}
+                </Text>
               </View>
 
               {/* City */}
               <View style={styles.horizontalSection}>
                 <Text style={styles.sectionLabel}>City: </Text>
-                <Text style={styles.value}>Gujrat</Text>
+                <Text style={styles.value}>
+                  {user.city}
+                </Text>
               </View>
             </View>
 
@@ -69,7 +88,7 @@ const UserPOVprofile = () => {
               {/* Posts */}
               <TouchableOpacity
                 style={styles.btnSection}
-                onPress={handleOnPress_ViewProfile}
+                onPress={handleOnPress_ViewPosts}
               >
                 <View style={styles.btnSection.iconContainer}>
                   <MaterialIcon
@@ -96,7 +115,12 @@ const UserPOVprofile = () => {
                 </View>
               </TouchableOpacity>
               {/* Call */}
-              <TouchableOpacity style={styles.btnSection}>
+              <TouchableOpacity
+                style={styles.btnSection}
+                onPress={() => {
+                  openDialScreen(user.phoneNo);
+                }}
+              >
                 <View style={styles.btnSection.iconContainer}>
                   <MaterialIcon name="phone" size={30} color={Color.dark} />
                 </View>

@@ -43,7 +43,7 @@ export default function RenterSummaryCard({
           <Text style={styles.userName}>
             {user.username}
           </Text>
-          <ReputationBar />
+          <ReputationBar reputation={user.reputation} />
           <Text style={styles.secondaryLabel}>
             Member since {memberSinceYear}
           </Text>

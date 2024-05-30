@@ -96,3 +96,31 @@ exports.getFeaturedPosts = async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
+
+// Controller method to get featured posts
+exports.getPostByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const userPosts = await Post.find({ user: userId }).populate(
+      "user vehicleId"
+    );
+    res.status(200).json({ success: true, data: userPosts });
+  } catch (error) {
+    console.error("Hello" + error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+exports.getPostById = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    console.log(postId);
+    const featuredPosts = await Post.findById(postId).populate(
+      "user vehicleId"
+    );
+    res.status(200).json({ success: true, data: featuredPosts });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};

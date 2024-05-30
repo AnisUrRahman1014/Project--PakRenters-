@@ -3,8 +3,6 @@ import { StyleSheet, Text, View } from "react-native";
 import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 
 const Message = ({ sender, message, time }) => {
-  //   const [messageWidth, setMessageWidth] = useState(0);
-  console.log(message.toString().length);
   const messageWidth = message.toString().length;
 
   return (

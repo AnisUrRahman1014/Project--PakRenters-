@@ -1,14 +1,15 @@
-import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp
-} from "react-native-responsive-screen";
+import { View, StyleSheet } from "react-native";
+import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { Color } from "../constants/GlobalStyles";
-const ReputationBar = () => {
+
+const ReputationBar = ({ reputation }) => {
+  // Ensure the reputation is clamped between 0 and 100
+  const clampedReputation = Math.max(0, Math.min(100, reputation));
+
   return (
     <View style={styles.barContainer}>
-      <View style={styles.reputation(70)} />
+      <View style={[styles.reputation, { width: `${clampedReputation}%` }]} />
     </View>
   );
 };
@@ -22,12 +23,11 @@ const styles = StyleSheet.create({
     backgroundColor: Color.lightGrey,
     marginVertical: wp(1)
   },
-  reputation: reputation => ({
+  reputation: {
     position: "relative",
     height: "100%",
-    backgroundColor: Color.dark,
-    width: `${reputation}%`
-  })
+    backgroundColor: Color.dark
+  }
 });
 
 export default ReputationBar;

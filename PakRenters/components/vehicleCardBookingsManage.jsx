@@ -1,12 +1,19 @@
-import { React } from "react";
+import { React, useEffect, useState } from "react";
 import { Text, View, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "expo-router";
+import Vehicle from "../app/classes/Vehicle0";
+import axios from "axios";
+import { ipAddress } from "../constants/misc";
+import Post from "../app/classes/Post0";
+import User from "../app/classes/User";
 
-const VehicleCard = ({ vehicle, onPress = null }) => {
+const VehicleCard = ({ post, onPress = null }) => {
+  const { vehicle } = post;
   const navigation = useNavigation();
+
   const handleOnPress = () => {
     navigation.navigate("screens/bookingsScreen", { vehicle: vehicle });
   };
@@ -17,16 +24,19 @@ const VehicleCard = ({ vehicle, onPress = null }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.leftContainer}>
-        <Image source={vehicle.image[0]} style={styles.image} />
+        <Image
+          source={{ uri: `http://${ipAddress}:8000/${vehicle.images[0]}` }}
+          style={styles.image}
+        />
       </View>
 
       <View style={styles.contentContainer}>
         <View>
           <Text style={styles.cardLabel}>
-            {vehicle.toString()}
+            {post.title}
           </Text>
           <Text style={styles.locationLabel}>
-            {vehicle.location}
+            {post.location}
           </Text>
           <View style={styles.rateCommentContainer}>
             <Icon
@@ -36,19 +46,19 @@ const VehicleCard = ({ vehicle, onPress = null }) => {
               style={{ marginRight: wp(2) }}
             >
               <Text style={styles.rating}>
-                {vehicle.rating}
+                {post.rating}
               </Text>
             </Icon>
-            <Icon name="comment" size={10} color={Color.white}>
+            <Icon name="comment" size={10} color={Color.dark}>
               <Text style={styles.rating}>
-                {vehicle.comments}
+                {post.comments.length}
               </Text>
             </Icon>
           </View>
 
           <View style={styles.rentLabelContainer}>
             <Text style={styles.rentLabel}>
-              {vehicle.rent}/- Rs.
+              {post.rent}/- Rs.
             </Text>
           </View>
         </View>
