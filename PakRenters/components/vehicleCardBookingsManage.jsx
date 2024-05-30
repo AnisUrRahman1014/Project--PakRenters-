@@ -1,21 +1,17 @@
-import { React, useEffect, useState } from "react";
+import { React } from "react";
 import { Text, View, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "expo-router";
-import Vehicle from "../app/classes/Vehicle0";
-import axios from "axios";
 import { ipAddress } from "../constants/misc";
-import Post from "../app/classes/Post0";
-import User from "../app/classes/User";
 
 const VehicleCard = ({ post, onPress = null }) => {
-  const { vehicle } = post;
+  const { vehicle, user } = post;
   const navigation = useNavigation();
 
   const handleOnPress = () => {
-    navigation.navigate("screens/bookingsScreen", { vehicle: vehicle });
+    navigation.navigate("screens/bookingsScreen_RENTER", { post: post });
   };
 
   if (onPress === null) {

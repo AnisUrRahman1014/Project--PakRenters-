@@ -5,8 +5,8 @@ import { Color, sizeManager } from "../../constants/GlobalStyles";
 import BookingCustomerCard from "../../components/bookingCustomerCard";
 
 const BookingDetails = () => {
-  const { vehicle } = useLocalSearchParams();
-  console.log(vehicle);
+  const { post } = useLocalSearchParams();
+  console.log(post);
   const customers = [""];
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -20,7 +20,7 @@ const BookingDetails = () => {
       <View style={styles.mainContainer}>
         <FlatList
           data={customers}
-          renderItem={() => <BookingCustomerCard vehicle={vehicle} />}
+          renderItem={() => <BookingCustomerCard post={post} />}
         />
       </View>
     </SafeAreaView>

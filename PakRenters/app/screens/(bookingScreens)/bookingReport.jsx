@@ -20,6 +20,7 @@ const BookingReportScreen = () => {
       <View style={styles.mainContainer}>
         <View style={styles.profileContainer}>
           <RenterSummaryCard
+            user={user}
             showCallBtn={true}
             showMessageBtn={true}
             dualBtn={true}

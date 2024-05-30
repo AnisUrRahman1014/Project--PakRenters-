@@ -393,7 +393,7 @@ const PostCard = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Color.white }}>
       <Stack.Screen
         options={{
           headerTitle: "",

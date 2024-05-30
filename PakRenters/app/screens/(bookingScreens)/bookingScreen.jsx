@@ -15,12 +15,14 @@ import {
 import DotIndicator from "../../../components/dotIndicator";
 import BookingReport from "../../classes/BookingReport";
 import dayjs from "dayjs"; // Import dayjs for date manipulation
+import { ipAddress } from "../../../constants/misc";
 
 const BookingScreen = () => {
   // For navigation
   const navigation = useNavigation();
   // Parameter from previous screen
-  const { vehicle } = useLocalSearchParams();
+  const { post } = useLocalSearchParams();
+  const { vehicle, user } = post;
 
   // Constants for this screen data handling
   let bookingReport;
@@ -95,7 +97,10 @@ const BookingScreen = () => {
 
   // For rendering images of the vehicle
   const renderImageItem = ({ item }) =>
-    <Image source={item} style={styles.image} />;
+    <Image
+      source={{ uri: `http://${ipAddress}:8000/${item}` }}
+      style={styles.image}
+    />;
 
   // Handling proceed to the next screen
   const handleProceed = () => {
@@ -108,7 +113,8 @@ const BookingScreen = () => {
         3000
       );
       navigation.navigate("screens/(bookingScreens)/bookingReport", {
-        report: bookingReport
+        report: bookingReport,
+        user: user
       });
     }
   };
@@ -118,7 +124,7 @@ const BookingScreen = () => {
       <View style={styles.imageContainer}>
         <FlatList
           ref={flatListRef}
-          data={vehicle.image}
+          data={vehicle.images}
           renderItem={renderImageItem}
           keyExtractor={(item, index) => index.toString()}
           horizontal
@@ -132,7 +138,7 @@ const BookingScreen = () => {
         />
         <DotIndicator
           currentIndex={currentIndex}
-          totalImages={vehicle.image.length}
+          totalImages={vehicle.images.length}
         />
       </View>
       {/* Vehicle Details */}

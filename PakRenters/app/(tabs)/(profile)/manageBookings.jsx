@@ -19,13 +19,21 @@ const vehicle = new Vehicle(
   3500,
   2500,
   4.9,
-  [require("../../../assets/images/civic003.jpg")]
+  ["uploads\\1716922268707.jpeg"]
 );
 const manageBookings = () => {
+  let post = {
+    title: "Sample",
+    rent: 3500,
+    rating: 3,
+    comments: 30,
+    location: "Punjab, Islamabad",
+    vehicle: vehicle
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.mainContainer}>
-        <VehicleCard vehicle={vehicle} />
+        <VehicleCard post={post} />
       </View>
     </SafeAreaView>
   );

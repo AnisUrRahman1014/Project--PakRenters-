@@ -4,7 +4,6 @@ import { React, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  SafeAreaView,
   Text,
   View,
   TouchableOpacity,
@@ -25,6 +24,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import axios from "axios";
 import { ipAddress } from "../../constants/misc";
 import User from "../classes/User.js";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const categories = [
   "car",
@@ -146,7 +146,6 @@ const Home = () => {
   };
 
   const preparePostObject = (fetchedPost, user) => {
-    console.log(fetchedPost);
     // Create a post
     const location = JSON.parse(fetchedPost.location);
     const locationStr =

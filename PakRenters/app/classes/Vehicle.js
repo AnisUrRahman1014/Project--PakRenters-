@@ -14,7 +14,7 @@ class Vehicle {
     rent,
     comments,
     rating,
-    image
+    images
   ) {
     this.postId = id;
     this.make = make;
@@ -24,7 +24,7 @@ class Vehicle {
     this.rent = rent;
     this.comments = comments;
     this.rating = rating;
-    this.image = image;
+    this.images = images;
     this.engine = engine;
     this.cruise = cruise;
     this.seats = seats;

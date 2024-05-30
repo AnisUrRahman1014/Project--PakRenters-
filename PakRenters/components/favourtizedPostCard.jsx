@@ -1,27 +1,55 @@
 import { React, useState } from "react";
-import { Text, View, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Alert
+} from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { ipAddress } from "../constants/misc";
+import axios from "axios";
 
-const FavouritizedPostCard = ({ vehicle }) => {
-  const [isFavourite, setIsFavourite] = useState(true);
-  const handleFavouritize = () => {
-    setIsFavourite(!isFavourite);
+const FavouritizedPostCard = ({ post, userId }) => {
+  const { vehicle } = post;
+  const [isFavorite, setIsFavorite] = useState(true);
+  const handleFavoritize = async () => {
+    const userData = { postId: post._id };
+    try {
+      const response = await axios.post(
+        `http://${ipAddress}:8000/user/favorites/${userId}`,
+        userData
+      );
+      if (response.status === 200) {
+        setIsFavorite(!isFavorite);
+        Alert.alert("Success", response.data.message);
+      } else {
+        Alert.alert("Failed", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating favorite status:", error);
+      Alert.alert("Error", "Failed to update favorite status");
+    }
   };
   return (
     <TouchableOpacity style={styles.card}>
       <View style={styles.leftContainer}>
-        <Image source={vehicle.image[0]} style={styles.image} />
+        <Image
+          source={{ uri: `http://${ipAddress}:8000/${vehicle.images[0]}` }}
+          style={styles.image}
+        />
       </View>
 
       <View style={styles.contentContainer}>
         <View>
           <Text style={styles.cardLabel}>
-            {vehicle.toString()}
+            {post.title}
           </Text>
           <Text style={styles.locationLabel}>
-            {vehicle.location}
+            {post.location}
           </Text>
           <View style={styles.rateCommentContainer}>
             <Icon
@@ -31,27 +59,27 @@ const FavouritizedPostCard = ({ vehicle }) => {
               style={{ marginRight: wp(2) }}
             >
               <Text style={styles.rating}>
-                {vehicle.rating}
+                {post.rating}
               </Text>
             </Icon>
             <Icon name="comment" size={10} color={Color.white}>
               <Text style={styles.rating}>
-                {vehicle.comments}
+                {post.comments.length}
               </Text>
             </Icon>
           </View>
 
           <View style={styles.rentLabelContainer}>
             <Text style={styles.rentLabel}>
-              {vehicle.rent}/- Rs.
+              {post.rent}/- Rs.
             </Text>
           </View>
         </View>
       </View>
       <View style={styles.btnContainer}>
-        <TouchableOpacity style={styles.btn} onPress={handleFavouritize}>
+        <TouchableOpacity style={styles.btn} onPress={handleFavoritize}>
           <Icon
-            name={isFavourite ? "heart" : "heart-o"}
+            name={isFavorite ? "heart" : "heart-o"}
             size={30}
             color={Color.dark}
           />
@@ -63,9 +91,10 @@ const FavouritizedPostCard = ({ vehicle }) => {
 
 const styles = StyleSheet.create({
   card: {
+    paddingVertical: sizeManager(1),
     display: "flex",
     width: "100%",
-    height: sizeManager(15),
+    height: "auto",
     flexDirection: "row",
     backgroundColor: Color.white,
     alignItems: "center",

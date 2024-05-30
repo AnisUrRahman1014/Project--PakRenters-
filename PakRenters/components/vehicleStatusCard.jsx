@@ -18,7 +18,7 @@ const VehicleStatusCard = ({ vehicle }) => {
   return (
     <View style={styles.card}>
       <View style={styles.leftContainer}>
-        <Image source={vehicle.image[0]} style={styles.image} />
+        <Image source={vehicle.images[0]} style={styles.image} />
       </View>
 
       <View style={styles.contentContainer}>

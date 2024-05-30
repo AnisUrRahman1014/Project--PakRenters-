@@ -5,7 +5,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "expo-router";
 import BookingReport from "../app/classes/BookingReport";
 
-const BookingCustomerCard = ({ vehicle }) => {
+const BookingCustomerCard = ({ post }) => {
+  const { vehicle, user } = post;
   const navigation = useNavigation();
   const startDate = "27-05-2024";
   const endDate = "05-06-2024";
@@ -13,6 +14,7 @@ const BookingCustomerCard = ({ vehicle }) => {
   let report = new BookingReport(vehicle, startDate, endDate, totalDays, 3000);
   const handleOnPress = () => {
     navigation.navigate("screens/(bookingScreens)/bookingReport", {
+      user: user,
       report: report,
       accessType: "restricted"
     });
