@@ -140,6 +140,8 @@ const Home = () => {
     user.setProfilePic(fetchedUser.profilePic);
     user.reputation = fetchedUser.reputation;
     user.memberSince = fetchedUser.memberSince;
+    user._id = fetchedUser._id;
+    user.posts = fetchedUser.posts;
     return user;
   };
 

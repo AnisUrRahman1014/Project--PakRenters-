@@ -11,7 +11,10 @@ const ChatCard = () => {
   let time = "07:30 pm";
 
   const handleOnPress = () => {
-    navigation.navigate("screens/chatScreen", { username: username });
+    navigation.navigate("screens/chatScreen", {
+      username: username,
+      chatId: 1,
+    });
   };
   return (
     <TouchableOpacity
@@ -31,21 +34,15 @@ const ChatCard = () => {
       <View style={styles.contentContainer}>
         {/* Username Container */}
         <View style={styles.username}>
-          <Text style={styles.username.textStyles}>
-            {username}
-          </Text>
+          <Text style={styles.username.textStyles}>{username}</Text>
         </View>
         {/* Last Message Container*/}
         <View style={styles.lastMsg}>
-          <Text style={styles.lastMsg.textStyles}>
-            {lastMsg}
-          </Text>
+          <Text style={styles.lastMsg.textStyles}>{lastMsg}</Text>
         </View>
         {/* Time Container*/}
         <View style={styles.time}>
-          <Text style={styles.time.textStyles}>
-            {time}
-          </Text>
+          <Text style={styles.time.textStyles}>{time}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -58,7 +55,7 @@ const styles = StyleSheet.create({
     height: sizeManager(10),
     flexDirection: "row",
     borderBottomWidth: sizeManager(0.15),
-    borderColor: Color.dark
+    borderColor: Color.dark,
   },
   dpContainer: {
     flex: 0.3,
@@ -67,34 +64,34 @@ const styles = StyleSheet.create({
     innerContainer: {
       width: "80%",
       aspectRatio: 1,
-      borderRadius: sizeManager(100)
-    }
+      borderRadius: sizeManager(100),
+    },
   },
   dpStyles: {
     width: "100%",
     height: "100%",
     resizeMode: "cover",
-    borderRadius: sizeManager(100)
+    borderRadius: sizeManager(100),
   },
   contentContainer: {
     flex: 1,
-    padding: sizeManager(1)
+    padding: sizeManager(1),
   },
   username: {
     paddingVertical: sizeManager(0.2),
     textStyles: {
       fontFamily: FontFamily.ubuntuRegular,
       fontSize: 18,
-      color: Color.dark
-    }
+      color: Color.dark,
+    },
   },
   lastMsg: {
     paddingVertical: sizeManager(0.5),
     textStyles: {
       fontFamily: FontFamily.ubuntuLight,
       fontSize: 14,
-      color: Color.grey
-    }
+      color: Color.grey,
+    },
   },
   time: {
     paddingVertical: sizeManager(0.2),
@@ -102,9 +99,9 @@ const styles = StyleSheet.create({
     textStyles: {
       fontFamily: FontFamily.ubuntuLight,
       fontSize: 12,
-      color: Color.grey
-    }
-  }
+      color: Color.grey,
+    },
+  },
 });
 
 export default ChatCard;

@@ -37,6 +37,7 @@ import { jwtDecode } from "jwt-decode";
 const PostCard = () => {
   const { post } = useLocalSearchParams();
   const { user, services, comments, vehicle } = post;
+  console.log(user);
   const [currentUserId, setCurrentUserId] = useState("");
 
   useEffect(() => {
@@ -104,8 +105,38 @@ const PostCard = () => {
     }
   };
 
-  const handleOpenChat = () => {
-    navigation.navigate("screens/chatScreen", { user: user });
+  const checkOrCreateChat = async (senderId, receiverId) => {
+    try {
+      const response = await axios.post(
+        `http://${ipAddress}:8000/chats/checkOrCreate`,
+        {
+          senderId,
+          receiverId
+        }
+      );
+
+      if (response.status === 200) {
+        return response.data.chatId;
+      } else {
+        throw new Error("Failed to check or create chat");
+      }
+    } catch (error) {
+      console.error("Error in checkOrCreateChat:", error);
+      throw error;
+    }
+  };
+
+  const handleOpenChat = async () => {
+    try {
+      const chatId = await checkOrCreateChat(currentUserId, user._id);
+      navigation.navigate("screens/chatScreen", {
+        receiver: user,
+        senderId: currentUserId,
+        chatId: chatId
+      });
+    } catch (error) {
+      console.error("Error in handleOpenChat:", error);
+    }
   };
   const openBookingScreen = () => {
     navigation.navigate("screens/(bookingScreens)/bookingScreen", {
@@ -514,7 +545,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(2),
     paddingVertical: sizeManager(0.5),
     justifyContent: "space-between",
-    backgroundColor: Color.white,
     borderTopWidth: sizeManager(0.3),
     borderRightWidth: sizeManager(0.1),
     borderLeftWidth: sizeManager(0.1),

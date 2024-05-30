@@ -6,16 +6,55 @@ import {
   Linking,
   StyleSheet
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Color, sizeManager } from "../../constants/GlobalStyles";
 import { Stack, useLocalSearchParams } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CustomFormInputField } from "../../components/misc";
 import Message from "../../components/message";
+import axios from "axios";
+import { io } from "socket.io-client";
+import { ipAddress } from "../../constants/misc";
+import User from "../classes/User";
+
+let socket;
 
 const ChatScreen = () => {
-  const { user } = useLocalSearchParams();
+  const { receiver, senderId, chatId } = useLocalSearchParams();
+  const [sender, setSender] = useState(null);
   const [messageText, setMessageText] = useState("");
+  const [messageInput, setMessageInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(
+          `http://${ipAddress}:8000/user/profile/${senderId}`
+        );
+        const userData = res.data.user;
+        const user = new User(
+          userData.username,
+          userData.email,
+          "",
+          userData.phoneNumber
+        );
+        user.setProfilePic(
+          `http://${ipAddress}:8000/user/profilePic/${senderId}`
+        );
+        user.setProvince(userData.province);
+        user.setCNIC(userData.cnic);
+        user.setCity(userData.city);
+        user.updateReputation(userData.reputation);
+        user.postCount = userData.posts.length;
+        user._id = senderId;
+        setSender(user);
+      } catch (error) {
+        console.log("Error processing user profile", error);
+      }
+    };
+    fetchUser();
+  }, []);
   //   Dummy Data
   const [messages, setMessages] = useState([
     { from: "you", message: "Hi", time: "07:21 pm" },
@@ -59,27 +98,104 @@ const ChatScreen = () => {
       .catch(err => console.error("An error occurred", err));
   };
 
+  useEffect(() => {
+    socket = io(`http://${ipAddress}:8000`);
+    socket.emit("setup");
+    socket.on("connected", () => {
+      console.log("connected");
+      getMessages();
+    });
+  }, []);
+
+  const getMessages = () => {
+    // axios
+    //   .get(`http://localhost:3000/api/messages/${chatId}`, {
+    //     headers: {
+    //       "x-auth-token": localStorage.getItem("token"),
+    //     },
+    //   })
+    //   .then((res) => {
+    //     var tempMessages = [];
+    //     res.data.map((msg) => {
+    //       var message = msg;
+    //       var createdAt = new Date(msg.createdAt);
+    //       var time = createdAt.toLocaleTimeString([], {
+    //         hour: "numeric",
+    //         minute: "2-digit",
+    //         hour12: true,
+    //       });
+    //       message.time = time;
+    //       tempMessages.push(message);
+    //     });
+    //     setMessages(tempMessages);
+    //   })
+    //   .catch((err) => console.log(err));
+    socket.emit("join chat", chatId);
+  };
+
+  useEffect(() => {
+    socket.on("message recieved", msg => {
+      setMessages([...messages, msg]);
+    });
+  });
+
   const handleOnSendBtn = () => {
     if (messageText.trim() !== "") {
       const newMessage = {
-        from: "you",
+        chatId: chatId,
         message: messageText,
+        sender: 1,
         time: new Date().toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
           hour12: true
         })
       };
+      socket.emit("new message", newMessage);
       setMessages(prevMessages => [...prevMessages, newMessage]);
       setMessageText("");
     }
   };
+  // const handleSendMessage = () => {
+  //   socket.emit("stop typing", chatId);
+
+  //   if (messageInput.trim() !== "") {
+  //     const message = {
+  //       chatId: chatId,
+  //       message: messageInput,
+  //       sender: user._id,
+  //     };
+  //     axios
+  //       .post("http://localhost:3000/api/messages", message, {
+  //         headers: {
+  //           "x-auth-token": localStorage.getItem("token"),
+  //         },
+  //       })
+  //       .then((res) => {
+  //         var msg = res.data;
+  //         var createdAt = new Date(msg.createdAt);
+  //         var time = createdAt.toLocaleTimeString([], {
+  //           hour: "numeric",
+  //           minute: "2-digit",
+  //           hour12: true,
+  //         });
+  //         msg.time = time;
+  //         socket.emit("new message", msg);
+  //         setMessages([...messages, msg]);
+  //         setMessageInput("");
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   }
+  // };
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
           headerShown: true,
-          headerTitle: user.username,
+          headerTitle: receiver.username,
           headerTintColor: Color.white,
           headerStyle: { backgroundColor: Color.dark },
           headerTitleAlign: "center",
