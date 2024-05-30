@@ -4,7 +4,6 @@ class User {
     this.email = email;
     this.password = password;
     this.phoneNo = phoneNo;
-    this.postCount = 0;
   }
 
   setProfilePic(image) {

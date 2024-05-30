@@ -7,7 +7,7 @@ class Vehicle {
     engine,
     seats,
     transmission,
-    AC,
+    ac,
     absBrakes,
     cruise
   ) {
@@ -19,7 +19,7 @@ class Vehicle {
     this.cruise = cruise;
     this.seats = seats;
     this.transmission = transmission;
-    this.AC = AC;
+    this.AC = ac;
     this.absBrakes = absBrakes;
   }
 

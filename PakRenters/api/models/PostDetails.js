@@ -19,6 +19,10 @@ const PostSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  category: {
+    type: String,
+    required: true
+  },
   rentPerDay: {
     type: Number,
     required: true
@@ -53,7 +57,7 @@ const PostSchema = new mongoose.Schema({
       }
     }
   ],
-  views: {
+  rating: {
     type: Number,
     default: 0
   },

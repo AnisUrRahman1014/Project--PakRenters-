@@ -153,3 +153,56 @@ exports.uploadVerificationRequest = async (req, res, next) => {
     });
   }
 };
+
+exports.addOrRemoveFavorite = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { postId } = req.body;
+    console.log(postId);
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isFavorite = user.favorites.includes(postId);
+    if (isFavorite) {
+      // Remove from favorites
+      user.favorites.pull(postId);
+    } else {
+      // Add to favorites
+      user.favorites.push(postId);
+    }
+
+    await user.save();
+    res.status(200).json({
+      message: isFavorite ? "Removed from favorites" : "Added to favorites",
+      favorites: user.favorites
+    });
+  } catch (error) {
+    console.error("Error handling favorite:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.checkIsFavorite = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { postId } = req.body;
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the postId is in the user's favorites array
+    const isFavorite = user.favorites.includes(postId);
+
+    // Respond with the result
+    res.status(200).json({ isFavorite: isFavorite });
+  } catch (error) {
+    console.error("Error checking favorite status:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

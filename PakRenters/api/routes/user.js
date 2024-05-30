@@ -22,5 +22,7 @@ router.post(
   uploadPDF.single("idCardFile"),
   userController.uploadVerificationRequest
 );
+router.post("/favorites/:userId", userController.addOrRemoveFavorite);
+router.post("/checkIsFavorite/:userId", userController.checkIsFavorite);
 
 module.exports = router;

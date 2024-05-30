@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   dotContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: sizeManager(0.1)
+    marginVertical: sizeManager(1)
   },
   dot: {
     width: sizeManager(1),

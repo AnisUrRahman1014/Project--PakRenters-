@@ -1,11 +1,10 @@
 import "react-native-get-random-values";
 import { router, useNavigation } from "expo-router";
-import { React } from "react";
+import { React, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   SafeAreaView,
-  ScrollView,
   Text,
   View,
   TouchableOpacity,
@@ -19,8 +18,13 @@ import { Color, FontFamily, sizeManager } from "../../constants/GlobalStyles";
 import SearchBar from "../../components/searchBar";
 import CategoryBtn from "../../components/categoryBtn";
 import VehicleCard from "../../components/vehicleCard0";
-import Vehicle from "../classes/Vehicle";
+// import Vehicle from "../classes/Vehicle";
+import Vehicle from "../classes/Vehicle0";
+import Post from "../classes/Post0.js";
 import Icon from "react-native-vector-icons/FontAwesome";
+import axios from "axios";
+import { ipAddress } from "../../constants/misc";
+import User from "../classes/User.js";
 
 const categories = [
   "car",
@@ -37,69 +41,152 @@ const dummyImages = [
 ];
 
 const vehicles = [
-  new Vehicle(
-    1,
-    "Honda",
-    "Civic EK",
-    "2005",
-    "1.6 cc",
-    5,
-    "Manual",
-    "No",
-    "Yes",
-    "No",
-    "Islamabad,Punjab",
-    3500,
-    250,
-    4.9,
-    dummyImages
-  ),
-  new Vehicle(
-    2, // Assuming '1' as an ID for this example
-    "Toyota",
-    "Prado",
-    "2012", // vehicleName
-    "2.0 cc",
-    7,
-    "Auto",
-    "Yes",
-    "Yes",
-    "Yes",
-    "Gujrat, Punjab", // location
-    "5000", // rent
-    "43", // comments
-    "1.0", // rating
-    [require("../../assets/images/toyota-prado-1.jpg")] // image
-  ),
-  new Vehicle(
-    3,
-    "Honda",
-    " Civic EK",
-    "2005",
-    "1.6 cc",
-    5,
-    "Manual",
-    "No",
-    "Yes",
-    "No",
-    "Islamabad,Punjab",
-    3500,
-    250,
-    4.9,
-    [require("../../assets/images/civic003.jpg")]
-  )
+  // new Vehicle(
+  //   1,
+  //   "Honda",
+  //   "Civic EK",
+  //   "2005",
+  //   "1.6 cc",
+  //   5,
+  //   "Manual",
+  //   "No",
+  //   "Yes",
+  //   "No",
+  //   "Islamabad,Punjab",
+  //   3500,
+  //   250,
+  //   4.9,
+  //   dummyImages
+  // ),
+  // new Vehicle(
+  //   2, // Assuming '1' as an ID for this example
+  //   "Toyota",
+  //   "Prado",
+  //   "2012", // vehicleName
+  //   "2.0 cc",
+  //   7,
+  //   "Auto",
+  //   "Yes",
+  //   "Yes",
+  //   "Yes",
+  //   "Gujrat, Punjab", // location
+  //   "5000", // rent
+  //   "43", // comments
+  //   "1.0", // rating
+  //   [require("../../assets/images/toyota-prado-1.jpg")] // image
+  // ),
+  // new Vehicle(
+  //   3,
+  //   "Honda",
+  //   " Civic EK",
+  //   "2005",
+  //   "1.6 cc",
+  //   5,
+  //   "Manual",
+  //   "No",
+  //   "Yes",
+  //   "No",
+  //   "Islamabad,Punjab",
+  //   3500,
+  //   250,
+  //   4.9,
+  //   [require("../../assets/images/civic003.jpg")]
+  // )
 ];
 
 const Home = () => {
   const navigation = useNavigation();
+  const [featuredPosts, setFeaturedPosts] = useState([]);
   // Dummy Data
   const isLoading = false;
   const error = false;
 
+  useEffect(() => {
+    fetchFeaturedPosts();
+  }, []);
+
+  const fetchFeaturedPosts = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipAddress}:8000/post/featured`
+      );
+      // Transform the data
+      const newPosts = response.data.data.map(item => {
+        const { vehicleId, user, ...post } = item;
+        const newVehicle = prepareVehicleObject(vehicleId);
+        const newUser = prepareUserObject(user);
+        const newPost = preparePostObject(post, newUser);
+        newPost.setVehicle(newVehicle);
+        return newPost;
+      });
+      setFeaturedPosts(newPosts);
+    } catch (err) {
+      console.error(err);
+      // setError(true);
+      // setIsLoading(false);
+    }
+  };
+  const prepareUserObject = fetchedUser => {
+    // Create a user first
+    const user = new User(
+      fetchedUser.username,
+      fetchedUser.email,
+      "",
+      fetchedUser.phoneNumber
+    );
+    user.setCity(fetchedUser.city);
+    user.setCNIC(fetchedUser.cnic);
+    user.setProvince(fetchedUser.province);
+    user.setProfilePic(fetchedUser.profilePic);
+    user.reputation = fetchedUser.reputation;
+    user.memberSince = fetchedUser.memberSince;
+    return user;
+  };
+
+  const preparePostObject = (fetchedPost, user) => {
+    console.log(fetchedPost);
+    // Create a post
+    const location = JSON.parse(fetchedPost.location);
+    const locationStr =
+      location.region.concat(", ") +
+      location.city.concat(", ") +
+      location.street;
+    const newPost = new Post(
+      user,
+      fetchedPost.postId,
+      fetchedPost.title,
+      fetchedPost.description,
+      fetchedPost.category,
+      locationStr,
+      fetchedPost.rentPerDay
+    );
+    newPost.setFeatured(true);
+    newPost.setServices(fetchedPost.services);
+    newPost.comments = fetchedPost.comments;
+    newPost.rating = fetchedPost.rating;
+    newPost._id = fetchedPost._id;
+    return newPost;
+  };
+  const prepareVehicleObject = fetchedVehicle => {
+    const newVehicle = new Vehicle(
+      fetchedVehicle.postId,
+      fetchedVehicle.make,
+      fetchedVehicle.model,
+      fetchedVehicle.year,
+      fetchedVehicle.engine,
+      fetchedVehicle.seatingCapacity,
+      fetchedVehicle.transmission,
+      fetchedVehicle.ac,
+      fetchedVehicle.abs,
+      fetchedVehicle.cruise
+    );
+    newVehicle.setImages(fetchedVehicle.images);
+    return newVehicle;
+  };
+
   const handleBundleRequestOnPress = () => {
     navigation.navigate("screens/bundleRequestForm");
   };
-
   const renderItem = ({ item }) => {
     switch (item.key) {
       case "header":
@@ -155,11 +242,11 @@ const Home = () => {
               {isLoading
                 ? <ActivityIndicator size={"large"} color={Color.dark} />
                 : <FlatList
-                    data={vehicles}
-                    renderItem={({ item }) => <VehicleCard vehicle={item} />}
+                    data={featuredPosts}
+                    renderItem={({ item }) => <VehicleCard post={item} />}
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    keyExtractor={item => item.postId}
+                    keyExtractor={item => item.id}
                     contentContainerStyle={{
                       alignItems: "center",
                       paddingVertical: wp(3)

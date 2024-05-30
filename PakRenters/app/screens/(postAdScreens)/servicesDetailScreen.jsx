@@ -64,6 +64,7 @@ const ServicesDetail = () => {
       formData.append("postId", post.id);
       formData.append("title", post.title);
       formData.append("description", post.description);
+      formData.append("category", post.category);
       formData.append("location", JSON.stringify(post.location));
       formData.append("rentPerDay", post.rent);
 
@@ -110,19 +111,6 @@ const ServicesDetail = () => {
     } catch (error) {
       console.log(error);
       Alert.alert("Failed to post ad", `An error occurred: ${error.message}`);
-    }
-  };
-
-  const fetchVehicleId = async vehicle => {
-    try {
-      const response = await axios.get(
-        `http://${ipAddress}:8000/vehicles/${vehicle.postId}`
-      );
-      if (response.status === 200) {
-        return response.data.vehicleId; // Make sure to access response.data.vehicleId
-      }
-    } catch (error) {
-      Alert.alert("Error", error);
     }
   };
 

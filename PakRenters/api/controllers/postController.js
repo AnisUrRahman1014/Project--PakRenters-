@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Post = require("../models/PostDetails");
 const User = require("../models/UserDetails");
 const Vehicle = require("../models/VehicleSchema");
+const path = require("path");
 
 exports.createPostWithVehicle = async (req, res, next) => {
   const session = await mongoose.startSession();
@@ -12,6 +13,7 @@ exports.createPostWithVehicle = async (req, res, next) => {
       postId,
       title,
       description,
+      category,
       rentPerDay,
       location,
       make,
@@ -54,6 +56,7 @@ exports.createPostWithVehicle = async (req, res, next) => {
       user: userId,
       title,
       description,
+      category,
       rentPerDay,
       location,
       vehicleId: savedVehicle._id,
@@ -78,5 +81,18 @@ exports.createPostWithVehicle = async (req, res, next) => {
     res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+// Controller method to get featured posts
+exports.getFeaturedPosts = async (req, res) => {
+  try {
+    const featuredPosts = await Post.find({ isFeatured: false }).populate(
+      "user vehicleId"
+    );
+    res.status(200).json({ success: true, data: featuredPosts });
+  } catch (error) {
+    console.error("Hello" + error);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };

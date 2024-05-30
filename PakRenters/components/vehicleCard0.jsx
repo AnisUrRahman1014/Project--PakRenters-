@@ -5,22 +5,33 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import { Color, FontFamily } from "../constants/GlobalStyles";
+import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { router } from "expo-router";
+import { useNavigation } from "expo-router";
+import { ipAddress } from "../constants/misc";
 
-const VehicleCard = ({ vehicle }) => {
-  const [isFeatured, setIsfeatured] = useState(true);
+const VehicleCard = ({ post }) => {
+  const navigation = useNavigation();
+  const vehicle = post.getVehicle();
+  const [isFeatured] = useState(post.isFeatured());
   const openVehicleDetailCard = () => {
-    router.push("/screens/postCard");
-    router.setParams({ currentVehicle: vehicle });
+    navigation.navigate("screens/postCard", {
+      post: post
+    });
+    // router.push("/screens/postCard");
+    // router.setParams({ currentVehicle: vehicle, post: post });
   };
   return (
     <TouchableOpacity style={styles.card} onPress={openVehicleDetailCard}>
       {/* Image Container */}
       <View style={{ flex: 1 }}>
         <View style={styles.imageContainer}>
-          <Image source={vehicle.image[0]} style={styles.image} />
+          <Image
+            source={{
+              uri: `http://${ipAddress}:8000/${vehicle.images[0]}`
+            }}
+            style={styles.image}
+          />
         </View>
       </View>
       {isFeatured &&
@@ -30,10 +41,10 @@ const VehicleCard = ({ vehicle }) => {
       {/* Description Container */}
       <View style={styles.descContainer}>
         <Text style={styles.cardLabel}>
-          {vehicle.toString()}
+          {post.title}
         </Text>
         <Text style={styles.locationLabel}>
-          {vehicle.location}
+          {post.location}
         </Text>
         <View style={styles.rateCommentContainer}>
           <Icon
@@ -43,19 +54,19 @@ const VehicleCard = ({ vehicle }) => {
             style={{ marginRight: wp(2) }}
           >
             <Text style={styles.rating}>
-              {vehicle.rating}
+              {post.rating}
             </Text>
           </Icon>
           <Icon name="comment" size={wp(3)} color={Color.dark}>
             <Text style={styles.rating}>
-              {vehicle.comments}
+              {post.comments.length}
             </Text>
           </Icon>
         </View>
 
         <View style={styles.rentLabelContainer}>
           <Text style={styles.rentLabel}>
-            {vehicle.rent}/- Rs.
+            {post.rent}/- Rs.
           </Text>
         </View>
       </View>
@@ -66,6 +77,7 @@ const VehicleCard = ({ vehicle }) => {
 const styles = StyleSheet.create({
   card: {
     position: "relative",
+    width: sizeManager(20),
     backgroundColor: Color.white,
     marginHorizontal: wp(1),
     marginVertical: wp(1.5),

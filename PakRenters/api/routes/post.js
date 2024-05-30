@@ -8,5 +8,6 @@ router.post(
   upload.array("images"),
   postController.createPostWithVehicle
 );
+router.get("/featured", postController.getFeaturedPosts);
 
 module.exports = router;

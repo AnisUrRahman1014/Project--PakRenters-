@@ -1,12 +1,17 @@
+import User from "../classes/User";
 class Post {
-  constructor(user, title, description, category, location, rent) {
+  constructor(user, id, title, description, category, location, rent) {
     this.user = user;
-    this.id = this.generatePostId();
+    this.id = id;
     this.title = title;
     this.category = category;
     this.location = location;
     this.description = description;
     this.rent = rent;
+  }
+
+  generateNewPostId() {
+    this.id = this.generatePostId();
   }
 
   isFeatured() {

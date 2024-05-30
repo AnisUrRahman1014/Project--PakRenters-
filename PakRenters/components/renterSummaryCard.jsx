@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
@@ -8,6 +8,7 @@ import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import ReputationBar from "./reputationBar";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "expo-router";
+import { ipAddress } from "../constants/misc";
 export default function RenterSummaryCard({
   user,
   showCallBtn = false,
@@ -15,22 +16,37 @@ export default function RenterSummaryCard({
   dualBtn = false
 }) {
   const navigation = useNavigation();
+  const [memberSinceYear, setMemberSinceYear] = useState(null);
+  useEffect(
+    () => {
+      if (user.memberSince) {
+        const year = new Date(user.memberSince).getFullYear();
+        setMemberSinceYear(year);
+      }
+    },
+    [user.memberSince]
+  );
   const handleViewProfileOnPress = () => {
     navigation.navigate("screens/userPovProfile", { user: user });
   };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.imageSection}>
         <Image
           style={styles.imageContainer}
-          source={require("../assets/images/Anis.jpg")}
+          source={{ uri: `http://${ipAddress}:8000/${user.profilePic}` }}
         />
       </View>
       <View style={[styles.contentSection(dualBtn), { marginLeft: wp(2) }]}>
         <View style={dualBtn ? styles.contentContainer : {}}>
-          <Text style={styles.userName}>Anis Urrahman</Text>
+          <Text style={styles.userName}>
+            {user.username}
+          </Text>
           <ReputationBar />
-          <Text style={styles.secondaryLabel}>Member since 2024</Text>
+          <Text style={styles.secondaryLabel}>
+            Member since {memberSinceYear}
+          </Text>
           <TouchableOpacity onPress={handleViewProfileOnPress}>
             <Text
               style={[

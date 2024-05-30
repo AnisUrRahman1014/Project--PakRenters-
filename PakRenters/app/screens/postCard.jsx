@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,8 @@ import {
   Image,
   TouchableOpacity,
   Linking,
-  Platform
+  Platform,
+  Alert
 } from "react-native";
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import {
@@ -26,51 +27,89 @@ import RenterSummaryCard from "../../components/renterSummaryCard";
 import Icon from "react-native-vector-icons/FontAwesome";
 import DotIndicator from "../../components/dotIndicator";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { Services } from "../../constants/Services";
 import CommentComponent from "../../components/comment";
-import Comment from "../classes/Comment";
 import { FlatList as InsideFlatList } from "react-native-gesture-handler";
+import { ipAddress } from "../../constants/misc";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
 
 const PostCard = () => {
-  const { currentVehicle } = useLocalSearchParams();
+  const { post } = useLocalSearchParams();
+  const { user, services, comments, vehicle } = post;
+  const [currentUserId, setCurrentUserId] = useState("");
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (token) {
+          const decodedToken = jwtDecode(token);
+          const userId = decodedToken.userId;
+          setCurrentUserId(userId);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCurrentUser();
+  }, []);
+
+  useEffect(
+    () => {
+      if (currentUserId) {
+        checkIfFavorite(currentUserId, post._id);
+      }
+    },
+    [currentUserId]
+  );
+
   const navigation = useNavigation();
-  const [isFavourite, setIsFavourite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
 
-  // DUMMY DATA
-  const comments = [
-    new Comment("", "user", "ki hal ay", 3.5),
-    new Comment("", "user", "buray hal jani tu suna", 4),
-    new Comment("", "user", "superaman", 5),
-    new Comment("", "user", "ki hal ay", 3.5),
-    new Comment("", "user", "buray hal jani tu suna", 4),
-    new Comment("", "user", "superaman", 5),
-    new Comment("", "user", "ki hal ay", 3.5),
-    new Comment("", "user", "buray hal jani tu suna", 4),
-    new Comment("", "user", "superaman", 5),
-    new Comment("", "user", "ki hal ay", 3.5),
-    new Comment("", "user", "buray hal jani tu suna", 4),
-    new Comment("", "user", "superaman", 5)
-  ];
-
-  const [services, setServices] = useState([
-    { label: Services.selfDrive, isEnabled: true },
-    { label: Services.withDriver, isEnabled: false },
-    { label: Services.decoration, isEnabled: false },
-    { label: Services.passengerPnD, isEnabled: false },
-    { label: Services.vehiclePnD, isEnabled: false },
-    { label: Services.tourism, isEnabled: false }
-  ]);
-
-  const handleFavouritize = () => {
-    setIsFavourite(!isFavourite);
+  const checkIfFavorite = async (userId, postId) => {
+    const userData = { postId };
+    try {
+      const response = await axios.post(
+        `http://${ipAddress}:8000/user/checkIsFavorite/${userId}`,
+        userData
+      );
+      if (response.data && response.data.isFavorite) {
+        setIsFavorite(true);
+      }
+    } catch (error) {
+      console.error("Error checking favorite status:", error);
+    }
   };
 
+  const handleFavoritize = async () => {
+    const userData = { postId: post._id };
+    try {
+      const response = await axios.post(
+        `http://${ipAddress}:8000/user/favorites/${currentUserId}`,
+        userData
+      );
+      if (response.status === 200) {
+        setIsFavorite(!isFavorite);
+        Alert.alert("Success", response.data.message);
+      } else {
+        Alert.alert("Failed", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating favorite status:", error);
+      Alert.alert("Error", "Failed to update favorite status");
+    }
+  };
+
+  const handleOpenChat = () => {
+    navigation.navigate("screens/chatScreen", { user: user });
+  };
   const openBookingScreen = () => {
     navigation.navigate("screens/(bookingScreens)/bookingScreen", {
-      vehicle: currentVehicle
+      post
     });
   };
 
@@ -89,9 +128,10 @@ const PostCard = () => {
   };
 
   const renderImageItem = ({ item }) =>
-    <Image source={item} style={styles.image} />;
-
-  const handleOpenChat = () => {};
+    <Image
+      source={{ uri: `http://${ipAddress}:8000/${item}` }}
+      style={{ aspectRatio: 5 / 3, resizeMode: "contain" }}
+    />;
 
   const onViewableItemsChanged = useCallback(({ viewableItems }) => {
     if (viewableItems.length > 0) {
@@ -122,12 +162,18 @@ const PostCard = () => {
       }}
     />;
 
+  const mapTrueFalse = str => {
+    if (str === "False") {
+      return "No";
+    } else {
+      return "Yes";
+    }
+  };
+
   const DescriptionRoute = () =>
     <View style={styles.tabContent}>
       <Text style={styles.descriptionContainer}>
-        Honda Civic EK 2005 model modified. Audionic Sound system installed with
-        Air suspension and modified allow rims. Perfect for modeling
-        photography, music videos etc.
+        {post.description}
       </Text>
       <View style={styles.labelContainer}>
         <Text style={styles.label}>Make - Model - Variant</Text>
@@ -135,17 +181,17 @@ const PostCard = () => {
       <View style={styles.detailsSubContainer}>
         <SpecsDisplay
           iconName={"car-info"}
-          specLabel={currentVehicle.make}
+          specLabel={vehicle.make}
           triplePerRow={true}
         />
         <SpecsDisplay
           iconName={"palette-swatch-variant"}
-          specLabel={currentVehicle.model}
+          specLabel={vehicle.model}
           triplePerRow={true}
         />
         <SpecsDisplay
           iconName={"calendar"}
-          specLabel={currentVehicle.year}
+          specLabel={vehicle.year}
           triplePerRow={true}
         />
       </View>
@@ -154,37 +200,34 @@ const PostCard = () => {
         <Text style={styles.label}>Specifications</Text>
       </View>
       <View style={styles.detailsSubContainer}>
-        <SpecsDisplay iconName={"engine"} specLabel={currentVehicle.engine} />
+        <SpecsDisplay iconName={"engine"} specLabel={vehicle.engine} />
         <SpecsDisplay
           iconName={"car-shift-pattern"}
-          specLabel={currentVehicle.transmission}
+          specLabel={vehicle.transmission}
         />
+        <SpecsDisplay
+          iconName={"car-seat-cooler"}
+          specLabel={mapTrueFalse(vehicle.AC.toString())}
+        />
+        <SpecsDisplay iconName={"car-seat"} specLabel={vehicle.seats} />
+
         <SpecsDisplay
           iconName={"car-brake-abs"}
-          specLabel={currentVehicle.absBrakes}
+          specLabel={mapTrueFalse(vehicle.absBrakes.toString())}
         />
-        <SpecsDisplay iconName={"car-seat"} specLabel={currentVehicle.seats} />
+
         <SpecsDisplay
           iconName={"car-cruise-control"}
-          specLabel={currentVehicle.cruise}
-        />
-        <SpecsDisplay
-          iconName={"car-traction-control"}
-          specLabel={currentVehicle.traction}
+          specLabel={mapTrueFalse(vehicle.cruise.toString())}
         />
       </View>
       <View style={styles.labelContainer}>
         <Text style={styles.label}>Renter Details</Text>
       </View>
       <View style={styles.detailsSubContainer}>
-        <RenterSummaryCard user={"user"} />
+        <RenterSummaryCard user={user} />
       </View>
     </View>;
-
-  const updateServices = index => {
-    // Implementation pending
-    setServices();
-  };
 
   const ServiceRoute = () =>
     <View style={styles.tabContent}>
@@ -195,7 +238,6 @@ const PostCard = () => {
           <ServiceSwitch
             serviceLabel={item.label}
             isEnabled={item.isEnabled}
-            onToggle={() => updateServices(index)}
             disableToggle={true}
           />}
       />
@@ -203,10 +245,25 @@ const PostCard = () => {
 
   const CommentsRoute = () =>
     <View style={styles.tabContent}>
-      <InsideFlatList
-        data={comments}
-        renderItem={({ item }) => <CommentComponent comment={item} />}
-      />
+      {comments.length > 0
+        ? <InsideFlatList
+            data={comments}
+            renderItem={({ item }) => <CommentComponent comment={item} />}
+          />
+        : <View style={{ justifyContent: "center", alignItems: "center" }}>
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <Icon
+                name="code"
+                size={sizeManager(20)}
+                color={Color.lightGrey}
+              />
+              <Text
+                style={{ fontSize: sizeManager(5), color: Color.lightGrey }}
+              >
+                No comments
+              </Text>
+            </View>
+          </View>}
     </View>;
 
   const [index, setIndex] = useState(0);
@@ -227,15 +284,15 @@ const PostCard = () => {
       case "header":
         return (
           <View style={styles.postHeader}>
-            <View style={styles.headerSection}>
+            <View style={styles.headerSectionLeft}>
               <Text style={styles.title}>
-                {currentVehicle.toString()}
+                {post.title}
               </Text>
               <Text style={styles.subTitle}>
-                {currentVehicle.location}
+                {post.location}
               </Text>
             </View>
-            <View style={styles.headerSection}>
+            <View style={styles.headerSectionRight}>
               <View style={styles.statusIndicatorContainer}>
                 <View
                   style={styles.statusIndicatorStyle(StatusColors.available)}
@@ -247,10 +304,19 @@ const PostCard = () => {
         );
       case "images":
         return (
-          <View style={styles.imageContainer}>
+          <View
+            style={{
+              flex: 2,
+              width: "100%",
+              aspectRatio: 4.5 / 3,
+              marginVertical: sizeManager(2),
+              justifyContent: "center",
+              borderRadius: sizeManager(4)
+            }}
+          >
             <FlatList
               ref={flatListRef}
-              data={currentVehicle.image}
+              data={vehicle.images}
               renderItem={renderImageItem}
               keyExtractor={(item, index) => index.toString()}
               horizontal
@@ -258,13 +324,17 @@ const PostCard = () => {
               snapToInterval={wp(96)}
               snapToAlignment="center"
               decelerationRate="fast"
-              viewabilityConfig={viewabilityConfig}
-              onViewableItemsChanged={onViewableItemsChanged}
-              style={styles.imageContainer}
+              // viewabilityConfig={viewabilityConfig}
+              // onViewableItemsChanged={onViewableItemsChanged}
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: sizeManager(4)
+              }}
             />
             <DotIndicator
               currentIndex={currentIndex}
-              totalImages={currentVehicle.image.length}
+              totalImages={vehicle.images.length}
             />
           </View>
         );
@@ -303,9 +373,9 @@ const PostCard = () => {
               <TouchableOpacity onPress={handleOpenChat}>
                 <Icon name="wechat" size={sizeManager(3)} color={Color.dark} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleFavouritize}>
+              <TouchableOpacity onPress={handleFavoritize}>
                 <Icon
-                  name={isFavourite ? "heart" : "heart-o"}
+                  name={isFavorite ? "heart" : "heart-o"}
                   size={sizeManager(3)}
                   color={Color.dark}
                 />
@@ -325,7 +395,7 @@ const PostCard = () => {
       <View style={styles.footer}>
         <View style={styles.rentLabelContainer}>
           <Text style={styles.rentLabel}>
-            {currentVehicle.rent} Rs./Day
+            {post.rent} Rs./Day
           </Text>
         </View>
         <TouchableOpacity style={styles.bookBtn} onPress={openBookingScreen}>
@@ -333,7 +403,7 @@ const PostCard = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.dialBtn}
-          onPress={() => openDialScreen("03304089490")}
+          onPress={() => openDialScreen(user.phoneNo)}
         >
           <Icon name="phone" size={20} color={Color.dark} />
         </TouchableOpacity>
@@ -350,6 +420,7 @@ const styles = StyleSheet.create({
   },
   postHeader: {
     flex: 1,
+    gap: 5,
     flexDirection: "row",
     margin: wp(0.5),
     paddingVertical: wp(1),
@@ -361,20 +432,18 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   imageContainer: {
-    flex: 2,
     marginVertical: wp(2),
     borderRadius: wp(4),
     width: wp(96),
-    height: hp(31),
-    resizeMode: "cover"
+    aspectRatio: 4 / 3
   },
-  image: {
-    borderRadius: wp(4),
-    width: wp(96),
-    height: hp(28),
-    resizeMode: "cover"
+  headerSectionLeft: {
+    flex: 1,
+    justifyContent: "center",
+    marginVertical: wp(2)
   },
-  headerSection: {
+  headerSectionRight: {
+    flex: 0.4,
     justifyContent: "center",
     marginVertical: wp(2)
   },
