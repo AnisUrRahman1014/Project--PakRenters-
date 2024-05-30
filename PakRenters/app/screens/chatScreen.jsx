@@ -3,10 +3,10 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   TouchableOpacity,
-  Image
+  Linking,
+  StyleSheet
 } from "react-native";
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
 import { Color, sizeManager } from "../../constants/GlobalStyles";
 import { Stack, useLocalSearchParams } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -14,7 +14,7 @@ import { CustomFormInputField } from "../../components/misc";
 import Message from "../../components/message";
 
 const ChatScreen = () => {
-  const { username } = useLocalSearchParams();
+  const { user } = useLocalSearchParams();
   const [messageText, setMessageText] = useState("");
   //   Dummy Data
   const [messages, setMessages] = useState([
@@ -45,6 +45,20 @@ const ChatScreen = () => {
     { from: "you", message: "Ok, milty hain In sha allah", time: "07:40 pm" }
   ]);
 
+  const openDialScreen = number => {
+    const url = Platform.OS === "ios" ? `telprompt:${number}` : `tel:${number}`;
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          console.log("Can't handle url: " + url);
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch(err => console.error("An error occurred", err));
+  };
+
   const handleOnSendBtn = () => {
     if (messageText.trim() !== "") {
       const newMessage = {
@@ -65,7 +79,7 @@ const ChatScreen = () => {
       <Stack.Screen
         options={{
           headerShown: true,
-          headerTitle: username,
+          headerTitle: user.username,
           headerTintColor: Color.white,
           headerStyle: { backgroundColor: Color.dark },
           headerTitleAlign: "center",
@@ -81,6 +95,9 @@ const ChatScreen = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 elevation: 5
+              }}
+              onPress={() => {
+                openDialScreen(user.phoneNo);
               }}
             >
               <MaterialIcons
