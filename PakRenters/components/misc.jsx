@@ -26,7 +26,8 @@ export const CustomFormInputField = ({
   editable = true,
   isIcon = true,
   borderVisible = true,
-  multiline = false
+  multiline = false,
+  textAlignVertical = "center"
 }) => {
   return (
     <View style={styles.mainContainer(borderVisible)}>
@@ -58,6 +59,7 @@ export const CustomFormInputField = ({
             autoCapitalize="none"
             editable={editable}
             multiline={multiline}
+            textAlignVertical={textAlignVertical}
           />
         </View>
       </View>

@@ -75,6 +75,7 @@ const BundleRequestForm = () => {
             width={"100%"}
             multiline={true}
             isIcon={false}
+            textAlignVertical="top"
           />
         </View>
         <View style={styles.section}>

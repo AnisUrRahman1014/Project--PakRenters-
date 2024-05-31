@@ -14,6 +14,10 @@ const VehicleCard = ({ post, onPress = null }) => {
     navigation.navigate("screens/bookingsScreen_RENTER", { post: post });
   };
 
+  const truncate = (title, maxSize) => {
+    return title.length > maxSize ? `${title.substring(0, maxSize)}...` : title;
+  };
+
   if (onPress === null) {
     onPress = handleOnPress;
   }

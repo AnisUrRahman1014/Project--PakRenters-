@@ -8,8 +8,8 @@ router.post(
   upload.array("images"),
   postController.createPostWithVehicle
 );
-router.get("/featured", postController.getFeaturedPosts);
-router.get("/getPost/:postId", postController.getPostById);
+router.get("/getFeaturedPostIds", postController.getFeaturedPostIds);
+router.get("/getPostById/:postId", postController.getPostById);
 router.get("/getPostByUserId/:userId", postController.getPostByUserId);
 
 module.exports = router;

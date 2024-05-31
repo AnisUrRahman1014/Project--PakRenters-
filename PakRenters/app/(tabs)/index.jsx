@@ -35,68 +35,9 @@ const categories = [
   "excavator"
 ];
 
-const dummyImages = [
-  require("../../assets/images/civic003.jpg"),
-  require("../../assets/images/civic003.jpg")
-];
-
-const vehicles = [
-  // new Vehicle(
-  //   1,
-  //   "Honda",
-  //   "Civic EK",
-  //   "2005",
-  //   "1.6 cc",
-  //   5,
-  //   "Manual",
-  //   "No",
-  //   "Yes",
-  //   "No",
-  //   "Islamabad,Punjab",
-  //   3500,
-  //   250,
-  //   4.9,
-  //   dummyImages
-  // ),
-  // new Vehicle(
-  //   2, // Assuming '1' as an ID for this example
-  //   "Toyota",
-  //   "Prado",
-  //   "2012", // vehicleName
-  //   "2.0 cc",
-  //   7,
-  //   "Auto",
-  //   "Yes",
-  //   "Yes",
-  //   "Yes",
-  //   "Gujrat, Punjab", // location
-  //   "5000", // rent
-  //   "43", // comments
-  //   "1.0", // rating
-  //   [require("../../assets/images/toyota-prado-1.jpg")] // image
-  // ),
-  // new Vehicle(
-  //   3,
-  //   "Honda",
-  //   " Civic EK",
-  //   "2005",
-  //   "1.6 cc",
-  //   5,
-  //   "Manual",
-  //   "No",
-  //   "Yes",
-  //   "No",
-  //   "Islamabad,Punjab",
-  //   3500,
-  //   250,
-  //   4.9,
-  //   [require("../../assets/images/civic003.jpg")]
-  // )
-];
-
 const Home = () => {
   const navigation = useNavigation();
-  const [featuredPosts, setFeaturedPosts] = useState([]);
+  const [featuredPostIds, setFeaturedPostIds] = useState([]);
   // Dummy Data
   const isLoading = false;
   const error = false;
@@ -108,18 +49,19 @@ const Home = () => {
   const fetchFeaturedPosts = async () => {
     try {
       const response = await axios.get(
-        `http://${ipAddress}:8000/post/featured`
+        `http://${ipAddress}:8000/post/getFeaturedPostIds`
       );
-      // Transform the data
-      const newPosts = response.data.data.map(item => {
-        const { vehicleId, user, ...post } = item;
-        const newVehicle = prepareVehicleObject(vehicleId);
-        const newUser = prepareUserObject(user);
-        const newPost = preparePostObject(post, newUser);
-        newPost.setVehicle(newVehicle);
-        return newPost;
-      });
-      setFeaturedPosts(newPosts);
+      // // Transform the data
+      // const newPosts = response.data.data.map(item => {
+      //   const { vehicleId, user, ...post } = item;
+      //   const newVehicle = prepareVehicleObject(vehicleId);
+      //   const newUser = prepareUserObject(user);
+      //   const newPost = preparePostObject(post, newUser);
+      //   newPost.setVehicle(newVehicle);
+      //   return newPost;
+      // });
+      const newPosts = response.data.data;
+      setFeaturedPostIds(newPosts);
     } catch (err) {
       console.error(err);
       // setError(true);
@@ -243,8 +185,8 @@ const Home = () => {
               {isLoading
                 ? <ActivityIndicator size={"large"} color={Color.dark} />
                 : <FlatList
-                    data={featuredPosts}
-                    renderItem={({ item }) => <VehicleCard post={item} />}
+                    data={featuredPostIds}
+                    renderItem={({ item }) => <VehicleCard postId={item._id} />}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={item => item.id}
