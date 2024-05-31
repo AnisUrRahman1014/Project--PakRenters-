@@ -1,22 +1,17 @@
+import User from "../classes/User";
 class Post {
-  constructor(
-    postID,
-    vehicle,
-    renter,
-    description,
-    views,
-    comments,
-    rating,
-    status
-  ) {
-    this.postID = postID;
-    this.vehicle = vehicle;
-    this.renter = renter;
+  constructor(user, title, description, category, location, rent) {
+    this.user = user;
+    this.generateNewPostId();
+    this.title = title;
+    this.category = category;
+    this.location = location;
     this.description = description;
-    this.views = views;
-    this.comments = comments;
-    this.rating = rating;
-    this.status = status;
+    this.rent = rent;
+  }
+
+  generateNewPostId() {
+    this.id = this.generatePostId();
   }
 
   isFeatured() {
@@ -26,4 +21,45 @@ class Post {
   setFeatured(featured) {
     this.featured = featured;
   }
+
+  setServices(services) {
+    this.services = services;
+  }
+
+  setVehicle(vehicle) {
+    this.vehicle = vehicle;
+  }
+  getPostId() {
+    return this.id;
+  }
+
+  generatePostId() {
+    let postId = this.user.getUsername().concat("#" + this.user.getPostCount());
+    return postId;
+  }
+
+  getVehicle() {
+    return this.vehicle;
+  }
+
+  getRent() {
+    return this.rent;
+  }
+
+  getUser() {
+    return this.user;
+  }
+
+  getPostCategory() {
+    return this.category;
+  }
+
+  getServices() {
+    return this.services.map(service => ({
+      label: service.label,
+      isEnabled: service.isEnabled
+    }));
+  }
 }
+
+export default Post;

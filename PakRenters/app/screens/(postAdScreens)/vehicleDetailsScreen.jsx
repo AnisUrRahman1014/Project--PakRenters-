@@ -83,7 +83,6 @@ const VehicleDetailsScreen = () => {
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: false,
       aspect: [4, 3],
-      quality: 1,
       mediaTypes: ImagePicker.MediaTypeOptions.Images
     });
 

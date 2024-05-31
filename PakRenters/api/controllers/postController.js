@@ -4,11 +4,12 @@ const User = require("../models/UserDetails");
 const Vehicle = require("../models/VehicleSchema");
 const path = require("path");
 
-exports.createPostWithVehicle = async (req, res, next) => {
+exports.createPostWithVehicle = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const { userId } = req.params;
+    console.log(userId);
     const {
       postId,
       title,
@@ -68,8 +69,9 @@ exports.createPostWithVehicle = async (req, res, next) => {
     await user.save();
     await session.commitTransaction();
     session.endSession();
-
+    console.log("Hello");
     res.status(201).json({
+      success: true,
       message: "Post and Vehicle created successfully",
       post: savedPost,
       vehicle: savedVehicle
@@ -92,7 +94,7 @@ exports.getFeaturedPosts = async (req, res) => {
     );
     res.status(200).json({ success: true, data: featuredPosts });
   } catch (error) {
-    console.error("Hello" + error);
+    console.error(error);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };

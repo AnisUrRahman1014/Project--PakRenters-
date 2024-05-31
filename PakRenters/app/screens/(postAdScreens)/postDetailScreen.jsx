@@ -6,7 +6,7 @@ import {
   ScrollView,
   Alert
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Color,
   FontFamily,
@@ -15,15 +15,90 @@ import {
 import { CustomAdInputField, LargeBtnWithIcon } from "../../../components/misc";
 
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import { useNavigation } from "expo-router";
+import { useFocusEffect, useNavigation } from "expo-router";
 import User from "../../classes/User";
-import Post from "../../classes/Post0";
+import Post from "../../classes/Post";
 import { Dropdown } from "react-native-element-dropdown";
 import * as Location from "expo-location";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { ipAddress } from "../../../constants/misc";
 
 const PostAdScreen1 = () => {
   const navigation = useNavigation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState("");
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Polyfill atob for Node.js
+    if (typeof atob === "undefined") {
+      global.atob = function(b64) {
+        return Buffer.from(b64, "base64").toString("binary");
+      };
+    }
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (token) {
+          setIsLoggedIn(true);
+          const decodedToken = jwtDecode(token);
+          const userId = decodedToken.userId;
+          setUserId(userId);
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkLoginStatus();
+  }, []);
+
+  useFocusEffect(
+    useCallback(
+      () => {
+        if (userId) {
+          fetchUserProfile();
+        }
+      },
+      [userId]
+    )
+  );
+
+  const fetchUserProfile = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        `http://${ipAddress}:8000/user/profile/${userId}`
+      );
+      const userData = res.data.user;
+      const user = new User(
+        userData.username,
+        userData.email,
+        userData.password,
+        userData.phoneNumber
+      );
+      console.log(userData.profilePic);
+      user.setProfilePic(`http://${ipAddress}:8000/user/profilePic/${userId}`);
+      console.log(user.profilePic);
+      user.setProvince(userData.province);
+      user.setCNIC(userData.cnic);
+      user.setCity(userData.city);
+      user.updateReputation(userData.reputation);
+      user.postCount = userData.posts.length;
+      user._id = userId;
+      setUser(user);
+    } catch (err) {
+      console.log("Error processing user profile", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  console.log(user);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -43,13 +118,6 @@ const PostAdScreen1 = () => {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421
   });
-
-  const user = new User(
-    "i_a_n_33_s",
-    "anisrahman1014@gmail.com",
-    "ab26856de8",
-    "03304089490"
-  );
 
   const userLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -168,8 +236,6 @@ const PostAdScreen1 = () => {
     let temp = location;
     temp.street = street;
     setLocation(temp);
-
-    console.log(location);
 
     post = new Post(user, title, description, postCategory, location, rent);
     console.log(post);

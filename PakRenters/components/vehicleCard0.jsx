@@ -21,15 +21,17 @@ const VehicleCard = ({ post }) => {
     // router.push("/screens/postCard");
     // router.setParams({ currentVehicle: vehicle, post: post });
   };
+
+  const truncate = (title, maxSize) => {
+    return title.length > maxSize ? `${title.substring(0, maxSize)}...` : title;
+  };
   return (
     <TouchableOpacity style={styles.card} onPress={openVehicleDetailCard}>
       {/* Image Container */}
       <View style={{ flex: 1 }}>
         <View style={styles.imageContainer}>
           <Image
-            source={{
-              uri: `http://${ipAddress}:8000/${vehicle.images[0]}`
-            }}
+            source={{ uri: `http://${ipAddress}:8000/${vehicle.images[0]}` }}
             style={styles.image}
           />
         </View>
@@ -41,10 +43,10 @@ const VehicleCard = ({ post }) => {
       {/* Description Container */}
       <View style={styles.descContainer}>
         <Text style={styles.cardLabel}>
-          {post.title}
+          {truncate(post.title, 30)}
         </Text>
         <Text style={styles.locationLabel}>
-          {post.location}
+          {truncate(post.location, 20)}
         </Text>
         <View style={styles.rateCommentContainer}>
           <Icon

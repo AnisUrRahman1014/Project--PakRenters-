@@ -4,15 +4,53 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  Alert
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Color, FontFamily, sizeManager } from "../../constants/GlobalStyles";
 import { CustomFormInputField } from "../../components/misc";
 import Icon from "react-native-vector-icons/FontAwesome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import { ipAddress } from "../../constants/misc";
 
 const BundleRequestForm = () => {
   const [description, setDescription] = useState();
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    fetchLoggedInUserId();
+  }, []);
+
+  const fetchLoggedInUserId = async () => {
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        setUserId(decodedToken.userId);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSendRequest = async () => {
+    try {
+      const response = await axios.post(
+        `http://${ipAddress}:8000/customRequests/postRequest/${userId}`,
+        { request: description }
+      );
+      if (response.status === 201) {
+        Alert.alert("Success", " Request posted successfully");
+      } else {
+        Alert.alert("Error", response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.mainContainer}>
@@ -40,7 +78,12 @@ const BundleRequestForm = () => {
           />
         </View>
         <View style={styles.section}>
-          <TouchableOpacity style={styles.bundleBtn}>
+          <TouchableOpacity
+            style={styles.bundleBtn}
+            onPress={() => {
+              handleSendRequest();
+            }}
+          >
             <View style={styles.bundleBtn.contentContainer}>
               <Text style={styles.bundleBtn.label}>Send Request</Text>
             </View>

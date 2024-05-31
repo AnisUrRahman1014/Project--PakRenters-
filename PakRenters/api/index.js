@@ -21,12 +21,14 @@ const userRoutes = require("./routes/user");
 const postRoutes = require("./routes/post");
 const vehicleRoutes = require("./routes/vehicle");
 const chatRoute = require("./routes/chats");
+const customRequestRoute = require("./routes/customBundle");
 
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/post", postRoutes);
 app.use("/vehicle", vehicleRoutes);
 app.use("/chats", chatRoute);
+app.use("/customRequests", customRequestRoute);
 
 app.get("/", (req, res) => {
   res.send({ status: "Started" });
@@ -47,7 +49,7 @@ const io = require("socket.io")(server, {
       "http://localhost:3001",
       "http://localhost:8081",
       "http://localhost:8081",
-      "http://192.168.1.13:8081"
+      "http://192.168.1.9:8081"
     ],
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],

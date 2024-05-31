@@ -48,7 +48,6 @@ const ServicesDetail = () => {
   };
 
   const updateDatabase = async post => {
-    console.log(post.getServices());
     try {
       const authToken = await AsyncStorage.getItem("authToken");
       if (!authToken) {
@@ -60,6 +59,7 @@ const ServicesDetail = () => {
       const userId = decodedToken.userId;
 
       const formData = new FormData();
+      console.log(post);
 
       formData.append("postId", post.id);
       formData.append("title", post.title);
@@ -87,7 +87,6 @@ const ServicesDetail = () => {
           type: "image/jpeg" // or the correct mime type
         });
       });
-
       const response = await axios.post(
         `http://${ipAddress}:8000/post/createPostWithVehicle/${userId}`,
         formData,
@@ -103,6 +102,7 @@ const ServicesDetail = () => {
         Alert.alert("Success", "Your post has been successfully created!");
         navigation.navigate("index");
       } else {
+        console.log(response.status);
         Alert.alert(
           "Failed to post ad",
           "An error occurred while creating your post."
@@ -110,7 +110,7 @@ const ServicesDetail = () => {
       }
     } catch (error) {
       console.log(error);
-      Alert.alert("Failed to post ad", `An error occurred: ${error.message}`);
+      Alert.alert("Failed to post ad", `An error occurred: ${error}`);
     }
   };
 
