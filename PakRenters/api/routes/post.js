@@ -10,6 +10,6 @@ router.post(
 );
 router.get("/getFeaturedPostIds", postController.getFeaturedPostIds);
 router.get("/getPostById/:postId", postController.getPostById);
-router.get("/getPostByUserId/:userId", postController.getPostByUserId);
+router.get("/getPostsByUserId/:userId", postController.getPostsByUserId);
 
 module.exports = router;

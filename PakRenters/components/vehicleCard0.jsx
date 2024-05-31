@@ -15,37 +15,35 @@ import Post from "../app/classes/Post0";
 import Vehicle from "../app/classes/Vehicle0";
 
 const VehicleCard = ({ postId }) => {
-  const [post, setPost] = useState("");
+  const [post, setPost] = useState(null);
   const navigation = useNavigation();
-  const [vehicle, setVehicle] = useState("");
-  const [isFeatured, setIsFeatured] = useState();
+  const [vehicle, setVehicle] = useState(null);
+  const [isFeatured, setIsFeatured] = useState(false);
 
   useEffect(() => {
-    fetchFeaturedPosts();
+    fetchPost();
   }, []);
 
-  const fetchFeaturedPosts = async () => {
+  const fetchPost = async () => {
     try {
       const response = await axios.get(
         `http://${ipAddress}:8000/post/getPostById/${postId}`
       );
-      // Transform the data
+      console.log(response.data);
       const { vehicleId, user, ...post } = response.data.data;
       const newVehicle = prepareVehicleObject(vehicleId);
       const newUser = prepareUserObject(user);
       const newPost = preparePostObject(post, newUser);
       newPost.setVehicle(newVehicle);
       setPost(newPost);
-      const { vehicle } = newPost;
-      setVehicle(vehicle);
-    } catch (err) {
-      console.error(err);
-      // setError(true);
-      // setIsLoading(false);
+      setVehicle(newVehicle);
+      setIsFeatured(true);
+    } catch (error) {
+      console.log(error);
     }
   };
+
   const prepareUserObject = fetchedUser => {
-    // Create a user first
     const user = new User(
       fetchedUser.username,
       fetchedUser.email,
@@ -64,7 +62,6 @@ const VehicleCard = ({ postId }) => {
   };
 
   const preparePostObject = (fetchedPost, user) => {
-    // Create a post
     const location = JSON.parse(fetchedPost.location);
     const locationStr =
       location.region.concat(", ") +
@@ -86,6 +83,7 @@ const VehicleCard = ({ postId }) => {
     newPost._id = fetchedPost._id;
     return newPost;
   };
+
   const prepareVehicleObject = fetchedVehicle => {
     const newVehicle = new Vehicle(
       fetchedVehicle.postId,
@@ -107,22 +105,28 @@ const VehicleCard = ({ postId }) => {
     navigation.navigate("screens/postCard", {
       post: post
     });
-    // router.push("/screens/postCard");
-    // router.setParams({ currentVehicle: vehicle, post: post });
   };
 
   const truncate = (title, maxSize) => {
     return title.length > maxSize ? `${title.substring(0, maxSize)}...` : title;
   };
+
+  if (!post) {
+    return <Text>Loading...</Text>; // Show a loading indicator while fetching data
+  }
+
   return (
     <TouchableOpacity style={styles.card} onPress={openVehicleDetailCard}>
       {/* Image Container */}
       <View style={{ flex: 1 }}>
         <View style={styles.imageContainer}>
-          <Image
-            source={{ uri: `http://${ipAddress}:8000/${vehicle.images[0]}` }}
-            style={styles.image}
-          />
+          {vehicle &&
+            vehicle.images &&
+            vehicle.images.length > 0 &&
+            <Image
+              source={{ uri: `http://${ipAddress}:8000/${vehicle.images[0]}` }}
+              style={styles.image}
+            />}
         </View>
       </View>
       {isFeatured &&

@@ -89,9 +89,6 @@ exports.createPostWithVehicle = async (req, res) => {
 // Controller method to get featured posts
 exports.getFeaturedPostIds = async (req, res) => {
   try {
-    // const featuredPosts = await Post.find({ isFeatured: false }).populate(
-    //   "user vehicleId"
-    // );
     const featuredPostIds = await Post.find({ isFeatured: false }).select(
       "_id"
     );
@@ -103,7 +100,7 @@ exports.getFeaturedPostIds = async (req, res) => {
 };
 
 // Controller method to get featured posts
-exports.getPostByUserId = async (req, res) => {
+exports.getPostsByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
     const userPosts = await Post.find({ user: userId }).populate(
@@ -119,7 +116,6 @@ exports.getPostByUserId = async (req, res) => {
 exports.getPostById = async (req, res) => {
   try {
     const { postId } = req.params;
-    console.log(postId);
     const featuredPosts = await Post.findById(postId).populate(
       "user vehicleId"
     );

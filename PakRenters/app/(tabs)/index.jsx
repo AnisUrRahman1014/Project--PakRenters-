@@ -61,70 +61,13 @@ const Home = () => {
       //   return newPost;
       // });
       const newPosts = response.data.data;
+      console.log(newPosts);
       setFeaturedPostIds(newPosts);
     } catch (err) {
       console.error(err);
       // setError(true);
       // setIsLoading(false);
     }
-  };
-  const prepareUserObject = fetchedUser => {
-    // Create a user first
-    const user = new User(
-      fetchedUser.username,
-      fetchedUser.email,
-      "",
-      fetchedUser.phoneNumber
-    );
-    user.setCity(fetchedUser.city);
-    user.setCNIC(fetchedUser.cnic);
-    user.setProvince(fetchedUser.province);
-    user.setProfilePic(fetchedUser.profilePic);
-    user.reputation = fetchedUser.reputation;
-    user.memberSince = fetchedUser.memberSince;
-    user._id = fetchedUser._id;
-    user.posts = fetchedUser.posts;
-    return user;
-  };
-
-  const preparePostObject = (fetchedPost, user) => {
-    // Create a post
-    const location = JSON.parse(fetchedPost.location);
-    const locationStr =
-      location.region.concat(", ") +
-      location.city.concat(", ") +
-      location.street;
-    const newPost = new Post(
-      user,
-      fetchedPost.postId,
-      fetchedPost.title,
-      fetchedPost.description,
-      fetchedPost.category,
-      locationStr,
-      fetchedPost.rentPerDay
-    );
-    newPost.setFeatured(true);
-    newPost.setServices(fetchedPost.services);
-    newPost.comments = fetchedPost.comments;
-    newPost.rating = fetchedPost.rating;
-    newPost._id = fetchedPost._id;
-    return newPost;
-  };
-  const prepareVehicleObject = fetchedVehicle => {
-    const newVehicle = new Vehicle(
-      fetchedVehicle.postId,
-      fetchedVehicle.make,
-      fetchedVehicle.model,
-      fetchedVehicle.year,
-      fetchedVehicle.engine,
-      fetchedVehicle.seatingCapacity,
-      fetchedVehicle.transmission,
-      fetchedVehicle.ac,
-      fetchedVehicle.abs,
-      fetchedVehicle.cruise
-    );
-    newVehicle.setImages(fetchedVehicle.images);
-    return newVehicle;
   };
 
   const handleBundleRequestOnPress = () => {
@@ -189,7 +132,7 @@ const Home = () => {
                     renderItem={({ item }) => <VehicleCard postId={item._id} />}
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    keyExtractor={item => item.id}
+                    keyExtractor={item => item._id}
                     contentContainerStyle={{
                       alignItems: "center",
                       paddingVertical: wp(3)
