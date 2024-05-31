@@ -235,7 +235,7 @@ const VehicleCard = ({ postId }) => {
     );
   }
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={handlePress}>
       <View style={styles.leftContainer}>
         <Image
           source={{ uri: `http://${ipAddress}:8000/${vehicle.images[0]}` }}
@@ -300,7 +300,7 @@ const VehicleCard = ({ postId }) => {
           />
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
