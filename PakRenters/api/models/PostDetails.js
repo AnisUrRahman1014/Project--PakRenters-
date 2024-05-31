@@ -65,6 +65,14 @@ const PostSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  status: {
+    type: Boolean,
+    default: true
+  },
+  availability: {
+    type: Boolean,
+    default: true
+  },
   services: [
     {
       label: String,

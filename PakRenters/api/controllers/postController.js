@@ -195,3 +195,31 @@ exports.deletePostWithVehicle = async (req, res) => {
     });
   }
 };
+
+exports.snoozePost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { update } = req.body;
+    const post = await Post.findById(postId);
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    post.status = update;
+    await post.save();
+    let snoozed = "snoozed";
+    if (update == true) {
+      snoozed = "unsnoozed";
+    }
+    res.status(201).json({
+      success: true,
+      message: `Post ${snoozed} successfully`
+    });
+  } catch (error) {
+    console.error("Error snoozing post:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};

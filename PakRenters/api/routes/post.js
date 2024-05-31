@@ -13,5 +13,6 @@ router.get("/getPostById/:postId", postController.getPostById);
 router.get("/getPostIdsByUserId/:userId", postController.getPostIdsByUserId);
 router.post("/getFilteredPosts/:filterType", postController.getFilteredPostIds);
 router.delete("/deletePost/:postId", postController.deletePostWithVehicle);
+router.post("/snoozePost/:postId", postController.snoozePost);
 
 module.exports = router;
