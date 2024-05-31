@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
-import { router, useNavigation } from "expo-router";
-import { React, useEffect, useState } from "react";
+import { router, useFocusEffect, useNavigation } from "expo-router";
+import { React, useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -42,37 +42,29 @@ const Home = () => {
   const isLoading = false;
   const error = false;
 
-  useEffect(() => {
-    fetchFeaturedPosts();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchFeaturedPosts();
+    }, [])
+  );
 
   const fetchFeaturedPosts = async () => {
     try {
       const response = await axios.get(
         `http://${ipAddress}:8000/post/getFeaturedPostIds`
       );
-      // // Transform the data
-      // const newPosts = response.data.data.map(item => {
-      //   const { vehicleId, user, ...post } = item;
-      //   const newVehicle = prepareVehicleObject(vehicleId);
-      //   const newUser = prepareUserObject(user);
-      //   const newPost = preparePostObject(post, newUser);
-      //   newPost.setVehicle(newVehicle);
-      //   return newPost;
-      // });
       const newPosts = response.data.data;
       console.log(newPosts);
       setFeaturedPostIds(newPosts);
     } catch (err) {
       console.error(err);
-      // setError(true);
-      // setIsLoading(false);
     }
   };
 
   const handleBundleRequestOnPress = () => {
     navigation.navigate("screens/bundleRequestForm");
   };
+
   const renderItem = ({ item }) => {
     switch (item.key) {
       case "header":

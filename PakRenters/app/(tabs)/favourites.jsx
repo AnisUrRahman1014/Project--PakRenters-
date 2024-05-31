@@ -17,20 +17,6 @@ const Favourites = () => {
   const [favourites, setFavourites] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // useEffect(
-  //   () => {
-  //     fetchUserId();
-  //   },
-  //   [fetchUserIdAndFavorites]
-  // );
-  // const fetchUserId = async () => {
-  //   const token = await AsyncStorage.getItem("authToken");
-  //   if (token) {
-  //     const decodedToken = jwtDecode(token);
-  //     setUserId(decodedToken.userId);
-  //   }
-  // };
-
   const fetchUserIdAndFavorites = useCallback(async () => {
     try {
       setIsLoading(true);

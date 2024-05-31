@@ -12,10 +12,16 @@ import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { ipAddress } from "../constants/misc";
 import axios from "axios";
+import { useNavigation } from "expo-router";
 
 const FavouritizedPostCard = ({ post, userId }) => {
+  const navigation = useNavigation();
   const { vehicle } = post;
   const [isFavorite, setIsFavorite] = useState(true);
+
+  const truncate = (title, maxSize) => {
+    return title.length > maxSize ? `${title.substring(0, maxSize)}...` : title;
+  };
   const handleFavoritize = async () => {
     const userData = { postId: post._id };
     try {
@@ -34,8 +40,12 @@ const FavouritizedPostCard = ({ post, userId }) => {
       Alert.alert("Error", "Failed to update favorite status");
     }
   };
+
+  const handleOnPress = () => {
+    navigation.navigate("screens/postCard", { post: post });
+  };
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={handleOnPress}>
       <View style={styles.leftContainer}>
         <Image
           source={{ uri: `http://${ipAddress}:8000/${vehicle.images[0]}` }}
@@ -46,10 +56,10 @@ const FavouritizedPostCard = ({ post, userId }) => {
       <View style={styles.contentContainer}>
         <View>
           <Text style={styles.cardLabel}>
-            {post.title}
+            {truncate(post.title, 40)}
           </Text>
           <Text style={styles.locationLabel}>
-            {post.location}
+            {truncate(post.location, 20)}
           </Text>
           <View style={styles.rateCommentContainer}>
             <Icon
@@ -62,7 +72,7 @@ const FavouritizedPostCard = ({ post, userId }) => {
                 {post.rating}
               </Text>
             </Icon>
-            <Icon name="comment" size={10} color={Color.white}>
+            <Icon name="comment" size={10} color={Color.dark}>
               <Text style={styles.rating}>
                 {post.comments.length}
               </Text>

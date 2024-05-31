@@ -1,18 +1,14 @@
 import { Stack, useRouter, useLocalSearchParams } from "expo-router";
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import {
   View,
   Text,
   SafeAreaView,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  Alert
 } from "react-native";
-import {
-  Color,
-  FontFamily,
-  globalStyles,
-  horizontal_flatlist_Buttons
-} from "../../constants/GlobalStyles";
+import { Color, FontFamily, globalStyles } from "../../constants/GlobalStyles";
 import VehicleCard from "../../components/vehicleCard0";
 import {
   widthPercentageToDP as wp,
@@ -20,68 +16,96 @@ import {
 } from "react-native-responsive-screen";
 import SearchBar from "../../components/searchBar";
 import Vehicle from "../classes/Vehicle";
+import axios from "axios";
+import { ipAddress } from "../../constants/misc";
+import Post from "../classes/Post0";
+import User from "../classes/User";
 
-const Filters = ["All", "Available", "Unavailable", "Trending"];
+const Filters = ["All", "Available", "Unavailable"];
 
-const vehicles = [
-  new Vehicle(
-    1,
-    "Honda",
-    "Civic EK",
-    "2005",
-    "1.6 cc",
-    5,
-    "Manual",
-    "No",
-    "Yes",
-    "No",
-    "Islamabad,Punjab",
-    3500,
-    250,
-    4.9,
-    [require("../../assets/images/civic003.jpg")]
-  ),
-  new Vehicle(
-    2, // Assuming '1' as an ID for this example
-    "Toyota",
-    "Prado", // vehicleName
-    "2012",
-    "2.0 cc",
-    7,
-    "Auto",
-    "Yes",
-    "Yes",
-    "Yes",
-    "Gujrat, Punjab", // location
-    "5000", // rent
-    "43", // comments
-    "1.0", // rating
-    [require("../../assets/images/toyota-prado-1.jpg")] // image
-  ),
-  new Vehicle(
-    3,
-    "Honda",
-    "Civic EK",
-    "2005",
-    "1.6 cc",
-    5,
-    "Manual",
-    "No",
-    "Yes",
-    "No",
-    "Islamabad,Punjab",
-    3500,
-    250,
-    4.9,
-    [require("../../assets/images/civic003.jpg")]
-  )
-];
-const ListingScreen = ({ route }) => {
-  const { categoryName } = useLocalSearchParams();
-  console.log(categoryName);
-
-  const router = useRouter();
+const ListingScreen = () => {
+  const { categoryName, filterType } = useLocalSearchParams();
+  const [posts, setPosts] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.post(
+        `http://${ipAddress}:8000/post/getFilteredPosts/${filterType}`,
+        { filter: categoryName.toLowerCase() }
+      );
+      if (response.status === 200) {
+        console.log(response.data.data);
+        setPosts(response.data.data);
+      } else {
+        Alert.alert("Failed to applu the filter", "NAN");
+      }
+    } catch (error) {
+      Alert.alert("Error fetching post", "Failed to fetch your request");
+    }
+  };
+
+  const prepareUserObject = fetchedUser => {
+    const user = new User(
+      fetchedUser.username,
+      fetchedUser.email,
+      "",
+      fetchedUser.phoneNumber
+    );
+    user.setCity(fetchedUser.city);
+    user.setCNIC(fetchedUser.cnic);
+    user.setProvince(fetchedUser.province);
+    user.setProfilePic(fetchedUser.profilePic);
+    user.reputation = fetchedUser.reputation;
+    user.memberSince = fetchedUser.memberSince;
+    user._id = fetchedUser._id;
+    user.posts = fetchedUser.posts;
+    return user;
+  };
+
+  const preparePostObject = (fetchedPost, user) => {
+    const location = JSON.parse(fetchedPost.location);
+    const locationStr =
+      location.region.concat(", ") +
+      location.city.concat(", ") +
+      location.street;
+    const newPost = new Post(
+      user,
+      fetchedPost.postId,
+      fetchedPost.title,
+      fetchedPost.description,
+      fetchedPost.category,
+      locationStr,
+      fetchedPost.rentPerDay
+    );
+    newPost.setFeatured(true);
+    newPost.setServices(fetchedPost.services);
+    newPost.comments = fetchedPost.comments;
+    newPost.rating = fetchedPost.rating;
+    newPost._id = fetchedPost._id;
+    return newPost;
+  };
+
+  const prepareVehicleObject = fetchedVehicle => {
+    const newVehicle = new Vehicle(
+      fetchedVehicle.postId,
+      fetchedVehicle.make,
+      fetchedVehicle.model,
+      fetchedVehicle.year,
+      fetchedVehicle.engine,
+      fetchedVehicle.seatingCapacity,
+      fetchedVehicle.transmission,
+      fetchedVehicle.ac,
+      fetchedVehicle.abs,
+      fetchedVehicle.cruise
+    );
+    newVehicle.setImages(fetchedVehicle.images);
+    return newVehicle;
+  };
 
   const generateScreenTitle = () => {
     let headerTitle = categoryName;
@@ -92,6 +116,10 @@ const ListingScreen = ({ route }) => {
     }
     return headerTitle;
   };
+
+  if (!posts) {
+    return <Text>Failed</Text>;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -135,9 +163,9 @@ const ListingScreen = ({ route }) => {
         {/* VEHICLE CARD CONTAINER */}
         <View style={styles.vehicleCardsContainer}>
           <FlatList
-            data={vehicles}
-            renderItem={({ item }) => <VehicleCard vehicle={item} />}
-            keyExtractor={item => item.id}
+            data={posts}
+            renderItem={({ item }) => <VehicleCard postId={item._id} />}
+            keyExtractor={item => item._id}
             numColumns={2}
             contentContainerStyle={{ alignItems: "center" }}
           />

@@ -33,10 +33,10 @@ const VehicleCard = ({ post, onPress = null }) => {
       <View style={styles.contentContainer}>
         <View>
           <Text style={styles.cardLabel}>
-            {post.title}
+            {truncate(post.title, 30)}
           </Text>
           <Text style={styles.locationLabel}>
-            {post.location}
+            {truncate(post.location, 20)}
           </Text>
           <View style={styles.rateCommentContainer}>
             <Icon

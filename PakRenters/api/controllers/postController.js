@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Post = require("../models/PostDetails");
 const User = require("../models/UserDetails");
 const Vehicle = require("../models/VehicleSchema");
-const path = require("path");
 
 exports.createPostWithVehicle = async (req, res) => {
   const session = await mongoose.startSession();
@@ -99,8 +98,7 @@ exports.getFeaturedPostIds = async (req, res) => {
   }
 };
 
-// Controller method to get featured posts
-exports.getPostsByUserId = async (req, res) => {
+exports.getPostIdsByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
     const userPosts = await Post.find({ user: userId }).populate(
@@ -108,7 +106,7 @@ exports.getPostsByUserId = async (req, res) => {
     );
     res.status(200).json({ success: true, data: userPosts });
   } catch (error) {
-    console.error("Hello" + error);
+    console.error(+error);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
@@ -123,5 +121,77 @@ exports.getPostById = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+exports.getFilteredPostIds = async (req, res) => {
+  try {
+    const { filterType } = req.params;
+    const { filter } = req.body;
+    let filteredPostIds;
+    switch (filterType) {
+      case "category":
+        filteredPostIds = await Post.find({ category: filter }).select("_id");
+        break;
+    }
+
+    res.status(200).json({ success: true, data: filteredPostIds });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+exports.deletePostWithVehicle = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const { postId } = req.params;
+
+    // Find the post
+    const post = await Post.findById(postId).session(session);
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    // Find the associated vehicle
+    const vehicle = await Vehicle.findById(post.vehicleId).session(session);
+    if (!vehicle) {
+      throw new Error("Vehicle not found");
+    }
+
+    // Delete the vehicle and post
+    await Vehicle.deleteOne({ _id: vehicle._id }).session(session);
+    await Post.deleteOne({ _id: post._id }).session(session);
+
+    // Remove the post reference from the user
+    await User.updateOne(
+      { _id: post.user },
+      { $pull: { posts: postId } },
+      { session }
+    );
+
+    // Remove the post from all users' favorites
+    await User.updateMany(
+      { favorites: postId },
+      { $pull: { favorites: postId } },
+      { session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(200).json({
+      success: true,
+      message: "Post and Vehicle deleted successfully"
+    });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error("Error deleting post and vehicle:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
   }
 };
