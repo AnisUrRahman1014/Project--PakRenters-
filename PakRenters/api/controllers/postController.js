@@ -223,3 +223,31 @@ exports.snoozePost = async (req, res) => {
     });
   }
 };
+
+exports.updateAvailability = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { update } = req.body;
+    const post = await Post.findById(postId);
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    post.availability = update;
+    await post.save();
+    let available = "available";
+    if (update == true) {
+      available = "unavailable";
+    }
+    res.status(201).json({
+      success: true,
+      message: `Post ${available}`
+    });
+  } catch (error) {
+    console.error("Error snoozing post:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};

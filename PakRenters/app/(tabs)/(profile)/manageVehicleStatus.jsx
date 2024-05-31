@@ -1,70 +1,42 @@
-import { View, SafeAreaView, StyleSheet, FlatList } from "react-native";
-import React from "react";
+import { View, SafeAreaView, StyleSheet, FlatList, Alert } from "react-native";
+import React, { useCallback, useState } from "react";
 import VehicleStatusCard from "../../../components/vehicleStatusCard";
 import { Color, sizeManager } from "../../../constants/GlobalStyles";
-import Vehicle from "../../classes/Vehicle";
+import Vehicle from "../../classes/Vehicle0";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import axios from "axios";
+import { ipAddress } from "../../../constants/misc";
 
 const manageVehicleStatus = () => {
-  // Dummy Data
-  const vehicles = [
-    new Vehicle(
-      1,
-      "Honda",
-      "Civic EK",
-      "2005",
-      "1.6 cc",
-      5,
-      "Manual",
-      "No",
-      "Yes",
-      "No",
-      "Islamabad,Punjab",
-      3500,
-      250,
-      4.9,
-      [require("../../../assets/images/civic003.jpg")]
-    ),
-    new Vehicle(
-      2,
-      "Toyota",
-      "Prado",
-      "2012",
-      "2.0 cc",
-      7,
-      "Auto",
-      "Yes",
-      "Yes",
-      "Yes",
-      "Gujrat, Punjab",
-      "5000",
-      "43",
-      "1.0",
-      [require("../../../assets/images/toyota-prado-1.jpg")]
-    ),
-    new Vehicle( // Assuming '1' as an ID for this example // vehicleName // location // rent // comments // rating // image
-      3,
-      "Honda",
-      " Civic EK",
-      "2005",
-      "1.6 cc",
-      5,
-      "Manual",
-      "No",
-      "Yes",
-      "No",
-      "Islamabad,Punjab",
-      3500,
-      250,
-      4.9,
-      [require("../../../assets/images/civic003.jpg")]
-    )
-  ]; // Assuming '1' as an ID for this example // vehicleName // location // rent // comments // rating // image
+  const { user } = useLocalSearchParams();
+  const [postIds, setPostIds] = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserPosts();
+    }, [])
+  );
+
+  const fetchUserPosts = async () => {
+    try {
+      const response = await axios.get(
+        `http://${ipAddress}:8000/post/getPostIdsByUserId/${user._id}`
+      );
+      if (response.status === 200) {
+        setPostIds(response.data.data);
+      } else {
+        Alert.alert("Error", "Failed to fetch data");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.mainContainer}>
         <FlatList
-          data={vehicles}
-          renderItem={({ item }) => <VehicleStatusCard vehicle={item} />}
+          data={postIds}
+          renderItem={({ item }) => <VehicleStatusCard postId={item._id} />}
           contentContainerStyle={{
             gap: 10,
             padding: sizeManager(1)
