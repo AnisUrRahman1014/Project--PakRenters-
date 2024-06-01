@@ -1,10 +1,10 @@
 import { View, StyleSheet, SafeAreaView, Alert } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Color, sizeManager } from "../../../constants/GlobalStyles";
 import Vehicle from "../../classes/Vehicle";
 import { FlatList } from "react-native-gesture-handler";
 import VehicleCard from "../../../components/vehicleCardManageAds";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useFocusEffect } from "expo-router";
 import axios from "axios";
 import { ipAddress } from "../../../constants/misc";
 
@@ -12,9 +12,11 @@ const manageAds = () => {
   const { user } = useLocalSearchParams();
   const [postIds, setPostIds] = useState([]);
 
-  useEffect(() => {
-    fetchUserPosts();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserPosts();
+    }, [])
+  );
 
   const fetchUserPosts = async () => {
     try {

@@ -125,7 +125,8 @@ export const LargeBtnWithIcon = ({
   iconColor,
   btnBorderColor,
   btnLabelColor = Color.white,
-  iconSize = 30
+  iconSize = 30,
+  disable = false
 }) => {
   return (
     <TouchableOpacity
@@ -140,6 +141,7 @@ export const LargeBtnWithIcon = ({
         }
       ]}
       onPress={onPress}
+      disabled={disable}
     >
       <Text
         style={[

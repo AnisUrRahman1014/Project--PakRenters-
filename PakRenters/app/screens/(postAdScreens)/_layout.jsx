@@ -32,6 +32,16 @@ const Layout = () => {
           headerShadowVisible: false
         }}
       />
+
+      <Stack.Screen
+        name="featurePostScreen"
+        options={{
+          headerShown: true,
+          title: "Post Featuring",
+          headerTintColor: Color.dark,
+          headerShadowVisible: false
+        }}
+      />
     </Stack>
   );
 };

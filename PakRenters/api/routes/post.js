@@ -15,5 +15,8 @@ router.post("/getFilteredPosts/:filterType", postController.getFilteredPostIds);
 router.delete("/deletePost/:postId", postController.deletePostWithVehicle);
 router.post("/snoozePost/:postId", postController.snoozePost);
 router.post("/updateAvailability/:postId", postController.updateAvailability);
-
+router.post(
+  "/updateFeatureDetails/:postId",
+  postController.updateFeatureDetails
+);
 module.exports = router;

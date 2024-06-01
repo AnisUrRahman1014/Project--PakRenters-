@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Post = require("../models/PostDetails");
 const User = require("../models/UserDetails");
 const Vehicle = require("../models/VehicleSchema");
+const FeatureDetails = require("../models/FeatureDetails");
 
 exports.createPostWithVehicle = async (req, res) => {
   const session = await mongoose.startSession();
@@ -89,7 +90,7 @@ exports.createPostWithVehicle = async (req, res) => {
 exports.getFeaturedPostIds = async (req, res) => {
   try {
     const featuredPostIds = await Post.find({
-      isFeatured: false,
+      isFeatured: true,
       status: true
     }).select("_id");
     res.status(200).json({ success: true, data: featuredPostIds });
@@ -249,6 +250,42 @@ exports.updateAvailability = async (req, res) => {
     res.status(500).json({
       message: "Internal server error",
       error: error.message
+    });
+  }
+};
+
+exports.updateFeatureDetails = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { days, charges } = req.body;
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      res.status(400).json({ success: false, message: "Post not found" });
+    }
+    const currentDate = new Date();
+    const validTill = new Date();
+    validTill.setDate(currentDate.getDate() + days);
+
+    // Create the new feature details
+    const newFeature = new FeatureDetails({
+      charges,
+      validFrom: currentDate,
+      validTill: validTill
+    });
+
+    await newFeature.save();
+    post.featuredDetails = newFeature._id;
+    post.isFeatured = true;
+    await post.save();
+    res.status(200).json({
+      success: true,
+      message: "Congratulation! Your post is featured."
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to add featuring to your post. Try again later"
     });
   }
 };

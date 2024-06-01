@@ -84,7 +84,11 @@ const PostSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "Booking"
     }
-  ]
+  ],
+  featuredDetails: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Feature"
+  }
 });
 
 const Post = mongoose.model("Post", PostSchema);

@@ -100,7 +100,7 @@ const ServicesDetail = () => {
 
       if (response.status === 201) {
         Alert.alert("Success", "Your post has been successfully created!");
-        navigation.navigate("index");
+        navigation.navigate("featurePostScreen", { post: response.data.post });
       } else {
         console.log(response.status);
         Alert.alert(

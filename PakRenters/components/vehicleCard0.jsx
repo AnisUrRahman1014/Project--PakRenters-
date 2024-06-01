@@ -1,11 +1,19 @@
-import { StyleSheet, Platform } from "react-native";
 import { React, useState, useCallback } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
 import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp
-} from "react-native-responsive-screen";
-import { Color, FontFamily, StatusColors, sizeManager } from "../constants/GlobalStyles";
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Platform
+} from "react-native";
+import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import {
+  Color,
+  FontFamily,
+  StatusColors,
+  sizeManager
+} from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation, useFocusEffect } from "expo-router";
 import { ipAddress } from "../constants/misc";
@@ -78,7 +86,7 @@ const VehicleCard = ({ postId }) => {
       locationStr,
       fetchedPost.rentPerDay
     );
-    newPost.setFeatured(true);
+    newPost.setFeatured(fetchedPost.isFeatured);
     newPost.setServices(fetchedPost.services);
     newPost.comments = fetchedPost.comments;
     newPost.rating = fetchedPost.rating;
@@ -141,14 +149,25 @@ const VehicleCard = ({ postId }) => {
           width: "100%",
           height: "8%",
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "space-between"
         }}
       >
         {isFeatured &&
           <View style={styles.featuredLabelContainer}>
             <Text style={styles.featuredLabel}>Featured</Text>
           </View>}
-          <View style={{borderRadius:sizeManager(100), width: "12%",aspectRatio: 1,  backgroundColor: post.availability ? StatusColors.available : StatusColors.unavailable, margin: sizeManager(1), elevation: 10}}/>
+        <View
+          style={{
+            borderRadius: sizeManager(100),
+            width: "12%",
+            aspectRatio: 1,
+            backgroundColor: post.availability
+              ? StatusColors.available
+              : StatusColors.unavailable,
+            margin: sizeManager(1),
+            elevation: 10
+          }}
+        />
       </View>
       {/* Description Container */}
       <View style={styles.descContainer}>
@@ -190,6 +209,7 @@ const styles = StyleSheet.create({
   card: {
     position: "relative",
     width: sizeManager(20),
+    aspectRatio: 9 / 14,
     backgroundColor: Color.white,
     marginHorizontal: wp(1),
     marginVertical: wp(1.5),
