@@ -15,7 +15,7 @@ import {
   sizeManager
 } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation, useFocusEffect } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { Switch } from "react-native-gesture-handler";
 import axios from "axios";
 import { ipAddress } from "../constants/misc.js";
@@ -25,9 +25,8 @@ import Vehicle from "../app/classes/Vehicle0";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const VehicleStatusCard = ({ postId }) => {
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(null);
   const [post, setPost] = useState(null);
-  const navigation = useNavigation();
   const [vehicle, setVehicle] = useState(null);
 
   useFocusEffect(
@@ -133,7 +132,7 @@ const VehicleStatusCard = ({ postId }) => {
       if (token) {
         const response = await axios.post(
           `http://${ipAddress}:8000/post/updateAvailability/${post._id}`,
-          { update: isEnabled },
+          { update: !isEnabled },
           {
             headers: {
               Authorization: `Bearer ${token}`

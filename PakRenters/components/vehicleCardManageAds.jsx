@@ -47,7 +47,7 @@ const VehicleCard = ({ postId }) => {
       newPost.setVehicle(newVehicle);
       setPost(newPost);
       setVehicle(newVehicle);
-      setIsSnoozed(newPost.status);
+      setIsSnoozed(!newPost.status);
     } catch (error) {
       console.log(error);
     }

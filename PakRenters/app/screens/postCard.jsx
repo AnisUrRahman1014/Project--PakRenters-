@@ -37,7 +37,6 @@ import { jwtDecode } from "jwt-decode";
 const PostCard = () => {
   const { post } = useLocalSearchParams();
   const { user, services, comments, vehicle } = post;
-  console.log(user);
   const [currentUserId, setCurrentUserId] = useState("");
 
   useEffect(() => {
@@ -326,9 +325,15 @@ const PostCard = () => {
             <View style={styles.headerSectionRight}>
               <View style={styles.statusIndicatorContainer}>
                 <View
-                  style={styles.statusIndicatorStyle(StatusColors.available)}
+                  style={styles.statusIndicatorStyle(
+                    post.availability
+                      ? StatusColors.available
+                      : StatusColors.unavailable
+                  )}
                 />
-                <Text style={styles.status}>Available</Text>
+                <Text style={styles.status}>
+                  {post.availability ? "Available" : "Unavailable"}
+                </Text>
               </View>
             </View>
           </View>
@@ -476,7 +481,8 @@ const styles = StyleSheet.create({
   headerSectionRight: {
     flex: 0.4,
     justifyContent: "center",
-    marginVertical: wp(2)
+    marginVertical: wp(2),
+    paddingHorizontal: sizeManager(1)
   },
   title: {
     fontFamily: FontFamily.ubuntuMedium,

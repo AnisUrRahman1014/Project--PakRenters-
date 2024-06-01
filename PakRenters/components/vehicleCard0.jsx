@@ -1,13 +1,13 @@
 import { StyleSheet, Platform } from "react-native";
-import { React, useEffect, useState } from "react";
+import { React, useState, useCallback } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
-import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
+import { Color, FontFamily, StatusColors, sizeManager } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation } from "expo-router";
+import { useNavigation, useFocusEffect } from "expo-router";
 import { ipAddress } from "../constants/misc";
 import axios from "axios";
 import User from "../app/classes/User";
@@ -20,9 +20,11 @@ const VehicleCard = ({ postId }) => {
   const [vehicle, setVehicle] = useState(null);
   const [isFeatured, setIsFeatured] = useState(false);
 
-  useEffect(() => {
-    fetchPost();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchPost();
+    }, [])
+  );
 
   const fetchPost = async () => {
     try {
@@ -81,6 +83,8 @@ const VehicleCard = ({ postId }) => {
     newPost.comments = fetchedPost.comments;
     newPost.rating = fetchedPost.rating;
     newPost._id = fetchedPost._id;
+    newPost.availability = fetchedPost.availability;
+    newPost.status = fetchedPost.status;
     return newPost;
   };
 
@@ -129,10 +133,23 @@ const VehicleCard = ({ postId }) => {
             />}
         </View>
       </View>
-      {isFeatured &&
-        <View style={styles.featuredLabelContainer}>
-          <Text style={styles.featuredLabel}>Featured</Text>
-        </View>}
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "8%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        {isFeatured &&
+          <View style={styles.featuredLabelContainer}>
+            <Text style={styles.featuredLabel}>Featured</Text>
+          </View>}
+          <View style={{borderRadius:sizeManager(100), width: "12%",aspectRatio: 1,  backgroundColor: post.availability ? StatusColors.available : StatusColors.unavailable, margin: sizeManager(1), elevation: 10}}/>
+      </View>
       {/* Description Container */}
       <View style={styles.descContainer}>
         <Text style={styles.cardLabel}>
@@ -279,12 +296,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   featuredLabelContainer: {
-    position: "absolute",
+    // position: "absolute",
     backgroundColor: Color.focus,
     width: "55%",
-    height: "8%",
-    top: "0%",
-    left: "0%",
+    height: "100%",
+    // top: "0%",
+    // left: "0%",
     paddingHorizontal: "5%",
     alignItems: "center",
     justifyContent: "center",
