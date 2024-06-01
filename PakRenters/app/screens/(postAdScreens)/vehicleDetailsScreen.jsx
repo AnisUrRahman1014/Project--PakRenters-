@@ -36,10 +36,10 @@ const VehicleDetailsScreen = () => {
   const [year, setYear] = useState("");
   const [engine, setEngine] = useState("");
   const [transmission, setTransmission] = useState("");
-  const [abs, setAbs] = useState(false);
-  const [ac, setAC] = useState(false);
+  const [abs, setAbs] = useState(null);
+  const [ac, setAC] = useState(null);
   const [seats, setSeats] = useState("");
-  const [cruise, setCruise] = useState(false);
+  const [cruise, setCruise] = useState(null);
 
   const pickImage = async () => {
     if (images.length >= 8) {
@@ -199,6 +199,21 @@ const VehicleDetailsScreen = () => {
     }
     if (images.length === 0) {
       Alert.alert("Validation Error", "Please upload at least one image.");
+      return false;
+    }
+    if (abs === null) {
+      Alert.alert("Validation Error", "Please select if the vehicle has ABS.");
+      return false;
+    }
+    if (ac === null) {
+      Alert.alert("Validation Error", "Please select if the vehicle has AC.");
+      return false;
+    }
+    if (cruise === null) {
+      Alert.alert(
+        "Validation Error",
+        "Please select if the vehicle has Cruise Control."
+      );
       return false;
     }
     return true;
