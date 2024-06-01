@@ -1,5 +1,10 @@
-import { Stack, useRouter, useLocalSearchParams } from "expo-router";
-import { React, useEffect, useState } from "react";
+import {
+  Stack,
+  useRouter,
+  useLocalSearchParams,
+  useFocusEffect
+} from "expo-router";
+import { React, useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -28,9 +33,11 @@ const ListingScreen = () => {
   const [posts, setPosts] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchPosts();
+    }, [])
+  );
 
   const fetchPosts = async () => {
     try {
@@ -49,74 +56,6 @@ const ListingScreen = () => {
     }
   };
 
-  const prepareUserObject = fetchedUser => {
-    const user = new User(
-      fetchedUser.username,
-      fetchedUser.email,
-      "",
-      fetchedUser.phoneNumber
-    );
-    user.setCity(fetchedUser.city);
-    user.setCNIC(fetchedUser.cnic);
-    user.setProvince(fetchedUser.province);
-    user.setProfilePic(fetchedUser.profilePic);
-    user.reputation = fetchedUser.reputation;
-    user.memberSince = fetchedUser.memberSince;
-    user._id = fetchedUser._id;
-    user.posts = fetchedUser.posts;
-    return user;
-  };
-
-  const preparePostObject = (fetchedPost, user) => {
-    const location = JSON.parse(fetchedPost.location);
-    const locationStr =
-      location.region.concat(", ") +
-      location.city.concat(", ") +
-      location.street;
-    const newPost = new Post(
-      user,
-      fetchedPost.postId,
-      fetchedPost.title,
-      fetchedPost.description,
-      fetchedPost.category,
-      locationStr,
-      fetchedPost.rentPerDay
-    );
-    newPost.setFeatured(true);
-    newPost.setServices(fetchedPost.services);
-    newPost.comments = fetchedPost.comments;
-    newPost.rating = fetchedPost.rating;
-    newPost._id = fetchedPost._id;
-    return newPost;
-  };
-
-  const prepareVehicleObject = fetchedVehicle => {
-    const newVehicle = new Vehicle(
-      fetchedVehicle.postId,
-      fetchedVehicle.make,
-      fetchedVehicle.model,
-      fetchedVehicle.year,
-      fetchedVehicle.engine,
-      fetchedVehicle.seatingCapacity,
-      fetchedVehicle.transmission,
-      fetchedVehicle.ac,
-      fetchedVehicle.abs,
-      fetchedVehicle.cruise
-    );
-    newVehicle.setImages(fetchedVehicle.images);
-    return newVehicle;
-  };
-
-  const generateScreenTitle = () => {
-    let headerTitle = categoryName;
-    if (categoryName.endsWith("s")) {
-      headerTitle = headerTitle.concat("es");
-    } else {
-      headerTitle = headerTitle.concat("s");
-    }
-    return headerTitle;
-  };
-
   if (!posts) {
     return <Text>Failed</Text>;
   }
@@ -125,7 +64,7 @@ const ListingScreen = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
-          headerTitle: generateScreenTitle().toUpperCase(),
+          headerTitle: categoryName,
           headerTintColor: Color.dark,
           headerTitleAlign: "center",
           headerShadowVisible: false

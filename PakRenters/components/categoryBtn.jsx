@@ -8,6 +8,7 @@ import {
 import { Color } from "../constants/GlobalStyles";
 import { useNavigation } from "expo-router";
 import { FilterTypes } from "../constants/ListingFilterTypes.js";
+import { Categories } from "../constants/Categories.js";
 
 const CategoryBtn = ({ iconName }) => {
   const navigation = useNavigation();
@@ -15,22 +16,22 @@ const CategoryBtn = ({ iconName }) => {
   useEffect(() => {
     switch (iconName) {
       case "car":
-        setCategoryName("Car");
+        setCategoryName(Categories.cars);
         break;
       case "motorbike":
-        setCategoryName("Bikes");
+        setCategoryName(Categories.bikes);
         break;
       case "bus":
-        setCategoryName("Buses");
+        setCategoryName(Categories.buses);
         break;
       case "truck-flatbed":
-        setCategoryName("Loaders");
+        setCategoryName(Categories.loaders);
         break;
       case "truck":
-        setCategoryName("Trucks");
+        setCategoryName(Categories.trucks);
         break;
       case "excavator":
-        setCategoryName("Construction");
+        setCategoryName(Categories.construction);
         break;
     }
   }, []);

@@ -24,6 +24,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { ipAddress } from "../../../constants/misc";
+import { Categories } from "../../../constants/Categories";
 
 const PostAdScreen1 = () => {
   const navigation = useNavigation();
@@ -98,8 +99,6 @@ const PostAdScreen1 = () => {
     }
   };
 
-  console.log(user);
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [rent, setRent] = useState("");
@@ -164,9 +163,12 @@ const PostAdScreen1 = () => {
     }
   };
 
-  useEffect(() => {
-    userLocation();
-  }, []);
+  useEffect(
+    () => {
+      userLocation();
+    },
+    [location]
+  );
 
   useEffect(
     () => {
@@ -281,12 +283,15 @@ const PostAdScreen1 = () => {
               placeholderStyle={styles.dropdownPlaceholder}
               selectedTextStyle={styles.selectedTextStyle}
               data={[
-                { label: "Car", value: "car" },
-                { label: "Truck", value: "truck" },
-                { label: "Bus", value: "bus" },
-                { label: "Bike", value: "motorbike" },
-                { label: "Loader", value: "truck-flatbed" },
-                { label: "Construction Vehicle", value: "excavator" }
+                { label: "Car", value: Categories.cars },
+                { label: "Truck", value: Categories.trucks },
+                { label: "Bus", value: Categories.buses },
+                { label: "Bike", value: Categories.bikes },
+                { label: "Loader", value: Categories.loaders },
+                {
+                  label: "Construction Vehicle",
+                  value: Categories.construction
+                }
               ]}
               maxHeight={150}
               labelField="label"
