@@ -15,8 +15,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { ipAddress } from "../../constants/misc";
+import { validateUserExistance } from "../../constants/CPU";
+import { useNavigation } from "expo-router";
 
 const BundleRequestForm = () => {
+  const navigation = useNavigation();
   const [description, setDescription] = useState();
   const [userId, setUserId] = useState("");
 
@@ -37,6 +40,27 @@ const BundleRequestForm = () => {
   };
 
   const handleSendRequest = async () => {
+    if (validateUserExistance) {
+      Alert.alert(
+        "Login Required",
+        "You must be logged-in in order to place a bundle request.",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          {
+            text: "Login / Sign Up",
+            onPress: () => {
+              navigation.navigate("(profile)", { screen: "profileDashboard" });
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
     try {
       const response = await axios.post(
         `http://${ipAddress}:8000/customRequests/postRequest/${userId}`,

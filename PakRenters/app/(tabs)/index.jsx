@@ -7,7 +7,8 @@ import {
   Text,
   View,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  Alert
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -25,6 +26,7 @@ import axios from "axios";
 import { ipAddress } from "../../constants/misc";
 import User from "../classes/User.js";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { validateUserExistance } from "../../constants/CPU.js";
 
 const categories = [
   "car",
@@ -193,6 +195,29 @@ const Home = () => {
           <TouchableOpacity
             style={styles.postAdBtn}
             onPress={() => {
+              if (validateUserExistance) {
+                Alert.alert(
+                  "Login Required",
+                  "You must be logged-in in order to place a bundle request.",
+                  [
+                    {
+                      text: "Cancel",
+                      onPress: () => console.log("Cancel Pressed"),
+                      style: "cancel"
+                    },
+                    {
+                      text: "Login / Sign Up",
+                      onPress: () => {
+                        navigation.navigate("(profile)", {
+                          screen: "profileDashboard"
+                        });
+                      }
+                    }
+                  ],
+                  { cancelable: false }
+                );
+                return;
+              }
               router.push("../screens/(postAdScreens)/postDetailScreen");
             }}
           >

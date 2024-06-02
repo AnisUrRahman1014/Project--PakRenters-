@@ -1,10 +1,40 @@
-import { View, StyleSheet, SafeAreaView, FlatList } from "react-native";
-import React from "react";
+import { View, StyleSheet, SafeAreaView, FlatList, Alert } from "react-native";
+import React, { useCallback } from "react";
 import { Color, sizeManager } from "../../constants/GlobalStyles";
 import ChatCard from "../../components/inboxChatCard";
 import HeaderSearchBar from "../../components/headerSearchBar";
+import { validateUserExistance } from "../../constants/CPU";
+import { useFocusEffect, useNavigation } from "expo-router";
 
 const InboxScreen = () => {
+  const navigation = useNavigation();
+  useFocusEffect(
+    useCallback(() => {
+      if (validateUserExistance) {
+        Alert.alert(
+          "Login Required",
+          "You must be logged-in in order to place a bundle request.",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+            },
+            {
+              text: "Login / Sign Up",
+              onPress: () => {
+                navigation.navigate("(profile)", {
+                  screen: "profileDashboard"
+                });
+              }
+            }
+          ],
+          { cancelable: false }
+        );
+        return;
+      }
+    }, [])
+  );
   const chats = ["Hello", "Hello"];
   return (
     <SafeAreaView style={{ flex: 1 }}>
