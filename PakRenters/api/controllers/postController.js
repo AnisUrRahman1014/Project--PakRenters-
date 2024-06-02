@@ -3,6 +3,7 @@ const Post = require("../models/PostDetails");
 const User = require("../models/UserDetails");
 const Vehicle = require("../models/VehicleSchema");
 const FeatureDetails = require("../models/FeatureDetails");
+const Bookings = require("../models/BookingSchema");
 
 exports.createPostWithVehicle = async (req, res) => {
   const session = await mongoose.startSession();
@@ -34,10 +35,10 @@ exports.createPostWithVehicle = async (req, res) => {
     }
     const imageFiles = req.files;
     const imagePaths = imageFiles.map(file => file.path);
-    let updatedPostId = postId.toString().concat(user.posts.length + 1);
+    // let updatedPostId = postId.toString().concat(user.posts.length + 1);
 
     const newVehicle = new Vehicle({
-      postId: updatedPostId,
+      postId,
       make,
       model,
       year,
@@ -53,7 +54,7 @@ exports.createPostWithVehicle = async (req, res) => {
     const parsedServices = JSON.parse(services);
 
     const newPost = new Post({
-      postId: updatedPostId,
+      postId,
       user: userId,
       title,
       description,
@@ -286,6 +287,74 @@ exports.updateFeatureDetails = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to add featuring to your post. Try again later"
+    });
+  }
+};
+
+exports.addBooking = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const {
+      renterId,
+      customerId,
+      startDate,
+      endDate,
+      days,
+      rentPerDay,
+      totalRent,
+      payableSurcharge
+    } = req.body;
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      res.status(404).json({ success: false, message: "Post not found" });
+    }
+
+    const newBooking = new Bookings({
+      renter: renterId,
+      customer: customerId,
+      post: post._id,
+      startDate,
+      endDate,
+      days,
+      rentPerDay,
+      totalRent,
+      payableSurcharge
+    });
+
+    await newBooking.save();
+    post.bookings.push(newBooking._id);
+    post.save();
+    res.status(200).json({ success: true, message: "Booking Successful" });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error booking. Server issue" });
+  }
+};
+
+exports.getBookings = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const PostWithBookings = await Bookings.find({ post: postId }).populate(
+      "customer"
+    );
+    if (!PostWithBookings) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No bookings found" });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Bookings found",
+      data: PostWithBookings
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching bookings"
     });
   }
 };

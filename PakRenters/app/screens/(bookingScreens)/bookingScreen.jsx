@@ -6,7 +6,11 @@ import {
   FontFamily,
   sizeManager
 } from "../../../constants/GlobalStyles";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation
+} from "expo-router";
 import Calendar from "react-native-calendars/src/calendar";
 import {
   CustomFormInputField,
@@ -16,6 +20,9 @@ import DotIndicator from "../../../components/dotIndicator";
 import BookingReport from "../../classes/BookingReport";
 import dayjs from "dayjs"; // Import dayjs for date manipulation
 import { ipAddress } from "../../../constants/misc";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const BookingScreen = () => {
   // For navigation
@@ -23,6 +30,25 @@ const BookingScreen = () => {
   // Parameter from previous screen
   const { post } = useLocalSearchParams();
   const { vehicle, user } = post;
+  const [customerId, setCustomerId] = useState(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchCurrentUserAsCustomer();
+    }, [])
+  );
+
+  const fetchCurrentUserAsCustomer = async () => {
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        setCustomerId(decodedToken.userId);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Constants for this screen data handling
   let bookingReport;
@@ -106,15 +132,19 @@ const BookingScreen = () => {
   const handleProceed = () => {
     if (startDate && endDate) {
       bookingReport = new BookingReport(
-        vehicle,
+        user._id,
+        customerId,
+        post,
         startDate,
         endDate,
         numberOfDays,
         3000
       );
+      console.log(bookingReport);
       navigation.navigate("screens/(bookingScreens)/bookingReport", {
         report: bookingReport,
-        user: user
+        renter: user,
+        customerId: customerId
       });
     }
   };

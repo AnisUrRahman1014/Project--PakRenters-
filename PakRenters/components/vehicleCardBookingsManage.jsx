@@ -40,7 +40,6 @@ const VehicleCard = ({ postId, onPress = null }) => {
       newPost.setVehicle(newVehicle);
       setPost(newPost);
       setVehicle(newVehicle);
-      setIsSnoozed(newPost.status);
     } catch (error) {
       console.log(error);
     }
@@ -61,6 +60,8 @@ const VehicleCard = ({ postId, onPress = null }) => {
     user.memberSince = fetchedUser.memberSince;
     user._id = fetchedUser._id;
     user.posts = fetchedUser.posts;
+
+    user.postCount = fetchedUser.posts.length;
     return user;
   };
 
@@ -85,6 +86,7 @@ const VehicleCard = ({ postId, onPress = null }) => {
     newPost.rating = fetchedPost.rating;
     newPost._id = fetchedPost._id;
     newPost.status = fetchedPost.status;
+    newPost.bookings = fetchedPost.bookings;
     return newPost;
   };
 

@@ -68,6 +68,8 @@ const VehicleStatusCard = ({ postId }) => {
     user.memberSince = fetchedUser.memberSince;
     user._id = fetchedUser._id;
     user.posts = fetchedUser.posts;
+
+    user.postCount = fetchedUser.posts.length;
     return user;
   };
 

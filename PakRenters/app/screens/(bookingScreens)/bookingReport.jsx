@@ -1,26 +1,62 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { Alert, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import React, { useCallback, useState } from "react";
 import {
   Color,
   FontFamily,
   sizeManager
 } from "../../../constants/GlobalStyles";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import RenterSummaryCard from "../../../components/renterSummaryCard";
 import { LargeBtnWithIcon } from "../../../components/misc";
 import DebitCardSummary from "../../../components/debitCardSummary";
+import axios from "axios";
+import { ipAddress } from "../../../constants/misc";
 
 const BookingReportScreen = () => {
-  const { user, report, accessType } = useLocalSearchParams();
+  const {
+    renter,
+    report,
+    customerId,
+    accessType,
+    customer
+  } = useLocalSearchParams();
+  customer.phoneNo = customer.phoneNumber;
+  const { vehicle } = report.post;
   if (!accessType) {
     console.log("No Access Type");
   }
+
+  const handleBookNow = async () => {
+    const reportData = {
+      renterId: renter._id,
+      customerId,
+      startDate: report.fromDate,
+      endDate: report.toDate,
+      days: report.getTotalDays(),
+      rentPerDay: report.rentPerDay,
+      totalRent: report.getTotalBill(),
+      payableSurcharge: report.getSurcharge()
+    };
+    try {
+      const response = await axios.post(
+        `http://${ipAddress}:8000/post/addBooking/${report.post._id}`,
+        reportData
+      );
+      if (response.status === 200) {
+        Alert.alert("Success", response.data.message);
+      } else {
+        Alert.alert("Booking Failed", "Please check the information");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.mainContainer}>
         <View style={styles.profileContainer}>
           <RenterSummaryCard
-            user={user}
+            user={!accessType ? renter : customer}
             showCallBtn={true}
             showMessageBtn={true}
             dualBtn={true}
@@ -32,7 +68,7 @@ const BookingReportScreen = () => {
           <View style={styles.container.section}>
             <Text style={styles.container.label}>Make</Text>
             <Text style={styles.container.value}>
-              {report.vehicle.make}
+              {vehicle.make}
             </Text>
           </View>
 
@@ -40,7 +76,7 @@ const BookingReportScreen = () => {
           <View style={styles.container.section}>
             <Text style={styles.container.label}>Model</Text>
             <Text style={styles.container.value}>
-              {report.vehicle.model}
+              {vehicle.model}
             </Text>
           </View>
 
@@ -48,7 +84,7 @@ const BookingReportScreen = () => {
           <View style={styles.container.section}>
             <Text style={styles.container.label}>Year</Text>
             <Text style={styles.container.value}>
-              {report.vehicle.year}
+              {vehicle.year}
             </Text>
           </View>
         </View>
@@ -110,7 +146,7 @@ const BookingReportScreen = () => {
         {!accessType &&
           <View>
             <View style={styles.container}>
-              <DebitCardSummary user={user} />
+              <DebitCardSummary user={renter} />
             </View>
 
             {/* Payment Btn Container */}
@@ -121,6 +157,7 @@ const BookingReportScreen = () => {
                 btnColor={Color.focus}
                 btnLabel={"Book Now"}
                 btnLabelColor={Color.white}
+                onPress={handleBookNow}
               />
             </View>
           </View>}

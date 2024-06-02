@@ -19,4 +19,6 @@ router.post(
   "/updateFeatureDetails/:postId",
   postController.updateFeatureDetails
 );
+router.post("/addBooking/:postId", postController.addBooking);
+router.get("/getBookings/:postId", postController.getBookings);
 module.exports = router;

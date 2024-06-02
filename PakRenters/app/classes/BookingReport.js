@@ -1,6 +1,8 @@
 class BookingReport {
-  constructor(vehicle, from, to, numberOfDays, rentPerDay) {
-    this.vehicle = vehicle;
+  constructor(renterId, customerId, post, from, to, numberOfDays, rentPerDay) {
+    this.renterId = renterId;
+    this.customerId = customerId;
+    this.post = post;
     this.fromDate = from;
     this.toDate = to;
     this.numberOfDays = numberOfDays;

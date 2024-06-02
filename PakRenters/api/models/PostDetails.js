@@ -82,7 +82,7 @@ const PostSchema = new mongoose.Schema({
   bookings: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Booking"
+      ref: "Bookings"
     }
   ],
   featuredDetails: {

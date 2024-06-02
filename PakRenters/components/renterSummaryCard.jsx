@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Linking
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import {
   widthPercentageToDP as wp,
@@ -28,6 +35,20 @@ export default function RenterSummaryCard({
   );
   const handleViewProfileOnPress = () => {
     navigation.navigate("screens/userPovProfile", { user: user });
+  };
+
+  const openDialScreen = number => {
+    const url = Platform.OS === "ios" ? `telprompt:${number}` : `tel:${number}`;
+
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          console.log("Can't handle url: " + url);
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch(err => console.error("An error occurred", err));
   };
 
   return (
@@ -70,7 +91,10 @@ export default function RenterSummaryCard({
         </View>}
       {showCallBtn &&
         <View style={styles.btnSection(dualBtn)}>
-          <TouchableOpacity style={styles.btnContainer}>
+          <TouchableOpacity
+            style={styles.btnContainer}
+            onPress={() => openDialScreen(user.phoneNo)}
+          >
             <MaterialIcon name="call" size={30} color={Color.dark} />
           </TouchableOpacity>
         </View>}

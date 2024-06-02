@@ -34,7 +34,9 @@ class Post {
   }
 
   generatePostId() {
-    let postId = this.user.getUsername().concat("#" + this.user.getPostCount());
+    let postId = this.user
+      .getUsername()
+      .concat("#" + parseInt(this.user.getPostCount() + 1));
     return postId;
   }
 

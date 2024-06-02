@@ -4,44 +4,68 @@ import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "expo-router";
 import BookingReport from "../app/classes/BookingReport";
+import { ipAddress } from "../constants/misc";
 
-const BookingCustomerCard = ({ post }) => {
+const BookingCustomerCard = ({ post, booking }) => {
   const { vehicle, user } = post;
+  const { customer } = booking;
   const navigation = useNavigation();
-  const startDate = "27-05-2024";
-  const endDate = "05-06-2024";
-  const totalDays = "10";
-  let report = new BookingReport(vehicle, startDate, endDate, totalDays, 3000);
+  const formatDate = dateString => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+  let report = new BookingReport(
+    user._id,
+    customer._id,
+    post,
+    formatDate(booking.startDate),
+    formatDate(booking.endDate),
+    booking.days,
+    booking.rentPerDay
+  );
   const handleOnPress = () => {
     navigation.navigate("screens/(bookingScreens)/bookingReport", {
-      user: user,
+      renter: user,
+      customerId: customer._id,
       report: report,
-      accessType: "restricted"
+      accessType: "restricted",
+      customer: customer
     });
   };
+  if (!booking) {
+    return <Text>Loading</Text>;
+  }
+
   return (
     <TouchableOpacity style={styles.mainContainer} onPress={handleOnPress}>
       <View style={styles.leftContainer}>
         <Image
-          source={require("../assets/images/Anis.jpg")}
+          source={{ uri: `http://${ipAddress}:8000/${customer.profilePic}` }}
           style={styles.image}
         />
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.contentSubContainer}>
-          <Text style={styles.username}>i_a_n_33_s</Text>
+          <Text style={styles.username}>
+            {customer.username}
+          </Text>
         </View>
         <View style={styles.contentSubContainer}>
           <Text style={styles.bookingDetails}>
-            From: {startDate}
+            From: {booking.startDate}
           </Text>
           <Text style={styles.bookingDetails}>
-            To: {endDate}
+            To: {booking.endDate}
           </Text>
           <Text style={styles.bookingDetails}>
-            Date: {totalDays}
+            Days: {booking.days}
           </Text>
-          <Text style={styles.bookingDetails}>Total Bill: 31000</Text>
+          <Text style={styles.bookingDetails}>
+            Total Bill: {booking.totalRent} Rs.
+          </Text>
         </View>
       </View>
       <View style={styles.btnContainer}>
