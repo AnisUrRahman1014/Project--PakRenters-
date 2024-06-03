@@ -40,7 +40,8 @@ const BundleRequestForm = () => {
   };
 
   const handleSendRequest = async () => {
-    if (validateUserExistance) {
+    const userExists = await validateUserExistance();
+    if (!userExists) {
       Alert.alert(
         "Login Required",
         "You must be logged-in in order to place a bundle request.",

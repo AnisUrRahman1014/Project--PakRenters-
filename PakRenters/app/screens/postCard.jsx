@@ -33,6 +33,7 @@ import { ipAddress } from "../../constants/misc";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
+import { validateUserExistance } from "../../constants/CPU";
 
 const PostCard = () => {
   const { post } = useLocalSearchParams();
@@ -71,6 +72,10 @@ const PostCard = () => {
   const flatListRef = useRef(null);
 
   const checkIfFavorite = async (userId, postId) => {
+    const userExists = await validateUserExistance();
+    if (!userExists) {
+      return;
+    }
     const userData = { postId };
     try {
       const response = await axios.post(
@@ -86,6 +91,30 @@ const PostCard = () => {
   };
 
   const handleFavoritize = async () => {
+    const userExists = await validateUserExistance();
+    if (!userExists) {
+      Alert.alert(
+        "Login Required",
+        "You must be logged-in in order to favoritize a post",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          {
+            text: "Login / Sign Up",
+            onPress: () => {
+              navigation.navigate("(profile)", {
+                screen: "profileDashboard"
+              });
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
     const userData = { postId: post._id };
     try {
       const response = await axios.post(
@@ -126,6 +155,30 @@ const PostCard = () => {
   };
 
   const handleOpenChat = async () => {
+    const userExists = await validateUserExistance();
+    if (!userExists) {
+      Alert.alert(
+        "Login Required",
+        "You must be logged-in in order to chat",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          {
+            text: "Login / Sign Up",
+            onPress: () => {
+              navigation.navigate("(profile)", {
+                screen: "profileDashboard"
+              });
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
     try {
       const chatId = await checkOrCreateChat(currentUserId, user._id);
       navigation.navigate("screens/chatScreen", {
@@ -137,7 +190,31 @@ const PostCard = () => {
       console.error("Error in handleOpenChat:", error);
     }
   };
-  const openBookingScreen = () => {
+  const openBookingScreen = async () => {
+    const userExists = await validateUserExistance();
+    if (!userExists) {
+      Alert.alert(
+        "Login Required",
+        "You must be logged-in in order to book a vehicle.",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          {
+            text: "Login / Sign Up",
+            onPress: () => {
+              navigation.navigate("(profile)", {
+                screen: "profileDashboard"
+              });
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
     navigation.navigate("screens/(bookingScreens)/bookingScreen", {
       post
     });

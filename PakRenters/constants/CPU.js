@@ -4,7 +4,8 @@ import { Alert } from "react-native";
 
 export const validateUserExistance = async () => {
   try {
-    const token = await AsyncStorage.getItem("authItem");
+    const token = await AsyncStorage.getItem("authToken");
+    console.log(token);
     if (!token) {
       return false;
     } else {
@@ -12,5 +13,6 @@ export const validateUserExistance = async () => {
     }
   } catch (error) {
     Alert.alert("HELLO WORLD");
+    return false;
   }
 };

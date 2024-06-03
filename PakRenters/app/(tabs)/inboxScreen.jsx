@@ -8,31 +8,35 @@ import { useFocusEffect, useNavigation } from "expo-router";
 
 const InboxScreen = () => {
   const navigation = useNavigation();
+  const check = async () => {
+    const userExists = await validateUserExistance();
+    if (!userExists) {
+      Alert.alert(
+        "Login Required",
+        "You must be logged-in in order to place a bundle request.",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          {
+            text: "Login / Sign Up",
+            onPress: () => {
+              navigation.navigate("(profile)", {
+                screen: "profileDashboard"
+              });
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
+  };
   useFocusEffect(
     useCallback(() => {
-      if (validateUserExistance) {
-        Alert.alert(
-          "Login Required",
-          "You must be logged-in in order to place a bundle request.",
-          [
-            {
-              text: "Cancel",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel"
-            },
-            {
-              text: "Login / Sign Up",
-              onPress: () => {
-                navigation.navigate("(profile)", {
-                  screen: "profileDashboard"
-                });
-              }
-            }
-          ],
-          { cancelable: false }
-        );
-        return;
-      }
+      check();
     }, [])
   );
   const chats = ["Hello", "Hello"];

@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   Linking,
   SafeAreaView,
@@ -13,11 +14,11 @@ import { useLocalSearchParams, useNavigation } from "expo-router";
 import ReputationBar from "../../components/reputationBar";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import { ipAddress } from "../../constants/misc";
+import { validateUserExistance } from "../../constants/CPU";
 
 const UserPOVprofile = () => {
   const { user } = useLocalSearchParams();
   const navigation = useNavigation();
-  console.log(user);
 
   const handleOnPress_ViewPosts = () => {
     navigation.navigate("screens/postsViewUserPov", { user: user });
@@ -35,6 +36,32 @@ const UserPOVprofile = () => {
         }
       })
       .catch(err => console.error("An error occurred", err));
+  };
+
+  const handleSendMessage = () => {
+    if (validateUserExistance) {
+      Alert.alert(
+        "Login Required",
+        "You must be logged-in in order to book a vehicle.",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          {
+            text: "Login / Sign Up",
+            onPress: () => {
+              navigation.navigate("(profile)", {
+                screen: "profileDashboard"
+              });
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
   };
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -106,7 +133,10 @@ const UserPOVprofile = () => {
             {/* Contact */}
             <View style={styles.section}>
               {/* Messages */}
-              <TouchableOpacity style={styles.btnSection}>
+              <TouchableOpacity
+                style={styles.btnSection}
+                onPress={handleSendMessage}
+              >
                 <View style={styles.btnSection.iconContainer}>
                   <MaterialIcon name="chat" size={30} color={Color.dark} />
                 </View>

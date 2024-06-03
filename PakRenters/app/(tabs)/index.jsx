@@ -40,9 +40,7 @@ const categories = [
 const Home = () => {
   const navigation = useNavigation();
   const [featuredPostIds, setFeaturedPostIds] = useState([]);
-  // Dummy Data
   const isLoading = false;
-  const error = false;
 
   useFocusEffect(
     useCallback(() => {
@@ -194,8 +192,9 @@ const Home = () => {
         <View style={styles.postAdBtnContainer}>
           <TouchableOpacity
             style={styles.postAdBtn}
-            onPress={() => {
-              if (validateUserExistance) {
+            onPress={async () => {
+              const userExists = await validateUserExistance();
+              if (!userExists) {
                 Alert.alert(
                   "Login Required",
                   "You must be logged-in in order to place a bundle request.",
