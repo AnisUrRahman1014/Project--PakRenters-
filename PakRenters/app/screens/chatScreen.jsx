@@ -12,11 +12,12 @@ import { Color, sizeManager } from "../../constants/GlobalStyles";
 import { Stack, useLocalSearchParams } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CustomFormInputField } from "../../components/misc";
-import Message from "../../components/message";
+import MessageComponent from "../../components/message";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { ipAddress } from "../../constants/misc";
 import User from "../classes/User";
+import Message, { MessageTypes } from "../classes/Message";
 
 let socket;
 
@@ -113,31 +114,20 @@ const ChatScreen = () => {
 
   const handleOnSendBtn = async () => {
     if (messageText.trim() !== "") {
-      const newMessage = {
-        chatId: chatId,
-        message: messageText,
-        sender: senderId,
-        time: new Date().toLocaleTimeString([], {
+      const msg = new Message(
+        chatId,
+        senderId,
+        messageText,
+        MessageTypes.TEXT,
+        new Date().toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
           hour12: true
         })
-      };
-      try {
-        const response = await axios.post(
-          `http:${ipAddress}:8000/messages/uploadNewMessage`,
-          newMessage
-        );
-        if (response.status === 200) {
-          console.log("message sent");
-        } else {
-          throw new Error(response.data.message);
-        }
-      } catch (error) {
-        Alert.alert("Error sending message", "Something went wrong");
-      }
-      socket.emit("new message", newMessage);
-      setMessages(prevMessages => [...prevMessages, newMessage]);
+      );
+      msg.uploadMessage();
+      socket.emit("new message", msg);
+      setMessages(prevMessages => [...prevMessages, msg]);
       setMessageText("");
     }
   };
@@ -186,7 +176,7 @@ const ChatScreen = () => {
         contentContainerStyle={{ paddingVertical: sizeManager(1) }}
       >
         {messages.map((message, index) =>
-          <Message
+          <MessageComponent
             key={index}
             sender={message.sender}
             message={message.message}

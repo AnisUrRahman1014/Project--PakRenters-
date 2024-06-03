@@ -4,7 +4,7 @@ import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 
-const Message = ({ sender, message, time }) => {
+const MessageComponent = ({ sender, message, time }) => {
   const messageWidth = message.toString().length;
   const [pov, setPOV] = useState("");
   useEffect(() => {
@@ -42,7 +42,7 @@ const Message = ({ sender, message, time }) => {
   );
 };
 
-export default Message;
+export default MessageComponent;
 
 const styles = StyleSheet.create({
   mainContainer: sender => ({

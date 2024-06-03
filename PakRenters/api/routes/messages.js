@@ -15,11 +15,12 @@ router.get("/getMessages/:chatId", async (req, res) => {
 
 router.post("/uploadNewMessage", async (req, res) => {
   try {
-    const { chatId, message, sender } = req.body;
+    const { chatId, message, messageType, sender } = req.body;
     const newMessage = new Message({
-      chatId: chatId,
-      message: message,
-      sender: sender
+      chatId,
+      message,
+      messageType,
+      sender
     });
     await newMessage.save();
     res.status(200).json({ success: true, message: newMessage });
