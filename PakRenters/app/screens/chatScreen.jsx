@@ -18,46 +18,62 @@ import { io } from "socket.io-client";
 import { ipAddress } from "../../constants/misc";
 import User from "../classes/User";
 import Message, { MessageTypes } from "../classes/Message";
+import * as ImagePicker from "expo-image-picker";
 
 let socket;
 
 const ChatScreen = () => {
   const { receiver, senderId, chatId } = useLocalSearchParams();
-  const [sender, setSender] = useState(null);
   const [messageText, setMessageText] = useState("");
-  const [messageInput, setMessageInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get(
-          `http://${ipAddress}:8000/user/profile/${senderId}`
-        );
-        const userData = res.data.user;
-        const user = new User(
-          userData.username,
-          userData.email,
-          "",
-          userData.phoneNumber
-        );
-        user.setProfilePic(
-          `http://${ipAddress}:8000/user/profilePic/${senderId}`
-        );
-        user.setProvince(userData.province);
-        user.setCNIC(userData.cnic);
-        user.setCity(userData.city);
-        user.updateReputation(userData.reputation);
-        user.postCount = userData.posts.length;
-        user._id = senderId;
-        setSender(user);
-      } catch (error) {
-        console.log("Error processing user profile", error);
-      }
-    };
-    fetchUser();
-  }, []);
   const [messages, setMessages] = useState([]);
+  const [currentMessageType, setMessageType] = useState(MessageTypes.TEXT);
+  const [mediaFiles, setMediaFiles] = useState([]);
+
+  const handleMediaSelection = async () => {
+    try {
+      // Request media library permissions
+      const {
+        status
+      } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission required",
+          "Sorry, we need camera roll permissions to make this work!"
+        );
+        return;
+      }
+
+      // Launch the media library picker
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsMultipleSelection: true,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        selectionLimit: 5
+      });
+
+      // Check if the user canceled the picker
+      if (!result.canceled) {
+        setMediaFiles(prevImages => [...prevImages, ...result.assets]);
+        const mediaUris = mediaFiles.map(image => image.uri);
+        mediaUris.map((mediaFile, index) => {
+          const mediaMessage = new Message(
+            chatId,
+            senderId,
+            mediaFile,
+            MessageTypes.MEDIA,
+            new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true
+            })
+          );
+          mediaMessage.uploadMediaMessage();
+        });
+      }
+    } catch (error) {
+      console.error("Error selecting media:", error);
+    }
+  };
 
   const openDialScreen = number => {
     const url = Platform.OS === "ios" ? `telprompt:${number}` : `tel:${number}`;
@@ -107,7 +123,7 @@ const ChatScreen = () => {
   };
 
   useEffect(() => {
-    socket.on("message recieved", msg => {
+    socket.on("message received", msg => {
       setMessages(prevMessages => [...prevMessages, msg]);
     });
   });
@@ -118,7 +134,7 @@ const ChatScreen = () => {
         chatId,
         senderId,
         messageText,
-        MessageTypes.TEXT,
+        currentMessageType,
         new Date().toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
@@ -180,6 +196,7 @@ const ChatScreen = () => {
             key={index}
             sender={message.sender}
             message={message.message}
+            messageType={message.messageType}
             time={message.time}
           />
         )}
@@ -191,7 +208,7 @@ const ChatScreen = () => {
             <Entypo name="emoji-happy" size={24} color={Color.dark} />
           </TouchableOpacity> */}
           {/* Media */}
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleMediaSelection}>
             <MaterialIcons name="perm-media" size={24} color={Color.dark} />
           </TouchableOpacity>
         </View>

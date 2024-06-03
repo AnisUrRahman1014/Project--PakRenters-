@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Message = require("../models/message");
-// const auth = require("../middlewares/auth");
+const upload = require("../middleware/upload");
 
 router.get("/getMessages/:chatId", async (req, res) => {
   try {
@@ -46,6 +46,27 @@ router.get("/lastMessage/:chatId", async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({ success: false, message: err });
+  }
+});
+
+router.post("/uploadMediaMessage", upload.single("media"), async (req, res) => {
+  try {
+    const { chatId, messageType, sender } = req.body;
+    if (!req.file) {
+      res.status(404).json({ success: false, message: "No file found" });
+    }
+    console.log(req.file.path);
+    const newMessage = new Message({
+      chatId,
+      message: req.file.path,
+      messageType,
+      sender
+    });
+    await newMessage.save();
+    res.status(200).json({ success: true, message: "Message sent" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error });
   }
 });
 

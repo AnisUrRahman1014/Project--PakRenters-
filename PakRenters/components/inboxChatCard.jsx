@@ -46,7 +46,6 @@ const ChatCard = ({ chat }) => {
         userData.password,
         userData.phoneNumber
       );
-      console.log(userData.profilePic);
       user.setProfilePic(userData.profilePic);
       console.log(user.profilePic);
       user.setProvince(userData.province);
@@ -56,7 +55,7 @@ const ChatCard = ({ chat }) => {
       user.postCount = userData.posts.length;
       user._id = receiverId;
       setReceiver(user);
-      getLastMessage();
+      getLastMessage(chatId);
     } catch (error) {
       Alert.alert("Error", "Cannot fetch the user");
     }
@@ -78,14 +77,14 @@ const ChatCard = ({ chat }) => {
   };
 
   // Usage example
-  const getLastMessage = async chatId => {
+  const getLastMessage = async () => {
     const lastMessage = await fetchLastMessage(chatId);
     if (lastMessage) {
       setMessageBy(lastMessage.sender == currentUserId ? "you" : "they");
       setLastMessage(lastMessage.message);
     }
   };
-
+  getLastMessage();
   if (!receiver) {
     return (
       <View style={{ flex: 1 }}>

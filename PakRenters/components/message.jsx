@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
+import { MessageTypes } from "../app/classes/Message";
+import { ipAddress } from "../constants/misc";
 
-const MessageComponent = ({ sender, message, time }) => {
+const MessageComponent = ({ sender, message, messageType, time }) => {
   const messageWidth = message.toString().length;
   const [pov, setPOV] = useState("");
   useEffect(() => {
@@ -28,9 +30,19 @@ const MessageComponent = ({ sender, message, time }) => {
     <View style={styles.mainContainer(pov)}>
       <View style={styles.bubbleContainer(messageWidth)}>
         <View style={styles.messageContainer(pov)}>
-          <Text style={styles.message(pov)}>
-            {message}
-          </Text>
+          {messageType === MessageTypes.TEXT
+            ? <Text style={styles.message(pov)}>
+                {message}
+              </Text>
+            : <Image
+                source={{ uri: `http:${ipAddress}:8000/${message}` }}
+                style={{
+                  width: "100%",
+                  aspectRatio: 1,
+                  resizeMode: "contain",
+                  backgroundColor: pov === "you" ? Color.dark : Color.lightGrey
+                }}
+              />}
         </View>
         <View style={styles.timeContainer(pov)}>
           <Text style={styles.time(pov)}>
