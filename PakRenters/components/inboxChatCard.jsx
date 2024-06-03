@@ -15,6 +15,7 @@ import { jwtDecode } from "jwt-decode";
 import { ipAddress } from "../constants/misc";
 import User from "../app/classes/User";
 import axios from "axios";
+import { MessageTypes } from "../app/classes/Message";
 
 const ChatCard = ({ chat }) => {
   const navigation = useNavigation();
@@ -81,7 +82,11 @@ const ChatCard = ({ chat }) => {
     const lastMessage = await fetchLastMessage(chatId);
     if (lastMessage) {
       setMessageBy(lastMessage.sender == currentUserId ? "you" : "they");
-      setLastMessage(lastMessage.message);
+      setLastMessage(
+        lastMessage.messageType === MessageTypes.TEXT
+          ? lastMessage.message
+          : "image"
+      );
     }
   };
   getLastMessage();

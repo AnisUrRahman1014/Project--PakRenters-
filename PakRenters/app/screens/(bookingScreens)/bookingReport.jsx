@@ -5,14 +5,20 @@ import {
   FontFamily,
   sizeManager
 } from "../../../constants/GlobalStyles";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation
+} from "expo-router";
 import RenterSummaryCard from "../../../components/renterSummaryCard";
 import { LargeBtnWithIcon } from "../../../components/misc";
 import DebitCardSummary from "../../../components/debitCardSummary";
 import axios from "axios";
 import { ipAddress } from "../../../constants/misc";
+import Message, { MessageTypes } from "../../classes/Message";
 
 const BookingReportScreen = () => {
+  const navigation = useNavigation();
   const {
     renter,
     report,
@@ -20,7 +26,10 @@ const BookingReportScreen = () => {
     accessType,
     customer
   } = useLocalSearchParams();
-  customer.phoneNo = customer.phoneNumber;
+  if (customer) {
+    customer.phoneNo = customer.phoneNumber;
+  }
+
   const { vehicle } = report.post;
   if (!accessType) {
     console.log("No Access Type");
@@ -44,6 +53,7 @@ const BookingReportScreen = () => {
       );
       if (response.status === 200) {
         Alert.alert("Success", response.data.message);
+        handleOpenChat();
       } else {
         Alert.alert("Booking Failed", "Please check the information");
       }
@@ -51,6 +61,55 @@ const BookingReportScreen = () => {
       console.log(error);
     }
   };
+
+  const checkOrCreateChat = async (senderId, receiverId) => {
+    try {
+      const response = await axios.post(
+        `http://${ipAddress}:8000/chats/checkOrCreateChat`,
+        {
+          senderId,
+          receiverId
+        }
+      );
+
+      if (response.status === 200) {
+        console.log(response.data.chatId);
+        return response.data.chatId;
+      } else {
+        throw new Error("Failed to check or create chat");
+      }
+    } catch (error) {
+      console.error("Error in checkOrCreateChat:", error);
+      throw error;
+    }
+  };
+
+  const handleOpenChat = async () => {
+    try {
+      const chatId = await checkOrCreateChat(customerId, renter._id);
+      const bookingMessage = new Message(
+        chatId,
+        customerId,
+        `Hey, I booked your vehicle (Post Title: ${report.post
+          .title}) for ${report.getTotalDays()} days, starting from ${report.fromDate}`,
+        MessageTypes.TEXT,
+        new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true
+        })
+      );
+      bookingMessage.uploadMessage();
+      navigation.navigate("screens/chatScreen", {
+        receiver: renter,
+        senderId: customerId,
+        chatId: chatId
+      });
+    } catch (error) {
+      console.error("Error in handleOpenChat:", error);
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.mainContainer}>

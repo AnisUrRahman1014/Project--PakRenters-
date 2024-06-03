@@ -8,17 +8,44 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Color, FontFamily, sizeManager } from "../../constants/GlobalStyles";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation
+} from "expo-router";
 import ReputationBar from "../../components/reputationBar";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import { ipAddress } from "../../constants/misc";
 import { validateUserExistance } from "../../constants/CPU";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
 
 const UserPOVprofile = () => {
   const { user } = useLocalSearchParams();
   const navigation = useNavigation();
+
+  const [currentUserId, setCurrentUserId] = useState("");
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchCurrentUser = async () => {
+        try {
+          const token = await AsyncStorage.getItem("authToken");
+          if (token) {
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.userId;
+            setCurrentUserId(userId);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchCurrentUser();
+    }, [])
+  );
 
   const handleOnPress_ViewPosts = () => {
     navigation.navigate("screens/postsViewUserPov", { user: user });
@@ -38,8 +65,9 @@ const UserPOVprofile = () => {
       .catch(err => console.error("An error occurred", err));
   };
 
-  const handleSendMessage = () => {
-    if (validateUserExistance) {
+  const handleSendMessage = async () => {
+    const userExists = await validateUserExistance();
+    if (!userExists) {
       Alert.alert(
         "Login Required",
         "You must be logged-in in order to book a vehicle.",
@@ -61,6 +89,39 @@ const UserPOVprofile = () => {
         { cancelable: false }
       );
       return;
+    }
+    try {
+      console.log(currentUserId + " " + user._id);
+      const chatId = await checkOrCreateChat(currentUserId, user._id);
+      navigation.navigate("screens/chatScreen", {
+        receiver: user,
+        senderId: currentUserId,
+        chatId: chatId
+      });
+    } catch (error) {
+      console.error("Error in handleOpenChat:", error);
+    }
+  };
+
+  const checkOrCreateChat = async (senderId, receiverId) => {
+    try {
+      const response = await axios.post(
+        `http://${ipAddress}:8000/chats/checkOrCreateChat`,
+        {
+          senderId,
+          receiverId
+        }
+      );
+
+      if (response.status === 200) {
+        console.log(response.data.chatId);
+        return response.data.chatId;
+      } else {
+        throw new Error("Failed to check or create chat");
+      }
+    } catch (error) {
+      console.error("Error in checkOrCreateChat:", error);
+      throw error;
     }
   };
   return (

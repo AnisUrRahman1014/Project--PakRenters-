@@ -105,7 +105,7 @@ exports.getPostIdsByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
     const userPosts = await Post.find({ user: userId }).populate(
-      "user vehicleId"
+      "user vehicleId bookings"
     );
     res.status(200).json({ success: true, data: userPosts });
   } catch (error) {
@@ -118,7 +118,7 @@ exports.getPostById = async (req, res) => {
   try {
     const { postId } = req.params;
     const featuredPosts = await Post.findById(postId).populate(
-      "user vehicleId"
+      "user vehicleId bookings"
     );
     res.status(200).json({ success: true, data: featuredPosts });
   } catch (error) {

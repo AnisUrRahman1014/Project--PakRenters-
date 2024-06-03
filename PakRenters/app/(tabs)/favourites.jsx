@@ -86,6 +86,8 @@ const Favourites = () => {
     newPost.comments = fetchedPost.comments;
     newPost.rating = fetchedPost.rating;
     newPost._id = fetchedPost._id;
+    newPost.status = fetchedPost.status;
+    newPost.availability = fetchedPost.availability;
     return newPost;
   };
   const prepareVehicleObject = fetchedVehicle => {

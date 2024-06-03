@@ -39,7 +39,6 @@ const VehicleCard = ({ postId }) => {
       const response = await axios.get(
         `http://${ipAddress}:8000/post/getPostById/${postId}`
       );
-      console.log(response.data);
       const { vehicleId, user, ...post } = response.data.data;
       const newVehicle = prepareVehicleObject(vehicleId);
       const newUser = prepareUserObject(user);
@@ -87,13 +86,14 @@ const VehicleCard = ({ postId }) => {
       locationStr,
       fetchedPost.rentPerDay
     );
-    newPost.setFeatured(fetchedPost.isFeatured);
+    newPost.setFeatured(true);
     newPost.setServices(fetchedPost.services);
     newPost.comments = fetchedPost.comments;
     newPost.rating = fetchedPost.rating;
     newPost._id = fetchedPost._id;
-    newPost.availability = fetchedPost.availability;
     newPost.status = fetchedPost.status;
+    newPost.availability = fetchedPost.availability;
+    newPost.bookings = fetchedPost.bookings;
     return newPost;
   };
 

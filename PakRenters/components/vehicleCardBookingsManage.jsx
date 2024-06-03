@@ -60,7 +60,6 @@ const VehicleCard = ({ postId, onPress = null }) => {
     user.memberSince = fetchedUser.memberSince;
     user._id = fetchedUser._id;
     user.posts = fetchedUser.posts;
-
     user.postCount = fetchedUser.posts.length;
     return user;
   };
@@ -86,6 +85,7 @@ const VehicleCard = ({ postId, onPress = null }) => {
     newPost.rating = fetchedPost.rating;
     newPost._id = fetchedPost._id;
     newPost.status = fetchedPost.status;
+    newPost.availability = fetchedPost.availability;
     newPost.bookings = fetchedPost.bookings;
     return newPost;
   };

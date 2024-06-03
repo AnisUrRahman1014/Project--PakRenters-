@@ -54,7 +54,6 @@ const Home = () => {
         `http://${ipAddress}:8000/post/getFeaturedPostIds`
       );
       const newPosts = response.data.data;
-      console.log(newPosts);
       setFeaturedPostIds(newPosts);
     } catch (err) {
       console.error(err);

@@ -95,6 +95,7 @@ const VehicleStatusCard = ({ postId }) => {
     newPost._id = fetchedPost._id;
     newPost.status = fetchedPost.status;
     newPost.availability = fetchedPost.availability;
+    newPost.bookings = fetchedPost.bookings;
     return newPost;
   };
 

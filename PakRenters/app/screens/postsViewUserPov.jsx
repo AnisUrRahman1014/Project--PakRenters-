@@ -6,10 +6,14 @@ import {
   Text,
   View
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Color, sizeManager } from "../../constants/GlobalStyles";
 import VehicleCard from "../../components/vehicleCardBookingsManage";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation
+} from "expo-router";
 import axios from "axios";
 import Vehicle from "../classes/Vehicle0";
 import { ipAddress } from "../../constants/misc";
@@ -22,33 +26,35 @@ const PostsViewUserPov = () => {
   const [posts, setPosts] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get(
-          `http://${ipAddress}:8000/post/getPostByUserId/${user._id}`
-        );
-        if (response) {
-          // Transform the data
-          const userPosts = response.data.data.map(item => {
-            const { vehicleId, user, ...post } = item;
-            const newVehicle = prepareVehicleObject(vehicleId);
-            const newUser = prepareUserObject(user);
-            const newPost = preparePostObject(post, newUser);
-            newPost.setVehicle(newVehicle);
-            return newPost;
-          });
-          setPosts(userPosts);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchPost = async () => {
+        try {
+          setIsLoading(true);
+          const response = await axios.get(
+            `http://${ipAddress}:8000/post/getPostIdsByUserId/${user._id}`
+          );
+          if (response) {
+            // Transform the data
+            const userPosts = response.data.data.map(item => {
+              const { vehicleId, user, ...post } = item;
+              const newVehicle = prepareVehicleObject(vehicleId);
+              const newUser = prepareUserObject(user);
+              const newPost = preparePostObject(post, newUser);
+              newPost.setVehicle(newVehicle);
+              return newPost;
+            });
+            setPosts(userPosts);
+          }
+        } catch (error) {
+          console.log("YAHAN HAI MSLA" + error);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchPost();
-  }, []);
+      };
+      fetchPost();
+    }, [])
+  );
 
   const prepareUserObject = fetchedUser => {
     // Create a user first
@@ -90,6 +96,8 @@ const PostsViewUserPov = () => {
     newPost.comments = fetchedPost.comments;
     newPost.rating = fetchedPost.rating;
     newPost._id = fetchedPost._id;
+    newPost.status = fetchedPost.status;
+    newPost.availability = fetchedPost.availability;
     return newPost;
   };
   const prepareVehicleObject = fetchedVehicle => {
@@ -127,7 +135,7 @@ const PostsViewUserPov = () => {
               data={posts}
               renderItem={({ item }) =>
                 <VehicleCard
-                  post={item}
+                  postId={item._id}
                   onPress={() => {
                     handleOnPress(item);
                   }}

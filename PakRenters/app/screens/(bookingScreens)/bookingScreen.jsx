@@ -29,12 +29,14 @@ const BookingScreen = () => {
   const navigation = useNavigation();
   // Parameter from previous screen
   const { post } = useLocalSearchParams();
+  const { bookings } = post;
   const { vehicle, user } = post;
   const [customerId, setCustomerId] = useState(null);
 
   useFocusEffect(
     useCallback(() => {
       fetchCurrentUserAsCustomer();
+      markBookedDates(bookings);
     }, [])
   );
 
@@ -69,9 +71,32 @@ const BookingScreen = () => {
   const [numberOfDays, setNumberOfDays] = useState(0);
   const [selectedDates, setSelectedDates] = useState({});
   const [bookingString, setBookingString] = useState("");
+  const [bookedDates, setBookedDates] = useState([]);
+
+  const markBookedDates = bookingData => {
+    const datesToMark = {};
+    bookingData.forEach(booking => {
+      const { startDate, endDate } = booking;
+      console.log("YE: " + startDate + " " + endDate);
+      const range = getDatesInRange(startDate, endDate);
+      range.forEach(date => {
+        datesToMark[date] = {
+          selected: true,
+          selectedColor: "red",
+          disabled: true,
+          disableTouchEvent: true
+        }; // Customize the appearance of booked dates
+      });
+    });
+    setBookedDates(datesToMark);
+  };
 
   const handleDayPress = day => {
     const date = day.dateString;
+    if (bookedDates[date] && bookedDates[date].disabled) {
+      // If the selected date is booked, return early
+      return;
+    }
     if (!startDate || (startDate && endDate)) {
       // If no start date is set or both start and end dates are set, reset the selection
       setStartDate(date);
@@ -90,7 +115,10 @@ const BookingScreen = () => {
       setEndDate(date);
       const range = getDatesInRange(startDate, date);
       const newSelectedDates = range.reduce((acc, current) => {
-        acc[current] = { selected: true, selectedColor: Color.focus };
+        acc[current] = {
+          selected: true,
+          selectedColor: Color.focus
+        };
         return acc;
       }, {});
       setSelectedDates(newSelectedDates);
@@ -138,7 +166,7 @@ const BookingScreen = () => {
         startDate,
         endDate,
         numberOfDays,
-        3000
+        post.rent
       );
       console.log(bookingReport);
       navigation.navigate("screens/(bookingScreens)/bookingReport", {
@@ -148,7 +176,7 @@ const BookingScreen = () => {
       });
     }
   };
-
+  console.log({ ...bookedDates });
   const renderItem = () =>
     <View style={styles.mainContainer}>
       <View style={styles.imageContainer}>
@@ -162,8 +190,8 @@ const BookingScreen = () => {
           snapToInterval={sizeManager(30)}
           snapToAlignment="center"
           decelerationRate="fast"
-          viewabilityConfig={viewabilityConfig}
-          onViewableItemsChanged={onViewableItemsChanged}
+          // viewabilityConfig={viewabilityConfig}
+          // onViewableItemsChanged={onViewableItemsChanged}
           nestedScrollEnabled
         />
         <DotIndicator
@@ -186,7 +214,7 @@ const BookingScreen = () => {
           style={styles.calendar}
           onDayPress={handleDayPress}
           markingType="multi-dot"
-          markedDates={selectedDates}
+          markedDates={{ ...bookedDates, ...selectedDates }}
           headerStyle={{
             borderTopLeftRadius: sizeManager(2),
             borderTopRightRadius: sizeManager(2)
