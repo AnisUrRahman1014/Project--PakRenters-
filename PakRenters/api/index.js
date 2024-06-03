@@ -21,6 +21,7 @@ const userRoutes = require("./routes/user");
 const postRoutes = require("./routes/post");
 const vehicleRoutes = require("./routes/vehicle");
 const chatRoute = require("./routes/chats");
+const messageRoute = require("./routes/messages");
 const customRequestRoute = require("./routes/customBundle");
 
 app.use("/auth", authRoutes);
@@ -28,6 +29,7 @@ app.use("/user", userRoutes);
 app.use("/post", postRoutes);
 app.use("/vehicle", vehicleRoutes);
 app.use("/chats", chatRoute);
+app.use("/messages", messageRoute);
 app.use("/customRequests", customRequestRoute);
 
 app.get("/", (req, res) => {

@@ -136,7 +136,7 @@ const PostCard = () => {
   const checkOrCreateChat = async (senderId, receiverId) => {
     try {
       const response = await axios.post(
-        `http://${ipAddress}:8000/chats/checkOrCreate`,
+        `http://${ipAddress}:8000/chats/checkOrCreateChat`,
         {
           senderId,
           receiverId
@@ -144,6 +144,7 @@ const PostCard = () => {
       );
 
       if (response.status === 200) {
+        console.log(response.data.chatId);
         return response.data.chatId;
       } else {
         throw new Error("Failed to check or create chat");

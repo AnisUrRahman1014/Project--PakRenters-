@@ -1,23 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
 
 const Message = ({ sender, message, time }) => {
   const messageWidth = message.toString().length;
+  const [pov, setPOV] = useState("");
+  useEffect(() => {
+    checkPOV();
+  });
 
+  const checkPOV = async () => {
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      const decodedToken = jwtDecode(token);
+      if (decodedToken.userId === sender) {
+        setPOV("you");
+      } else {
+        setPOV("them");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
-    <View style={styles.mainContainer(sender)}>
+    <View style={styles.mainContainer(pov)}>
       <View style={styles.bubbleContainer(messageWidth)}>
-        <View
-          style={styles.messageContainer(sender)}
-          //   onLayout={event => setMessageWidth(event.nativeEvent.layout.width)}
-        >
-          <Text style={styles.message(sender)}>
+        <View style={styles.messageContainer(pov)}>
+          <Text style={styles.message(pov)}>
             {message}
           </Text>
         </View>
-        <View style={styles.timeContainer(sender)}>
-          <Text style={styles.time(sender)}>
+        <View style={styles.timeContainer(pov)}>
+          <Text style={styles.time(pov)}>
             {time}
           </Text>
         </View>
