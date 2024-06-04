@@ -46,7 +46,7 @@ const VehicleCard = ({ postId }) => {
       newPost.setVehicle(newVehicle);
       setPost(newPost);
       setVehicle(newVehicle);
-      setIsFeatured(true);
+      setIsFeatured(newPost.isFeatured());
     } catch (error) {
       console.log(error);
     }
@@ -87,7 +87,7 @@ const VehicleCard = ({ postId }) => {
       locationStr,
       fetchedPost.rentPerDay
     );
-    newPost.setFeatured(true);
+    newPost.setFeatured(fetchedPost.isFeatured);
     newPost.setServices(fetchedPost.services);
     newPost.comments = fetchedPost.comments;
     newPost.rating = fetchedPost.rating;
@@ -161,6 +161,9 @@ const VehicleCard = ({ postId }) => {
           </View>}
         <View
           style={{
+            position: "absolute",
+            top: 2,
+            right: 3,
             borderRadius: sizeManager(100),
             width: "12%",
             aspectRatio: 1,
@@ -315,16 +318,14 @@ const styles = StyleSheet.create({
   },
   descContainer: {
     padding: wp(2),
+    marginTop: sizeManager(1),
     justifyContent: "top",
     flex: 1
   },
   featuredLabelContainer: {
-    // position: "absolute",
     backgroundColor: Color.focus,
     width: "55%",
     height: "100%",
-    // top: "0%",
-    // left: "0%",
     paddingHorizontal: "5%",
     alignItems: "center",
     justifyContent: "center",

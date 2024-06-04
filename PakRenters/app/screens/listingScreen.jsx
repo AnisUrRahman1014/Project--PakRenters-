@@ -11,20 +11,23 @@ import {
   SafeAreaView,
   TouchableOpacity,
   FlatList,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native";
-import { Color, FontFamily, globalStyles } from "../../constants/GlobalStyles";
+import {
+  Color,
+  FontFamily,
+  globalStyles,
+  sizeManager
+} from "../../constants/GlobalStyles";
 import VehicleCard from "../../components/vehicleCard0";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp
 } from "react-native-responsive-screen";
 import SearchBar from "../../components/searchBar";
-import Vehicle from "../classes/Vehicle";
 import axios from "axios";
 import { ipAddress } from "../../constants/misc";
-import Post from "../classes/Post0";
-import User from "../classes/User";
 
 const Filters = ["All", "Available", "Unavailable"];
 
@@ -34,16 +37,25 @@ const ListingScreen = () => {
   const [activeFilter, setActiveFilter] = useState("All");
 
   useFocusEffect(
-    useCallback(() => {
-      fetchPosts();
-    }, [])
+    useCallback(
+      () => {
+        fetchPosts(activeFilter);
+      },
+      [activeFilter]
+    )
   );
 
-  const fetchPosts = async () => {
+  const fetchPosts = async appliedFilter => {
     try {
       const response = await axios.post(
         `http://${ipAddress}:8000/post/getFilteredPosts/${filterType}`,
-        { filter: categoryName.toLowerCase() }
+        {
+          filter: categoryName.toLowerCase(),
+          appliedFilter:
+            appliedFilter === "All"
+              ? null
+              : appliedFilter === "Available" ? true : false
+        }
       );
       if (response.status === 200) {
         setPosts(response.data.data);
@@ -55,8 +67,16 @@ const ListingScreen = () => {
     }
   };
 
+  const handleFilterPress = async filter => {
+    setActiveFilter(filter);
+  };
+
   if (!posts) {
-    return <Text>Failed</Text>;
+    return (
+      <View style={{ flex: 1 }}>
+        <ActivityIndicator size={sizeManager(5)} color={Color.focus} />
+      </View>
+    );
   }
 
   return (
@@ -73,12 +93,12 @@ const ListingScreen = () => {
         <View style={styles.searchAndFilterContainer}>
           {/* SEARCH BAR */}
           <SearchBar />
-          {/* FILTER BUTTON */}
+          {/* FILTER BUTTON
           <View style={styles.filterBtnContainer}>
             <TouchableOpacity style={styles.filterBtn}>
               <Text style={styles.filter}>Filters</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
 
         {/* Category Container */}
@@ -86,8 +106,22 @@ const ListingScreen = () => {
           <FlatList
             data={Filters}
             renderItem={({ item }) =>
-              <TouchableOpacity style={globalStyles.horizontalFlatListBtn}>
-                <Text style={globalStyles.flatListButtonLabelStyle}>
+              <TouchableOpacity
+                style={[
+                  globalStyles.horizontalFlatListBtn,
+                  activeFilter === item && {
+                    backgroundColor: Color.dark,
+                    color: Color.white
+                  }
+                ]}
+                onPress={() => handleFilterPress(item)}
+              >
+                <Text
+                  style={[
+                    globalStyles.flatListButtonLabelStyle,
+                    activeFilter === item && { color: Color.white }
+                  ]}
+                >
                   {item}
                 </Text>
               </TouchableOpacity>}

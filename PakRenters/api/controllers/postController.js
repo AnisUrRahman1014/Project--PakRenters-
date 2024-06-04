@@ -93,7 +93,9 @@ exports.getFeaturedPostIds = async (req, res) => {
     const featuredPostIds = await Post.find({
       isFeatured: true,
       status: true
-    }).select("_id");
+    })
+      .sort({ isFeatured: -1, createdOn: -1 })
+      .select("_id");
     res.status(200).json({ success: true, data: featuredPostIds });
   } catch (error) {
     console.error(error);
@@ -144,14 +146,42 @@ exports.getPostById = async (req, res) => {
 exports.getFilteredPostIds = async (req, res) => {
   try {
     const { filterType } = req.params;
-    const { filter } = req.body;
+    const { filter, appliedFilter } = req.body;
     let filteredPostIds;
     switch (filterType) {
       case "category":
-        filteredPostIds = await Post.find({ category: filter }).select("_id");
+        if (appliedFilter !== null) {
+          filteredPostIds = await Post.find({
+            category: filter,
+            availability: appliedFilter
+          })
+            .sort({ isFeatured: -1, createdOn: -1 })
+            .select("_id");
+          break;
+        }
+        filteredPostIds = await Post.find({ category: filter })
+          .sort({ isFeatured: -1, createdOn: -1 })
+          .select("_id");
+        break;
+      case "none":
+        if (appliedFilter !== null) {
+          filteredPostIds = await Post.find({
+            availability: appliedFilter
+          })
+            .sort({ isFeatured: -1, createdOn: -1 })
+            .select("_id");
+          break;
+        }
+        filteredPostIds = await Post.find({})
+          .sort({ isFeatured: -1, createdOn: -1 })
+          .select("_id");
+        break;
+      case "availability":
+        filteredPostIds = await Post.find({ availability: filter })
+          .sort({ isFeatured: -1, createdOn: -1 })
+          .select("_id");
         break;
     }
-
     res.status(200).json({ success: true, data: filteredPostIds });
   } catch (error) {
     console.log(error);

@@ -27,6 +27,7 @@ import { ipAddress } from "../../constants/misc";
 import User from "../classes/User.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { validateUserExistance } from "../../constants/CPU.js";
+import { FilterTypes } from "../../constants/ListingFilterTypes.js";
 
 const categories = [
   "car",
@@ -62,6 +63,13 @@ const Home = () => {
 
   const handleBundleRequestOnPress = () => {
     navigation.navigate("screens/bundleRequestForm");
+  };
+
+  const handleViewAll = () => {
+    navigation.navigate("screens/listingScreen", {
+      filterType: FilterTypes.none,
+      categoryName: "All"
+    });
   };
 
   const renderItem = ({ item }) => {
@@ -110,7 +118,7 @@ const Home = () => {
             {/* FEATURED LABEL */}
             <View style={styles.sectionLabelContainer}>
               <Text style={styles.sectionLabelPrimary}>Featured</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleViewAll}>
                 <Text style={styles.sectionLabelSecondary}>View all</Text>
               </TouchableOpacity>
             </View>
