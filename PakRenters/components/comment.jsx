@@ -1,22 +1,67 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
+import React, { useCallback, useState } from "react";
 import { Color, FontFamily, sizeManager } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useFocusEffect } from "expo-router";
+import User from "../app/classes/User";
+import { ipAddress } from "../constants/misc";
+import axios from "axios";
 
 const CommentComponent = ({ comment }) => {
+  const [user, setUser] = useState(null);
+  useFocusEffect(
+    useCallback(() => {
+      fetchUser();
+    }, [])
+  );
+
+  const fetchUser = async () => {
+    try {
+      const res = await axios.get(
+        `http://${ipAddress}:8000/user/profile/${comment.user}`
+      );
+      const userData = res.data.user;
+      const user = new User(
+        userData.username,
+        userData.email,
+        userData.password,
+        userData.phoneNumber
+      );
+      user.setProfilePic(userData.profilePic);
+      console.log(user.profilePic);
+      user.setProvince(userData.province);
+      user.setCNIC(userData.cnic);
+      user.setCity(userData.city);
+      user.updateReputation(userData.reputation);
+      user.postCount = userData.posts.length;
+      user._id = comment.userId;
+      setUser(user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  if (!user) {
+    return (
+      <View>
+        <ActivityIndicator size={sizeManager(2)} color={Color.focus} />
+      </View>
+    );
+  }
   return (
     <View style={styles.mainContainer}>
       <View style={styles.leftContainer}>
         <View style={styles.innerContainer}>
           <Image
-            source={require("../assets/images/Anis.jpg")}
+            source={{ uri: `http:${ipAddress}:8000/${user.profilePic}` }}
             style={styles.image}
           />
         </View>
       </View>
       <View style={styles.rightContainer}>
         <View style={styles.usernameContainer}>
-          <Text style={styles.usernameContainer.label}>i_a_n_33_s</Text>
+          <Text style={styles.usernameContainer.label}>
+            {user.username}
+          </Text>
         </View>
         <View style={styles.ratingContainer}>
           <Icon name={"star"} size={15} color={Color.focus} />

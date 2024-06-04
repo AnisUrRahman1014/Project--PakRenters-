@@ -46,12 +46,12 @@ const PostSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
       },
-      text: String,
+      comment: String,
       createdOn: {
         type: Date,
         default: Date.now
       },
-      likes: {
+      rating: {
         type: Number,
         default: 0
       }

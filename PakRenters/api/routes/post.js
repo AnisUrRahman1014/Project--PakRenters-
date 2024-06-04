@@ -22,4 +22,5 @@ router.post(
 );
 router.post("/addBooking/:postId", postController.addBooking);
 router.get("/getBookings/:postId", postController.getBookings);
+router.post("/addNewComment/:postId", postController.addNewComment);
 module.exports = router;

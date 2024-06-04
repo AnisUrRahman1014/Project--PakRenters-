@@ -5,7 +5,6 @@ import { Alert } from "react-native";
 export const validateUserExistance = async () => {
   try {
     const token = await AsyncStorage.getItem("authToken");
-    console.log(token);
     if (!token) {
       return false;
     } else {

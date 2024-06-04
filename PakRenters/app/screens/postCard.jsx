@@ -34,11 +34,13 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { validateUserExistance } from "../../constants/CPU";
+import ReviewInput from "../../components/reviewInput";
 
 const PostCard = () => {
   const { post } = useLocalSearchParams();
-  const { user, services, comments, vehicle } = post;
+  const { user, services, comments: fetchedComments, vehicle } = post;
   const [currentUserId, setCurrentUserId] = useState("");
+  const [comments, setComments] = useState(fetchedComments);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -351,27 +353,18 @@ const PostCard = () => {
       />
     </View>;
 
+  const onSubmitComment = newComment => {
+    setComments([...comments, newComment]);
+  };
+  const commentsFooter = () =>
+    <ReviewInput postId={post._id} onSubmitComment={onSubmitComment} />;
   const CommentsRoute = () =>
     <View style={styles.tabContent}>
-      {comments.length > 0
-        ? <InsideFlatList
-            data={comments}
-            renderItem={({ item }) => <CommentComponent comment={item} />}
-          />
-        : <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <Icon
-                name="code"
-                size={sizeManager(20)}
-                color={Color.lightGrey}
-              />
-              <Text
-                style={{ fontSize: sizeManager(5), color: Color.lightGrey }}
-              >
-                No comments
-              </Text>
-            </View>
-          </View>}
+      <InsideFlatList
+        data={comments}
+        renderItem={({ item }) => <CommentComponent comment={item} />}
+        ListFooterComponent={commentsFooter}
+      />
     </View>;
 
   const [index, setIndex] = useState(0);

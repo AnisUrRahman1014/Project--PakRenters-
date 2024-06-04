@@ -372,3 +372,30 @@ exports.getBookings = async (req, res) => {
     });
   }
 };
+
+exports.addNewComment = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { userId, comment, rating } = req.body;
+    const post = await Post.findById(postId);
+    const user = await User.findById(userId);
+    if (!post) {
+      res.status(404).json({ success: false, message: "Post not found" });
+    }
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found" });
+    }
+    post.comments.push({
+      user: userId,
+      comment: comment,
+      rating: rating,
+      createdOn: new Date()
+    });
+    await post.save();
+    res
+      .status(200)
+      .json({ success: true, message: "Comment posted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error });
+  }
+};
