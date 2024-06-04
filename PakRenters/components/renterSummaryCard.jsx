@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  Linking
+  Linking,
+  Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -16,6 +17,10 @@ import ReputationBar from "./reputationBar";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "expo-router";
 import { ipAddress } from "../constants/misc";
+import axios from "axios";
+import { validateUserExistance } from "../constants/CPU";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
 export default function RenterSummaryCard({
   user,
   showCallBtn = false,
@@ -24,6 +29,22 @@ export default function RenterSummaryCard({
 }) {
   const navigation = useNavigation();
   const [memberSinceYear, setMemberSinceYear] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (token) {
+          const decodedToken = jwtDecode(token);
+          const userId = decodedToken.userId;
+          setCurrentUserId(userId);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCurrentUser();
+  }, []);
   useEffect(
     () => {
       if (user.memberSince) {
@@ -49,6 +70,65 @@ export default function RenterSummaryCard({
         }
       })
       .catch(err => console.error("An error occurred", err));
+  };
+
+  const checkOrCreateChat = async (senderId, receiverId) => {
+    try {
+      const response = await axios.post(
+        `http://${ipAddress}:8000/chats/checkOrCreateChat`,
+        {
+          senderId,
+          receiverId
+        }
+      );
+
+      if (response.status === 200) {
+        console.log(response.data.chatId);
+        return response.data.chatId;
+      } else {
+        throw new Error("Failed to check or create chat");
+      }
+    } catch (error) {
+      console.error("Error in checkOrCreateChat:", error);
+      throw error;
+    }
+  };
+
+  const handleOpenChat = async () => {
+    const userExists = await validateUserExistance();
+    if (!userExists) {
+      Alert.alert(
+        "Login Required",
+        "You must be logged-in in order to chat",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          {
+            text: "Login / Sign Up",
+            onPress: () => {
+              navigation.navigate("(profile)", {
+                screen: "profileDashboard"
+              });
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
+    try {
+      const chatId = await checkOrCreateChat(currentUserId, user._id);
+      navigation.navigate("screens/chatScreen", {
+        receiver: user,
+        senderId: currentUserId,
+        chatId: chatId
+      });
+    } catch (error) {
+      console.error("Error in handleOpenChat:", error);
+    }
   };
 
   return (
@@ -85,7 +165,10 @@ export default function RenterSummaryCard({
       </View>
       {showMessageBtn &&
         <View style={styles.btnSection(dualBtn)}>
-          <TouchableOpacity style={styles.btnContainer}>
+          <TouchableOpacity
+            style={styles.btnContainer}
+            onPress={handleOpenChat}
+          >
             <MaterialIcon name="message" size={30} color={Color.dark} />
           </TouchableOpacity>
         </View>}
