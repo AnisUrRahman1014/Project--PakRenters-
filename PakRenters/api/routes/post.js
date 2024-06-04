@@ -9,6 +9,7 @@ router.post(
   postController.createPostWithVehicle
 );
 router.get("/getFeaturedPostIds", postController.getFeaturedPostIds);
+router.get("/getNotFeaturedPostIds", postController.getNotFeaturedPostIds);
 router.get("/getPostById/:postId", postController.getPostById);
 router.get("/getPostIdsByUserId/:userId", postController.getPostIdsByUserId);
 router.post("/getFilteredPosts/:filterType", postController.getFilteredPostIds);

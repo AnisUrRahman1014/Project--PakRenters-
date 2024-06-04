@@ -63,7 +63,8 @@ const VehicleCard = ({ postId }) => {
     user.setCNIC(fetchedUser.cnic);
     user.setProvince(fetchedUser.province);
     user.setProfilePic(fetchedUser.profilePic);
-    user.reputation = fetchedUser.reputation;
+    user.idCardPDF = fetchedUser.idCardPDF;
+    user.updateReputation();
     user.memberSince = fetchedUser.memberSince;
     user._id = fetchedUser._id;
     user.posts = fetchedUser.posts;
@@ -127,6 +128,7 @@ const VehicleCard = ({ postId }) => {
   if (!post) {
     return <Text>Loading...</Text>; // Show a loading indicator while fetching data
   }
+  console.log(post);
 
   return (
     <TouchableOpacity style={styles.card} onPress={openVehicleDetailCard}>

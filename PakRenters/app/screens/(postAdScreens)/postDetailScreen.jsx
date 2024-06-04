@@ -239,7 +239,14 @@ const PostAdScreen1 = () => {
     temp.street = street;
     setLocation(temp);
 
-    post = new Post(user, title, description, postCategory, location, rent);
+    post = new Post(
+      user,
+      title,
+      description,
+      postCategory.toLowerCase(),
+      location,
+      rent
+    );
     console.log(post);
     navigation.navigate("vehicleDetailsScreen", { newPost: post });
   };

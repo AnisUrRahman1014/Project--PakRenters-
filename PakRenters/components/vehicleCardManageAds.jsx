@@ -64,7 +64,8 @@ const VehicleCard = ({ postId }) => {
     user.setCNIC(fetchedUser.cnic);
     user.setProvince(fetchedUser.province);
     user.setProfilePic(fetchedUser.profilePic);
-    user.reputation = fetchedUser.reputation;
+    user.idCardPDF = fetchedUser.idCardPDF;
+    user.updateReputation();
     user.memberSince = fetchedUser.memberSince;
     user._id = fetchedUser._id;
     user.posts = fetchedUser.posts;

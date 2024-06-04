@@ -35,8 +35,22 @@ class User {
     this.city = city;
   }
 
-  updateReputation(reputation) {
-    this.reputation = reputation;
+  updateReputation() {
+    let rep = 0;
+    if (this.cnic !== "") {
+      rep += 2;
+    }
+    if (this.city !== "") {
+      rep += 0.5;
+    }
+    if (this.province !== "") {
+      rep += 0.5;
+    }
+    if (this.idCardPDF) {
+      rep += 2;
+    }
+    let repPercentage = rep / 5 * 100;
+    this.reputation = repPercentage;
   }
 
   updatePostCount() {

@@ -101,6 +101,20 @@ exports.getFeaturedPostIds = async (req, res) => {
   }
 };
 
+// Controller method to get featured posts
+exports.getNotFeaturedPostIds = async (req, res) => {
+  try {
+    const featuredPostIds = await Post.find({
+      isFeatured: false,
+      status: true
+    }).select("_id");
+    res.status(200).json({ success: true, data: featuredPostIds });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
 exports.getPostIdsByUserId = async (req, res) => {
   try {
     const { userId } = req.params;

@@ -46,10 +46,9 @@ const ListingScreen = () => {
         { filter: categoryName.toLowerCase() }
       );
       if (response.status === 200) {
-        console.log(response.data.data);
         setPosts(response.data.data);
       } else {
-        Alert.alert("Failed to applu the filter", "NAN");
+        Alert.alert("Failed to apply the filter", "NAN");
       }
     } catch (error) {
       Alert.alert("Error fetching post", "Failed to fetch your request");
