@@ -32,7 +32,7 @@ import { ipAddress } from "../../constants/misc";
 const Filters = ["All", "Available", "Unavailable"];
 
 const ListingScreen = () => {
-  const { categoryName, filterType } = useLocalSearchParams();
+  const { categoryName, filterType, filter } = useLocalSearchParams();
   const [posts, setPosts] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
 
@@ -50,7 +50,7 @@ const ListingScreen = () => {
       const response = await axios.post(
         `http://${ipAddress}:8000/post/getFilteredPosts/${filterType}`,
         {
-          filter: categoryName.toLowerCase(),
+          filter: filterType === "search" ? filter : categoryName.toLowerCase(),
           appliedFilter:
             appliedFilter === "All"
               ? null

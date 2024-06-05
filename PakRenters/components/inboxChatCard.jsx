@@ -23,6 +23,7 @@ const ChatCard = ({ chat }) => {
   const [receiver, setReceiver] = useState(null);
   const [currentUserId, setCurrentUserId] = useState("");
   const [lastMessage, setLastMessage] = useState(null);
+  const [time, setTime] = useState("");
   const [messageBy, setMessageBy] = useState("");
   useFocusEffect(
     useCallback(() => {
@@ -87,6 +88,13 @@ const ChatCard = ({ chat }) => {
           ? lastMessage.message
           : "image"
       );
+      setTime(
+        new Date(lastMessage.createdAt).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hou12: true
+        })
+      );
     }
   };
   getLastMessage();
@@ -98,15 +106,16 @@ const ChatCard = ({ chat }) => {
     );
   }
 
-  // DUMMY DATA
-  let time = "07:30 pm";
-
   const handleOnPress = () => {
     navigation.navigate("screens/chatScreen", {
       receiver: receiver,
       senderId: currentUserId,
       chatId: chatId
     });
+  };
+
+  const truncate = (title, maxSize) => {
+    return title.length > maxSize ? `${title.substring(0, maxSize)}...` : title;
   };
   return (
     <TouchableOpacity
@@ -133,7 +142,7 @@ const ChatCard = ({ chat }) => {
         {/* Last Message Container*/}
         <View style={styles.lastMsg}>
           <Text style={styles.lastMsg.textStyles}>
-            {`${messageBy}: ${lastMessage}`}
+            {`${messageBy}: ` + truncate(lastMessage, 40)}
           </Text>
         </View>
         {/* Time Container*/}

@@ -9,7 +9,6 @@ router.get("/getChats/:userId", async (req, res) => {
     const chats = await Chat.find({
       $or: [{ user1: userId }, { user2: userId }]
     });
-    console.log("hello: " + chats);
     if (!chats)
       return res
         .status(400)
@@ -17,6 +16,41 @@ router.get("/getChats/:userId", async (req, res) => {
     res.status(200).json({ success: true, chats: chats });
   } catch (err) {
     return res.status(500).send("Somthing went Wrong!");
+  }
+});
+
+router.post("/getFilteredChats/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { filter } = req.body;
+
+    let chats = await Chat.find({
+      $or: [{ user1: userId }, { user2: userId }]
+    }).populate("user1 user2");
+
+    if (!chats)
+      return res
+        .status(400)
+        .json({ success: false, message: "No chats found" });
+    if (filter === "") {
+      res.status(200).json({ success: true, chats: chats });
+      return;
+    }
+    if (filter) {
+      const filterLower = filter.toLowerCase();
+      chats = chats.filter(chat => {
+        const user1Name = chat.user1.username.toLowerCase();
+        const user2Name = chat.user2.username.toLowerCase();
+        return (
+          user1Name.includes(filterLower) || user2Name.includes(filterLower)
+        );
+      });
+    }
+
+    res.status(200).json({ success: true, chats: chats });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Something went wrong!");
   }
 });
 

@@ -3,17 +3,16 @@ import React, { useState } from "react";
 import { Color, sizeManager } from "../constants/GlobalStyles";
 import { CustomFormInputField } from "./misc";
 
-const HeaderSearchBar = () => {
-  const [search, setSearchString] = useState("");
+const HeaderSearchBar = ({ value, handleSearchOnChange }) => {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.fieldContainer}>
         <CustomFormInputField
           iconName={"search"}
           placeHolder={"Search"}
-          onChange={setSearchString}
-          value={search}
+          value={value}
           borderVisible={false}
+          onChange={handleSearchOnChange}
         />
       </View>
     </View>

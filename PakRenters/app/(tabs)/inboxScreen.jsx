@@ -12,10 +12,15 @@ import { jwtDecode } from "jwt-decode";
 const InboxScreen = () => {
   const navigation = useNavigation();
   const [chats, setChats] = useState([]);
+  const [searchFor, setSearchFor] = useState("");
+
   useFocusEffect(
-    useCallback(() => {
-      fetchChats();
-    }, [])
+    useCallback(
+      () => {
+        fetchChats();
+      },
+      [searchFor]
+    )
   );
 
   const fetchChats = async () => {
@@ -67,10 +72,68 @@ const InboxScreen = () => {
       console.log(error);
     }
   };
+
+  const fetchFilteredChats = async query => {
+    const userExists = await validateUserExistance();
+    if (!userExists) {
+      setChats([]);
+      Alert.alert(
+        "Login Required",
+        "You must be logged-in in order to place a bundle request.",
+        [
+          {
+            text: "Cancel",
+            onPress: () => {
+              navigation.navigate("index");
+            },
+            style: "cancel"
+          },
+          {
+            text: "Login / Sign Up",
+            onPress: () => {
+              navigation.navigate("(profile)", {
+                screen: "profileDashboard"
+              });
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId;
+        const response = await axios.post(
+          `http://${ipAddress}:8000/chats/getFilteredChats/${userId}`,
+          { filter: query }
+        );
+        if (response.status === 200) {
+          setChats(response.data.chats);
+          console.log(chats);
+        } else {
+          console.log("Error");
+        }
+      } else {
+        console.log("no token");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleSearchOnChange = text => {
+    setSearchFor(text);
+    fetchFilteredChats(text); // Fetch chats based on the search query
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header}>
-        <HeaderSearchBar />
+        <HeaderSearchBar
+          value={searchFor}
+          handleSearchOnChange={handleSearchOnChange}
+        />
       </View>
       <View style={styles.mainContainer}>
         {/* Chat cards */}

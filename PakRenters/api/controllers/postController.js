@@ -176,11 +176,25 @@ exports.getFilteredPostIds = async (req, res) => {
           .sort({ isFeatured: -1, createdOn: -1 })
           .select("_id");
         break;
-      case "availability":
-        filteredPostIds = await Post.find({ availability: filter })
+      case "search":
+        const searchQuery = filter ? { title: new RegExp(filter, "i") } : {};
+        if (appliedFilter !== null) {
+          filteredPostIds = await Post.find({
+            ...searchQuery,
+            availability: appliedFilter
+          })
+            .sort({ isFeatured: -1, createdOn: -1 })
+            .select("_id");
+          break;
+        }
+        filteredPostIds = await Post.find(searchQuery)
           .sort({ isFeatured: -1, createdOn: -1 })
           .select("_id");
         break;
+      default:
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid filter type" });
     }
     res.status(200).json({ success: true, data: filteredPostIds });
   } catch (error) {

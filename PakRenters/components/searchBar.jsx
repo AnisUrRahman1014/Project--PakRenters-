@@ -7,28 +7,30 @@ import {
 } from "react-native-responsive-screen";
 import { Color, FontFamily } from "../constants/GlobalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useNavigation } from "expo-router";
+import { FilterTypes } from "../constants/ListingFilterTypes";
+("../constants/ListingFilterTypes");
 
 const SearchBar = () => {
   const [searchFor, setSearchFor] = useState("");
-  const [fontsLoaded, error] = useFonts({
-    "Ubuntu-Bold": require("../assets/fonts/Ubuntu-Bold.ttf"),
-    "Ubuntu-Regular": require("../assets/fonts/Ubuntu-Regular.ttf"),
-    "Ubuntu-Light": require("../assets/fonts/Ubuntu-Light.ttf"),
-    "BreeSerif-Regular": require("../assets/fonts/BreeSerif-Regular.ttf")
-  });
-
-  if (!fontsLoaded && !error) {
-    return null;
-  }
+  const navigation = useNavigation();
+  const handleOnSearch = async () => {
+    navigation.navigate("screens/listingScreen", {
+      filterType: FilterTypes.search,
+      filter: searchFor,
+      categoryName: "All"
+    });
+  };
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.inputField}
         placeholderTextColor={Color.white}
         placeholder="Search here"
-        onChange={text => setSearchFor(text)}
+        value={searchFor}
+        onChangeText={text => setSearchFor(text)}
       />
-      <TouchableOpacity style={styles.searchBtn}>
+      <TouchableOpacity style={styles.searchBtn} onPress={handleOnSearch}>
         <Icon name="search" size={20} color={Color.white} />
       </TouchableOpacity>
     </View>
