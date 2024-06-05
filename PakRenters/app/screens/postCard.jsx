@@ -431,8 +431,8 @@ const PostCard = () => {
               snapToInterval={wp(96)}
               snapToAlignment="center"
               decelerationRate="fast"
-              // viewabilityConfig={viewabilityConfig}
-              // onViewableItemsChanged={onViewableItemsChanged}
+              viewabilityConfig={viewabilityConfig}
+              onViewableItemsChanged={onViewableItemsChanged}
               style={{
                 width: "100%",
                 height: "100%",

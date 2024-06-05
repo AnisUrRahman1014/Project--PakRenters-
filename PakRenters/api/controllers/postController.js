@@ -435,6 +435,11 @@ exports.addNewComment = async (req, res) => {
       rating: rating,
       createdOn: new Date()
     });
+    // Calculate the total rating
+    const temp = post.comments.reduce((acc, cur) => acc + cur.rating, 0);
+    let totalRating = temp / post.comments.length;
+    const roundedTotalRating = parseFloat(totalRating.toFixed(1));
+    post.rating = roundedTotalRating;
     await post.save();
     res
       .status(200)

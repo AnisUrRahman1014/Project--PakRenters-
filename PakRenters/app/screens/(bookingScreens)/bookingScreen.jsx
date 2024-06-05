@@ -190,8 +190,8 @@ const BookingScreen = () => {
           snapToInterval={sizeManager(30)}
           snapToAlignment="center"
           decelerationRate="fast"
-          // viewabilityConfig={viewabilityConfig}
-          // onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
+          onViewableItemsChanged={onViewableItemsChanged}
           nestedScrollEnabled
         />
         <DotIndicator
